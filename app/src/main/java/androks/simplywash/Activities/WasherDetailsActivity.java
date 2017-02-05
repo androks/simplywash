@@ -4,11 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,8 +23,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import androks.simplywash.Models.AddReviewDialog;
+import androks.simplywash.Models.Price;
+import androks.simplywash.Models.PricesFragmentPagerAdapter;
 import androks.simplywash.Models.Review;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
@@ -33,6 +39,7 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
     private Washer mWasher;
     private View mNoReviewView;
     private ListView listView;
+    private HashMap<String, Price> mPrices = new HashMap<>();
     private int mutedColor = R.attr.colorPrimary;
 
     @Override
@@ -64,6 +71,27 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
             }
         });
 
+        //Upload washer's prices
+        FirebaseDatabase.getInstance().getReference()
+                .child("prices")
+                .child(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Price temp = child.getValue(Price.class);
+                        mPrices.put(child.getKey(), temp);
+                    }
+                    inflatePrices();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         //Setting up toolbar image and color
         mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         ImageView header = (ImageView) findViewById(R.id.header);
@@ -82,6 +110,8 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
 
         //Setting up on listeners
         findViewById(R.id.add_review_btn).setOnClickListener(this);
+        Button btn = (Button) findViewById(R.id.add_review_btn);
+
     }
 
     private void inflateView() {
@@ -103,7 +133,18 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
                 ContextCompat.getColor(this, R.color.colorServiceAvailable): ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
         ((ImageView) findViewById(R.id.tire)).setColorFilter(mWasher.getTire() ?
                 ContextCompat.getColor(this, R.color.colorServiceAvailable): ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
+
         hideProgressDialog();
+    }
+
+    private void inflatePrices(){
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new PricesFragmentPagerAdapter(getSupportFragmentManager(), mPrices));
+
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override

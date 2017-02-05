@@ -7,7 +7,6 @@ package androks.simplywash.Models;
 public class Washer {
     private double langtitude;
     private double longtitude;
-    private int standartPrice;
     private int boxes;
     private int freeBoxes;
     private int stars;
@@ -25,7 +24,6 @@ public class Washer {
     private String uid;
     private String location;
     private String description;
-    private String priceList;
 
     public boolean getTire() {
         return tire;
@@ -41,14 +39,6 @@ public class Washer {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getPriceList() {
-        return priceList;
-    }
-
-    public int getStandartPrice() {
-        return standartPrice;
     }
 
     public boolean getLunchRoom() {
@@ -123,10 +113,9 @@ public class Washer {
         this.id = id;
     }
 
-    public Washer(double langtitude, double longtitude, int standartPrice, int boxes, int freeBoxes, int stars, boolean status, boolean cafe, boolean wifi, boolean restRoom, boolean lunchRoom, boolean wc, String hours, String id, String name, String phone, String uid, String location, String description, String priceList) {
+    public Washer(double langtitude, double longtitude, int boxes, int freeBoxes, int stars, boolean status, boolean cafe, boolean wifi, boolean restRoom, boolean lunchRoom, boolean wc, boolean tire, String hours, String id, String name, String phone, String uid, String location, String description) {
         this.langtitude = langtitude;
         this.longtitude = longtitude;
-        this.standartPrice = standartPrice;
         this.boxes = boxes;
         this.freeBoxes = freeBoxes;
         this.stars = stars;
@@ -136,6 +125,7 @@ public class Washer {
         this.restRoom = restRoom;
         this.lunchRoom = lunchRoom;
         this.wc = wc;
+        this.tire = tire;
         this.hours = hours;
         this.id = id;
         this.name = name;
@@ -143,6 +133,5 @@ public class Washer {
         this.uid = uid;
         this.location = location;
         this.description = description;
-        this.priceList = priceList;
     }
 }

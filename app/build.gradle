@@ -40,6 +40,7 @@ dependencies {
         // exclusion is not necessary, but generally a good idea.
         exclude group: 'com.google.android', module: 'support-v4'
     }
+
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.google.firebase:firebase-core:10.0.1'
     compile 'com.google.firebase:firebase-database:10.0.1'
@@ -55,7 +56,6 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-database:1.0.1'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'net.cachapa.expandablelayout:expandablelayout:2.6'
-
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

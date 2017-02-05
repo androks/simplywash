@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="androks.washerapp.Activities.WasherDetailsActivity"
     tools:showIn="@layout/activity_washer_details">
 
     <LinearLayout
@@ -201,66 +200,17 @@
             android:alpha="0.10"
             android:background="@android:color/black" />
 
-        <LinearLayout
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            app:tabMode="fixed" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1.5dp"
-                android:layout_weight="9"
-                android:alpha="0.5"
-                android:background="@color/accent_700" />
-
-            <TextView
-                style="@style/TextAppearance.AppCompat.Headline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/price_list"
-                android:textAlignment="center" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1.5dp"
-                android:layout_weight="9"
-                android:alpha="0.5"
-                android:background="@color/accent_700" />
-        </LinearLayout>
-        <LinearLayout
+        <androks.simplywash.Models.WrapContentHeightViewPager
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/car"
-                android:textColor="@color/accent_500"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
-                android:drawableTop="@drawable/ic_sedan"
-                android:layout_weight="0.15" />
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="light"
-                android:drawableTint="@color/accent_500"
-                android:textColor="@color/accent_500"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
-                android:drawableTop="@drawable/ic_car"/>
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="light"
-                android:drawableTint="@color/accent_500"
-                android:textColor="@color/accent_500"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
-                android:drawableTop="@drawable/ic_car"/>
-        </LinearLayout>
+            android:background="@android:color/white" />
 
 
         <LinearLayout
