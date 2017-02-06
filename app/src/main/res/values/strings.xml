@@ -37,6 +37,7 @@
     <string name="add">Add</string>
     <string name="list_has_no_items">The list has no items yet</string>
     <string name="price_list">Price list</string>
+    <string name="reviews">Reviews</string>
 
 
 </resources>

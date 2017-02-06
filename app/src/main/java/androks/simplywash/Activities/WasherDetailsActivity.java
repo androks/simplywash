@@ -1,5 +1,6 @@
 package androks.simplywash.Activities;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -9,10 +10,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.flyco.tablayout.CommonTabLayout;
@@ -28,8 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import androks.simplywash.Entity.TabEntity;
 import androks.simplywash.Dialogs.AddReviewDialog;
+import androks.simplywash.Entity.TabEntity;
 import androks.simplywash.Models.Price;
 import androks.simplywash.Models.PricesFragmentPagerAdapter;
 import androks.simplywash.Models.Review;
@@ -38,11 +42,12 @@ import androks.simplywash.R;
 
 public class WasherDetailsActivity extends BaseActivity implements View.OnClickListener, AddReviewDialog.AddReviewDialogListener {
 
-    private String[] mTitles = {"Car", "SUV", "Minivan"};
-    private int[] mIconUnselectIds = {
+    private static final int NUM_OF_REVIEWS = 3;
+    private final String[] mTitles = {"Car", "SUV", "Minivan"};
+    private final int[] mIconUnselectIds = {
             R.drawable.ic_sedan, R.drawable.ic_suv,
             R.drawable.ic_minivan};
-    private int[] mIconSelectIds = {
+    private final int[] mIconSelectIds = {
             R.drawable.ic_sedan_selected, R.drawable.ic_suv_selected,
             R.drawable.ic_minivan_selected};
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
@@ -69,9 +74,7 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Upload washer info
-        FirebaseDatabase.getInstance().getReference()
-                .child("washers")
-                .child(mWasherId).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("washers").child(mWasherId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mWasher = dataSnapshot.getValue(Washer.class);
@@ -85,12 +88,10 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
         });
 
         //Upload washer's prices
-        FirebaseDatabase.getInstance().getReference()
-                .child("prices")
-                .child(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("prices").child(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChildren()) {
+                if (dataSnapshot.hasChildren()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Price temp = child.getValue(Price.class);
                         mPrices.put(child.getKey(), temp);
@@ -104,6 +105,8 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
 
             }
         });
+
+        downloadReviews();
 
         //Setting up toolbar image and color
         mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -125,7 +128,38 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
         findViewById(R.id.add_review_btn).setOnClickListener(this);
         Button btn = (Button) findViewById(R.id.add_review_btn);
 
+    }
 
+    private void downloadReviews() {
+        FirebaseDatabase.getInstance().getReference().child("reviews").child(mWasherId).limitToLast(NUM_OF_REVIEWS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()) {
+                    LinearLayout container = (LinearLayout) findViewById(R.id.review_container);
+                    int pos = 0;
+
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Review temp = child.getValue(Review.class);
+
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View reviewView = inflater.inflate(R.layout.review_item, null);
+                        reviewView.setId(pos);
+                        ((TextView) reviewView.findViewById(R.id.email)).setText(temp.getEmail());
+                        ((TextView) reviewView.findViewById(R.id.date)).setText(temp.getDate());
+                        ((TextView) reviewView.findViewById(R.id.text)).setText(temp.getText());
+                        ((RatingBar) reviewView.findViewById(R.id.rate)).setRating(temp.getRating());
+                        pos++;
+                        container.addView(reviewView);
+                    }
+                    findViewById(R.id.no_items).setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void inflateView() {
@@ -136,22 +170,22 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
         ((TextView) findViewById(R.id.washer_opening_hours)).setText(mWasher.getHours());
         ((TextView) findViewById(R.id.free_boxes)).setText(mWasher.getFreeBoxes() + " of " + mWasher.getBoxes() + " boxes are free");
         ((ImageView) findViewById(R.id.wifi)).setColorFilter(mWasher.getWifi() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable): ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
+                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
         ((ImageView) findViewById(R.id.coffee)).setColorFilter(mWasher.getCafe() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable): ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
+                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
         ((ImageView) findViewById(R.id.lunch_room)).setColorFilter(mWasher.getLunchRoom() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable): ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
+                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
         ((ImageView) findViewById(R.id.rest_room)).setColorFilter(mWasher.getRestRoom() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable): ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
+                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
         ((ImageView) findViewById(R.id.wc)).setColorFilter(mWasher.getWc() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable): ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
+                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
         ((ImageView) findViewById(R.id.tire)).setColorFilter(mWasher.getTire() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable): ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
+                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
 
         hideProgressDialog();
     }
 
-    private void inflatePrices(){
+    private void inflatePrices() {
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
         }
@@ -194,7 +228,7 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.add_review_btn:
                 AppCompatDialogFragment addReviewDialog = new AddReviewDialog();
                 addReviewDialog.show(getSupportFragmentManager(), "Add review");

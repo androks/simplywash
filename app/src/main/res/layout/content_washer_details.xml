@@ -203,22 +203,22 @@
         <com.flyco.tablayout.CommonTabLayout
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:paddingTop="8dp"
+            android:layout_height="64dp"
             android:background="#ffffff"
+            android:paddingTop="16dp"
             app:tl_iconGravity="TOP"
             app:tl_iconHeight="18dp"
             app:tl_iconMargin="0dp"
             app:tl_iconWidth="18dp"
             app:tl_indicator_bounce_enable="true"
             app:tl_indicator_color="@color/colorAccent"
+            app:tl_indicator_corner_radius="1.5dp"
             app:tl_indicator_gravity="BOTTOM"
+            app:tl_indicator_height="3dp"
+            app:tl_indicator_width="10dp"
             app:tl_textSelectColor="@color/colorAccent"
             app:tl_textUnselectColor="#66000000"
-            app:tl_textsize="15sp"
-            app:tl_indicator_corner_radius="1.5dp"
-            app:tl_indicator_height="3dp"
-            app:tl_indicator_width="10dp"/>
+            app:tl_textsize="15sp" />
 
         <androks.simplywash.Models.WrapContentHeightViewPager
             android:id="@+id/viewpager"
@@ -233,44 +233,58 @@
             android:background="@android:color/black" />
 
         <LinearLayout
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="4dp">
+            android:orientation="vertical">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1.5dp"
-                android:layout_weight="9"
-                android:alpha="0.5"
-                android:background="@color/accent_700" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingEnd="24dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingStart="24dp">
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/reviews"
+                    android:textAllCaps="true" />
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Widget.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/more"
+                    android:textColor="@color/colorAccent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/review_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingEnd="24dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingStart="24dp"
+                android:paddingTop="4dp" />
 
             <TextView
-                style="@style/TextAppearance.AppCompat.Headline"
-                android:layout_width="wrap_content"
+                android:id="@+id/no_items"
+                style="?attr/textAppearanceListItem"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:padding="8dp"
-                android:text="Reviews"
-                android:textAlignment="center" />
+                android:text="@string/list_has_no_items"
+                android:visibility="visible" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1.5dp"
-                android:layout_weight="9"
-                android:alpha="0.5"
-                android:background="@color/accent_700" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/no_items_msg"
-            style="?attr/textAppearanceListItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="@string/list_has_no_items"
-            android:visibility="visible" />
 
         <Button
             android:id="@+id/add_review_btn"
