@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -16,16 +15,21 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.flyco.tablayout.CommonTabLayout;
+import com.flyco.tablayout.listener.CustomTabEntity;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import androks.simplywash.Models.AddReviewDialog;
+import androks.simplywash.Entity.TabEntity;
+import androks.simplywash.Dialogs.AddReviewDialog;
 import androks.simplywash.Models.Price;
 import androks.simplywash.Models.PricesFragmentPagerAdapter;
 import androks.simplywash.Models.Review;
@@ -34,6 +38,15 @@ import androks.simplywash.R;
 
 public class WasherDetailsActivity extends BaseActivity implements View.OnClickListener, AddReviewDialog.AddReviewDialogListener {
 
+    private String[] mTitles = {"Car", "SUV", "Minivan"};
+    private int[] mIconUnselectIds = {
+            R.drawable.ic_sedan, R.drawable.ic_suv,
+            R.drawable.ic_minivan};
+    private int[] mIconSelectIds = {
+            R.drawable.ic_sedan_selected, R.drawable.ic_suv_selected,
+            R.drawable.ic_minivan_selected};
+    private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
+    private CommonTabLayout mTabLayout;
     private CollapsingToolbarLayout mCollapsingToolbar;
     private String mWasherId;
     private Washer mWasher;
@@ -112,6 +125,7 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
         findViewById(R.id.add_review_btn).setOnClickListener(this);
         Button btn = (Button) findViewById(R.id.add_review_btn);
 
+
     }
 
     private void inflateView() {
@@ -138,13 +152,44 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
     }
 
     private void inflatePrices(){
+        for (int i = 0; i < mTitles.length; i++) {
+            mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
+        }
+
+        mTabLayout = (CommonTabLayout) findViewById(R.id.sliding_tabs);
+        mTabLayout.setTabData(mTabEntities);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new PricesFragmentPagerAdapter(getSupportFragmentManager(), mPrices));
 
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                viewPager.setCurrentItem(position);
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mTabLayout.setCurrentTab(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="16dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <GridLayout
@@ -15,7 +16,8 @@
         tools:visibility="visible">
 
         <TextView
-            style="@style/TextAppearance.AppCompat.Large"
+            style="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+            android:layout_marginBottom="4dp"
             android:layout_gravity="center_vertical"
             android:text="Contact" />
 
@@ -23,11 +25,12 @@
             android:id="@+id/contact"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_gravity="fill_horizontal"
-            android:gravity="center"
-            android:text="2" />
+            android:gravity="end"
+            tools:text="200 UAH" />
 
         <TextView
-            style="@style/TextAppearance.AppCompat.Large"
+            style="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+            android:layout_marginBottom="4dp"
             android:layout_gravity="center_vertical"
             android:text="None contact" />
 
@@ -35,11 +38,12 @@
             android:id="@+id/none_contact"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_gravity="fill_horizontal"
-            android:gravity="center"
-            android:text="120" />
+            android:gravity="end"
+            tools:text="200 UAH" />
 
         <TextView
-            style="@style/TextAppearance.AppCompat.Large"
+            style="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+            android:layout_marginBottom="4dp"
             android:layout_gravity="center_vertical"
             android:text="Wax" />
 
@@ -47,8 +51,8 @@
             android:id="@+id/wax"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_gravity="fill_horizontal"
-            android:gravity="center"
-            android:text="200" />
+            android:gravity="end"
+            tools:text="200 UAH" />
 
     </GridLayout>
 

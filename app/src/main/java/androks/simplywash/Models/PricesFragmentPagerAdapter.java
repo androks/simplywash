@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.HashMap;
 
+import androks.simplywash.Enums.CarTypes;
 import androks.simplywash.Fragments.PriceFragment;
 
 /**

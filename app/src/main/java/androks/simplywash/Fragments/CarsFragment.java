@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androks.simplywash.Activities.LoginActivity;
-import androks.simplywash.Models.AddCarDialog;
+import androks.simplywash.Dialogs.AddCarDialog;
 import androks.simplywash.Models.Car;
 import androks.simplywash.R;
 

@@ -43,9 +43,9 @@ public class PriceFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_prices, container, false);
         view.findViewById(R.id.loading_prices).setVisibility(View.GONE);
         view.findViewById(R.id.prices).setVisibility(View.VISIBLE);
-        ((TextView) view.findViewById(R.id.contact)).setText(String.valueOf(mPrices.getContact()));
-        ((TextView) view.findViewById(R.id.none_contact)).setText(String.valueOf(mPrices.getNoneContact()));
-        ((TextView) view.findViewById(R.id.wax)).setText(String.valueOf(mPrices.getWax()));
+        ((TextView) view.findViewById(R.id.contact)).setText(String.valueOf(mPrices.getContact() + " UAH"));
+        ((TextView) view.findViewById(R.id.none_contact)).setText(String.valueOf(mPrices.getNoneContact() + " UAH"));
+        ((TextView) view.findViewById(R.id.wax)).setText(String.valueOf(mPrices.getWax()+ " UAH"));
         return view;
     }
 }

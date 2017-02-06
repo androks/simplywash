@@ -200,11 +200,25 @@
             android:alpha="0.10"
             android:background="@android:color/black" />
 
-        <android.support.design.widget.TabLayout
+        <com.flyco.tablayout.CommonTabLayout
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabMode="fixed" />
+            android:layout_height="56dp"
+            android:paddingTop="8dp"
+            android:background="#ffffff"
+            app:tl_iconGravity="TOP"
+            app:tl_iconHeight="18dp"
+            app:tl_iconMargin="0dp"
+            app:tl_iconWidth="18dp"
+            app:tl_indicator_bounce_enable="true"
+            app:tl_indicator_color="@color/colorAccent"
+            app:tl_indicator_gravity="BOTTOM"
+            app:tl_textSelectColor="@color/colorAccent"
+            app:tl_textUnselectColor="#66000000"
+            app:tl_textsize="15sp"
+            app:tl_indicator_corner_radius="1.5dp"
+            app:tl_indicator_height="3dp"
+            app:tl_indicator_width="10dp"/>
 
         <androks.simplywash.Models.WrapContentHeightViewPager
             android:id="@+id/viewpager"
@@ -212,13 +226,18 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.10"
+            android:background="@android:color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="4dp">
 
             <View
                 android:layout_width="0dp"
