@@ -490,9 +490,9 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
     private void inflateWasherDetails(Washer washer) {
         View bottomSheet = mContext.findViewById(R.id.bottom_sheet);
         ((TextView) bottomSheet.findViewById(R.id.washer_name)).setText(washer.getName());
-        ((TextView) bottomSheet.findViewById(R.id.washer_location)).setText(washer.getLocation());
-        ((TextView) bottomSheet.findViewById(R.id.washer_phone)).setText(washer.getPhone());
-        ((TextView) bottomSheet.findViewById(R.id.washer_opening_hours)).setText(washer.getHours());
+        ((TextView) bottomSheet.findViewById(R.id.location)).setText(washer.getLocation());
+        ((TextView) bottomSheet.findViewById(R.id.phone)).setText(washer.getPhone());
+        ((TextView) bottomSheet.findViewById(R.id.opening_hours)).setText(washer.getHours());
         ((TextView) bottomSheet.findViewById(R.id.washer_free_boxes)).setText(washer.getFreeBoxes()+ " of " + washer.getBoxes() + " are free");
         (bottomSheet.findViewById(R.id.lunch_room)).setVisibility(washer.getLunchRoom()? View.VISIBLE: View.GONE);
         (bottomSheet.findViewById(R.id.rest_room)).setVisibility(washer.getRestRoom()? View.VISIBLE: View.GONE);

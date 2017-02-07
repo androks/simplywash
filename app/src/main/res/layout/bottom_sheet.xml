@@ -160,7 +160,7 @@
                 android:src="@drawable/ic_place" />
 
             <TextView
-                android:id="@+id/washer_location"
+                android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -182,7 +182,7 @@
                 android:src="@drawable/ic_action_phone_start" />
 
             <TextView
-                android:id="@+id/washer_phone"
+                android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -204,7 +204,7 @@
                 android:src="@drawable/ic_schedule_black" />
 
             <TextView
-                android:id="@+id/washer_opening_hours"
+                android:id="@+id/opening_hours"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"

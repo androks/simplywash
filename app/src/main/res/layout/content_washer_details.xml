@@ -2,6 +2,7 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -14,6 +15,8 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/location_layout"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -32,7 +35,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/washer_location"
+                    android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/primary_text_light"
@@ -55,6 +58,8 @@
             android:background="@android:color/black" />
 
         <LinearLayout
+            android:id="@+id/phone_layout"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -63,24 +68,16 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_schedule_black" />
+                android:src="@drawable/ic_action_phone_start" />
 
             <TextView
-                android:id="@+id/washer_opening_hours"
-                android:layout_width="0dp"
+                android:id="@+id/phone"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_weight="1"
                 android:textColor="@android:color/primary_text_light"
-                tools:text="Wed, 10 AM - 9 PM" />
-
-            <TextView
-                android:id="@+id/open_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/holo_green_dark"
-                tools:text="Open" />
+                tools:text="(415) 349-0942" />
 
         </LinearLayout>
 
@@ -99,16 +96,24 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_action_phone_start" />
+                android:src="@drawable/ic_schedule_black" />
 
             <TextView
-                android:id="@+id/washer_phone"
-                android:layout_width="match_parent"
+                android:id="@+id/opening_hours"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_weight="1"
                 android:textColor="@android:color/primary_text_light"
-                tools:text="(415) 349-0942" />
+                tools:text="Wed, 10 AM - 9 PM" />
+
+            <TextView
+                android:id="@+id/open_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_green_dark"
+                tools:text="Open" />
 
         </LinearLayout>
 
@@ -149,6 +154,7 @@
 
 
         <LinearLayout
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#F7F7F7"
@@ -233,19 +239,21 @@
             android:background="@android:color/black" />
 
         <LinearLayout
+            android:id="@+id/more_reviews"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingEnd="24dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingStart="24dp"
+            android:paddingTop="24dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingEnd="24dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:paddingStart="24dp">
+                android:orientation="horizontal">
 
                 <TextView
                     style="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
@@ -268,11 +276,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingEnd="24dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:paddingStart="24dp"
-                android:paddingTop="4dp" />
+                android:paddingTop="16dp" />
 
             <TextView
                 android:id="@+id/no_items"
@@ -284,14 +288,47 @@
                 android:text="@string/list_has_no_items"
                 android:visibility="visible" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.10"
+                android:background="@android:color/black" />
         </LinearLayout>
+
 
         <Button
             android:id="@+id/add_review_btn"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/add_review" />
-    </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.10"
+            android:background="@android:color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/description"
+                android:textAllCaps="true" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:paddingTop="8dp"
+                tools:text="some description" />
+        </LinearLayout>
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
