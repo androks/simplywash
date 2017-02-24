@@ -51,18 +51,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import androks.simplywash.Activities.LoginActivity;
 import androks.simplywash.Activities.WasherDetailsActivity;
-import androks.simplywash.Models.DirectionFinder;
-import androks.simplywash.Listeners.DirectionFinderListener;
-import androks.simplywash.Models.Order;
 import androks.simplywash.Dialogs.OrderDialog;
-import androks.simplywash.Models.Route;
+import androks.simplywash.DirectionsApi.Data.Direction;
+import androks.simplywash.DirectionsApi.DirectionsManager;
+import androks.simplywash.Models.Order;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
 
@@ -74,12 +72,11 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
         View.OnClickListener,
         GoogleMap.OnMapClickListener,
-        DirectionFinderListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         ResultCallback<LocationSettingsResult>,
-        OrderDialog.OrderToWashListener {
+        OrderDialog.OrderToWashListener, DirectionsManager.Listener {
 
 
     private static final int SIGN_IN = 9001;
@@ -304,6 +301,10 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
         rootView.findViewById(R.id.bottom_sheet_order_fab).setOnClickListener(this);
         rootView.findViewById(R.id.moreBtn).setOnClickListener(this);
 
+        DirectionsManager.with(this).buildDirection(
+                new LatLng(50.4472772,30.4461914),
+                new LatLng(50.441046,30.4338318)
+        );
         return rootView;
     }
 
@@ -333,7 +334,7 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
         final Status status = locationSettingsResult.getStatus();
         switch (status.getStatusCode()) {
             case LocationSettingsStatusCodes.SUCCESS:
-                if(routeToSelectedWashIsBuild){
+                if (routeToSelectedWashIsBuild) {
                     AppCompatDialogFragment addCarDialog = new OrderDialog();
                     addCarDialog.setArguments(bundle);
                     addCarDialog.setTargetFragment(WashersFragment.this, 12);
@@ -493,51 +494,17 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
         ((TextView) bottomSheet.findViewById(R.id.location)).setText(washer.getLocation());
         ((TextView) bottomSheet.findViewById(R.id.phone)).setText(washer.getPhone());
         ((TextView) bottomSheet.findViewById(R.id.opening_hours)).setText(washer.getHours());
-        ((TextView) bottomSheet.findViewById(R.id.washer_free_boxes)).setText(washer.getFreeBoxes()+ " of " + washer.getBoxes() + " are free");
-        (bottomSheet.findViewById(R.id.lunch_room)).setVisibility(washer.getLunchRoom()? View.VISIBLE: View.GONE);
-        (bottomSheet.findViewById(R.id.rest_room)).setVisibility(washer.getRestRoom()? View.VISIBLE: View.GONE);
-        (bottomSheet.findViewById(R.id.wifi)).setVisibility(washer.getWifi()? View.VISIBLE: View.GONE);
-        (bottomSheet.findViewById(R.id.coffee)).setVisibility(washer.getCafe()? View.VISIBLE: View.GONE);
+        ((TextView) bottomSheet.findViewById(R.id.washer_free_boxes)).setText(washer.getFreeBoxes() + " of " + washer.getBoxes() + " are free");
+        (bottomSheet.findViewById(R.id.lunch_room)).setVisibility(washer.getLunchRoom() ? View.VISIBLE : View.GONE);
+        (bottomSheet.findViewById(R.id.rest_room)).setVisibility(washer.getRestRoom() ? View.VISIBLE : View.GONE);
+        (bottomSheet.findViewById(R.id.wifi)).setVisibility(washer.getWifi() ? View.VISIBLE : View.GONE);
+        (bottomSheet.findViewById(R.id.coffee)).setVisibility(washer.getCafe() ? View.VISIBLE : View.GONE);
 
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
 
-    }
-
-    @Override
-    public void onDirectionFinderStart() {
-        mProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onDirectionFinderSuccess(List<Route> routes) {
-
-        if (polylinePaths != null)
-            for (Polyline polyline : polylinePaths)
-                polyline.remove();
-
-        polylinePaths = new ArrayList<>();
-
-        for (Route route : routes) {
-            if (routeBuildFirstTime)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
-
-            PolylineOptions polylineOptions = new PolylineOptions().
-                    geodesic(true).
-                    color(Color.BLUE).
-                    width(12);
-
-            for (int i = 0; i < route.points.size(); i++)
-                polylineOptions.add(route.points.get(i));
-
-            polylinePaths.add(mMap.addPolyline(polylineOptions));
-
-            routeBuildFirstTime = false;
-            mCurrentWasherLocation = route.endLocation;
-        }
-        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -563,7 +530,7 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
                 break;
 
             case R.id.bottom_sheet_order_fab:
-                if(dialogIsShowing){
+                if (dialogIsShowing) {
                     Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -578,7 +545,7 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
                 break;
 
             case R.id.fab_get_direction:
-                if(dialogIsShowing){
+                if (dialogIsShowing) {
                     Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -647,7 +614,7 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
         if (routeToBestMatchWashIsBuilt) {
             orderToNearestWash();
             routeToBestMatchWashIsBuilt = false;
-        }else if(routeToSelectedWashIsBuild){
+        } else if (routeToSelectedWashIsBuild) {
             orderToSelectedWash();
             routeToSelectedWashIsBuild = false;
         }
@@ -657,11 +624,10 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
 
     protected void buildRouteFromCurrentToMarkerLocation() {
         if (mCurrentLocation == null || mCurrentWasherLocation == null) return;
-        try {
-            new DirectionFinder(this, new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), mCurrentWasherLocation).execute();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        DirectionsManager.with(this).buildDirection(
+                new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()),
+                mCurrentWasherLocation
+        );
     }
 
     private Marker find_closest_marker() {
@@ -736,4 +702,35 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
         dialogIsShowing = false;
     }
 
+    @Override
+    public void onDirectionFindStart() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDirectionReady(Direction direction) {
+        if (polylinePaths != null)
+            for (Polyline polyline : polylinePaths)
+                polyline.remove();
+
+        polylinePaths = new ArrayList<>();
+
+        if (routeBuildFirstTime)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(direction.startLocation, 16));
+
+        PolylineOptions polylineOptions = new PolylineOptions().
+                geodesic(true).
+                color(Color.BLUE).
+                width(12);
+
+        for (int i = 0; i < direction.points.size(); i++)
+            polylineOptions.add(direction.points.get(i));
+
+        polylinePaths.add(mMap.addPolyline(polylineOptions));
+
+        routeBuildFirstTime = false;
+        mCurrentWasherLocation = direction.endLocation;
+
+        mProgressBar.setVisibility(View.GONE);
+    }
 }
