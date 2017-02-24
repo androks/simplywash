@@ -49,7 +49,7 @@ public class OrderDialog extends AppCompatDialogFragment implements View.OnClick
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.order_dialog, container, false);
+        View view = inflater.inflate(R.layout.dialog_order, container, false);
         Dialog dialog = getDialog();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);

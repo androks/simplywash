@@ -19,7 +19,7 @@
             android:padding="24dp">
 
             <TextView
-                android:id="@+id/washer_name"
+                android:id="@+id/name"
                 style="@style/TextAppearance.AppCompat.Headline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -64,12 +64,12 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_washer_details);
+        setContentView(R.layout.activity_washer);
         showProgressDialog();
 
         mWasherId = getIntent().getStringExtra("id");
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.animated_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -144,7 +144,7 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
                         Review temp = child.getValue(Review.class);
 
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View reviewView = inflater.inflate(R.layout.review_item, null);
+                        View reviewView = inflater.inflate(R.layout.item_review, null);
                         reviewView.setId(pos);
                         ((TextView) reviewView.findViewById(R.id.email)).setText(temp.getEmail());
                         ((TextView) reviewView.findViewById(R.id.date)).setText(temp.getDate());

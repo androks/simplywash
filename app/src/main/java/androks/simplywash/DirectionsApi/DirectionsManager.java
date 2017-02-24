@@ -35,9 +35,8 @@ public class DirectionsManager implements ApiManager.Listener {
 
     @Override
     public void onDirectionReady(List<Route> routes) {
-        if (listener == null) {
+        if (listener == null)
             return;
-        }
 
         if(routes != null && !routes.isEmpty())
             listener.onDirectionReady(new Direction(routes));

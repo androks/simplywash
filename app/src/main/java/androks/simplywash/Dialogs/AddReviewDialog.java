@@ -35,7 +35,7 @@ public class AddReviewDialog extends AppCompatDialogFragment implements View.OnC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.review_dialog, container, false);
+        View view = inflater.inflate(R.layout.dialog_add_review, container, false);
         Dialog dialog = getDialog();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);

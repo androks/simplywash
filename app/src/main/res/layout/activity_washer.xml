@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="androks.washerapp.Activities.WasherDetailsActivity">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -48,19 +47,18 @@
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:src="@drawable/ic_action_star_checked"/>
+                    android:src="@drawable/ic_action_star_checked" />
 
                 <TextView
                     android:id="@+id/stars"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="51 people like it"/>
+                    tools:text="51 people like it" />
 
             </LinearLayout>
 
-
             <android.support.v7.widget.Toolbar
-                android:id="@+id/anim_toolbar"
+                android:id="@+id/animated_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
@@ -80,5 +78,5 @@
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_action_star_unchecked" />
 
-    <include layout="@layout/content_washer_details" />
+    <include layout="@layout/content_washer" />
 </android.support.design.widget.CoordinatorLayout>
