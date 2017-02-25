@@ -10,13 +10,13 @@ public class Washer {
     private int boxes;
     private int freeBoxes;
     private int stars;
-    private boolean status;
     private boolean cafe;
     private boolean wifi;
     private boolean restRoom;
     private boolean lunchRoom;
     private boolean wc;
     private boolean tire;
+    private String status;
     private String hours;
     private String id;
     private String name;
@@ -61,11 +61,11 @@ public class Washer {
         return location;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -113,7 +113,7 @@ public class Washer {
         this.id = id;
     }
 
-    public Washer(double langtitude, double longtitude, int boxes, int freeBoxes, int stars, boolean status, boolean cafe, boolean wifi, boolean restRoom, boolean lunchRoom, boolean wc, boolean tire, String hours, String id, String name, String phone, String uid, String location, String description) {
+    public Washer(double langtitude, double longtitude, int boxes, int freeBoxes, int stars, String status, boolean cafe, boolean wifi, boolean restRoom, boolean lunchRoom, boolean wc, boolean tire, String hours, String id, String name, String phone, String uid, String location, String description) {
         this.langtitude = langtitude;
         this.longtitude = longtitude;
         this.boxes = boxes;
