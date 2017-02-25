@@ -68,7 +68,7 @@ import androks.simplywash.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
+public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
         View.OnClickListener,
         GoogleMap.OnMapClickListener,
@@ -163,7 +163,7 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
     private boolean routeToSelectedWashIsBuild;
     private boolean dialogIsShowing;
 
-    public WashersFragment() {
+    public MapFragment() {
         // Required empty public constructor
     }
 
@@ -337,7 +337,7 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
                 if (routeToSelectedWashIsBuild) {
                     AppCompatDialogFragment addCarDialog = new OrderDialog();
                     addCarDialog.setArguments(bundle);
-                    addCarDialog.setTargetFragment(WashersFragment.this, 12);
+                    addCarDialog.setTargetFragment(MapFragment.this, 12);
                     addCarDialog.show(getFragmentManager(), "Order");
                     dialogIsShowing = false;
                     mProgressBar.setVisibility(View.GONE);
@@ -686,7 +686,7 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
             bundle.putString(CURRENT_WASHER_ID, marker.getTitle());
             AppCompatDialogFragment addCarDialog = new OrderDialog();
             addCarDialog.setArguments(bundle);
-            addCarDialog.setTargetFragment(WashersFragment.this, 12);
+            addCarDialog.setTargetFragment(MapFragment.this, 12);
             addCarDialog.show(getFragmentManager(), "Order");
             mProgressBar.setVisibility(View.GONE);
         }
@@ -696,7 +696,7 @@ public class WashersFragment extends BaseFragment implements OnMapReadyCallback,
     private void orderToSelectedWash() {
         AppCompatDialogFragment addCarDialog = new OrderDialog();
         addCarDialog.setArguments(bundle);
-        addCarDialog.setTargetFragment(WashersFragment.this, 12);
+        addCarDialog.setTargetFragment(MapFragment.this, 12);
         addCarDialog.show(getFragmentManager(), "Order");
         mProgressBar.setVisibility(View.GONE);
         dialogIsShowing = false;
