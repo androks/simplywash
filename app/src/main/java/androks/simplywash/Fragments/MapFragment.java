@@ -10,17 +10,18 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,12 +65,16 @@ import androks.simplywash.DirectionsApi.DirectionsManager;
 import androks.simplywash.Models.Order;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends BaseFragment implements OnMapReadyCallback,
+public class MapFragment extends BaseFragment implements
+        OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
         View.OnClickListener,
         GoogleMap.OnMapClickListener,
@@ -78,11 +84,15 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         ResultCallback<LocationSettingsResult>,
         OrderDialog.OrderToWashListener, DirectionsManager.Listener {
 
+    private static final String TAG = "DemoActivity";
 
-    private static final int SIGN_IN = 9001;
 
-    private static final String CURRENT_WASHER_ID = "currentWasherId";
+    private static final int SIGN_IN = 25;
+
+    private static final String CURRENT_WASHER_ID = "CURRENT_WASHER_ID";
+
     private FragmentActivity mContext;
+
     /**
      * Constant used in the location settings dialog.
      */
@@ -141,22 +151,13 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
      * Views
      */
 
-    private View mProgressBar;
+    private Unbinder unbinder;
+    @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
+    @BindView(R.id.fab_status_marker) FloatingActionButton mShowOnlyFreeWashersFab;
+    @BindView(R.id.fab_get_direction) FloatingActionButton mOrderToNearestWash;
+    @BindView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
 
-    //View to handle change showing marker types
-    private FloatingActionButton mShowOnlyFreeWashersFab;
 
-    private FloatingActionButton mOrderToNearestWash;
-
-    /**
-     * Bottom Sheet views
-     */
-    BottomSheetBehavior behavior;
-
-    /**
-     * Flags
-     */
-    private boolean bottomSheetIsExpanded;
     private boolean routeBuildFirstTime;
     private boolean busyWashersIsIncluded;
     private boolean routeToBestMatchWashIsBuilt;
@@ -172,9 +173,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mContext = getActivity();
-        View rootView = inflater.inflate(R.layout.fragment_washers, container, false);
-
-        mProgressBar = rootView.findViewById(R.id.progress_horizontal);
+        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         mProgressBar.setVisibility(View.VISIBLE);
 
         //setting flags
@@ -182,6 +182,27 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         busyWashersIsIncluded = true;
         routeToBestMatchWashIsBuilt = false;
         routeToSelectedWashIsBuild = false;
+
+        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                Log.i(TAG, "onPanelSlide, offset " + slideOffset);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                Log.i(TAG, "onPanelStateChanged " + newState);
+            }
+        });
+        mLayout.setFadeOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+
+        mLayout.setAnchorPoint(0.7f);
+        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         ((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
@@ -268,34 +289,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         final Animation growAnimation = AnimationUtils.loadAnimation(mContext, R.anim.simple_grow);
         final Animation shrinkAnimation = AnimationUtils.loadAnimation(mContext, R.anim.simple_shrink);
 
-        //Adding behavior for bottom sheet
-        behavior = BottomSheetBehavior.from(rootView.findViewById(R.id.coordinatorLayout).findViewById(R.id.bottom_sheet));
-        //Set bottom sheet hidden by default
-        behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-        //Set listeners for bottom sheet states
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    mShowOnlyFreeWashersFab.startAnimation(shrinkAnimation);
-                    mOrderToNearestWash.startAnimation(shrinkAnimation);
-                    mShowOnlyFreeWashersFab.setVisibility(View.GONE);
-                    mOrderToNearestWash.setVisibility(View.GONE);
-                    bottomSheetIsExpanded = true;
-                } else if (bottomSheetIsExpanded) {
-                    mShowOnlyFreeWashersFab.startAnimation(growAnimation);
-                    mOrderToNearestWash.startAnimation(growAnimation);
-                    mShowOnlyFreeWashersFab.setVisibility(View.VISIBLE);
-                    mOrderToNearestWash.setVisibility(View.VISIBLE);
-                    bottomSheetIsExpanded = false;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        });
         //Adding listeners for bottom sheet views
         rootView.findViewById(R.id.bottom_sheet_title).setOnClickListener(this);
         rootView.findViewById(R.id.bottom_sheet_order_fab).setOnClickListener(this);
@@ -487,14 +480,14 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         //Inflating bottom sheet view by washer details
         inflateWasherDetails(mWashersList.get(marker.getTitle()));
         //Show bottom sheet as collapsed
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+       //TODO:
         //Show order to current wash button with animation
         mContext.findViewById(R.id.bottom_sheet_order_fab).startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.simple_grow));
         return true;
     }
 
     private void inflateWasherDetails(Washer washer) {
-        View bottomSheet = mContext.findViewById(R.id.bottom_sheet);
+        View bottomSheet = mContext.findViewById(R.id.drag_view);
         ((TextView) bottomSheet.findViewById(R.id.name)).setText(washer.getName());
         ((TextView) bottomSheet.findViewById(R.id.location)).setText(washer.getLocation());
         ((TextView) bottomSheet.findViewById(R.id.phone)).setText(washer.getPhone());
@@ -505,6 +498,12 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         (bottomSheet.findViewById(R.id.wifi)).setVisibility(washer.getWifi() ? View.VISIBLE : View.GONE);
         (bottomSheet.findViewById(R.id.coffee)).setVisibility(washer.getCafe() ? View.VISIBLE : View.GONE);
 
+    }
+
+    @Override
+    public void onDetach() {
+        unbinder.unbind();
+        super.onDetach();
     }
 
     @Override
@@ -528,10 +527,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
                 break;
 
             case R.id.bottom_sheet_title:
-                if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else
-                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+              //TODO:
                 break;
 
             case R.id.bottom_sheet_order_fab:

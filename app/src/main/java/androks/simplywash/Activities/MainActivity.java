@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         mapFragment = new MapFragment();
@@ -56,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(mDrawerToggle);
-
         setupDrawerContent(mNVDrawer);
+
         setCurrentFragment();
     }
 
@@ -66,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(CURRENT_FRAGMENT, currentFragment);
         super.onSaveInstanceState(outState);
     }
-
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
