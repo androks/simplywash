@@ -308,6 +308,11 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback,
         return rootView;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     public void onStart() {
         super.onStart();

@@ -4,6 +4,7 @@ package androks.simplywash.Fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.TextUtils;
@@ -123,6 +124,12 @@ public class CarsFragment extends BaseFragment implements AddCarDialog.AddCarDia
         };
 
         mCarsListView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override

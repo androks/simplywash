@@ -54,10 +54,6 @@ public class MainActivity extends AppCompatActivity {
         mapFragment = new MapFragment();
         carsFragment = new CarsFragment();
 
-        if(savedInstanceState != null){
-            currentFragment = savedInstanceState.getInt(CURRENT_FRAGMENT);
-        }
-
         mDrawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(mDrawerToggle);
 
@@ -66,11 +62,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(CURRENT_FRAGMENT, currentFragment);
+        super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if(savedInstanceState != null){
+            currentFragment = savedInstanceState.getInt(CURRENT_FRAGMENT);
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
-
     }
 
     @Override
