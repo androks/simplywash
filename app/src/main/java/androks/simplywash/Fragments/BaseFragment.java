@@ -25,16 +25,16 @@ public abstract class BaseFragment extends Fragment {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public static DatabaseReference getWasherReference(){
+    public static DatabaseReference getWasher(){
         return FirebaseDatabase.getInstance().getReference().child("washers");
     }
 
-    public static DatabaseReference getWasherReference(String id){
+    public static DatabaseReference getWasher(String id){
         return FirebaseDatabase.getInstance().getReference().child("washers").child(id);
     }
 
-    public static DatabaseReference getFreeWasherReference(){
-        return  FirebaseDatabase.getInstance().getReference().child("free-washers");
+    public static DatabaseReference getStatesOfWashers(){
+        return  FirebaseDatabase.getInstance().getReference().child("states");
     }
 
     public static DatabaseReference getReviewsFor(String washerId){

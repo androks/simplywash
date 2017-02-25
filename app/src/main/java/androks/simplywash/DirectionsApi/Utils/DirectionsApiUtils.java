@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by androks on 2/24/2017.
  */
 
-public class Utils {
+public class DirectionsApiUtils {
     public static final String BASE_URL = "https://maps.googleapis.com/";
     public static final String GOOGLE_API_KEY = "AIzaSyBFjK8UInAeNGfhx8attCH8UNY6xzNjuwU";
     public static final String STATUS_SUCCESS = "OK";

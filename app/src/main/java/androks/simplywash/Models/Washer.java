@@ -16,7 +16,7 @@ public class Washer {
     private boolean lunchRoom;
     private boolean wc;
     private boolean tire;
-    private String status;
+    private String state;
     private String hours;
     private String id;
     private String name;
@@ -61,12 +61,12 @@ public class Washer {
         return location;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setState(String status) {
+        this.state = status;
     }
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
     }
 
     public double getLangtitude() {
@@ -113,13 +113,13 @@ public class Washer {
         this.id = id;
     }
 
-    public Washer(double langtitude, double longtitude, int boxes, int freeBoxes, int stars, String status, boolean cafe, boolean wifi, boolean restRoom, boolean lunchRoom, boolean wc, boolean tire, String hours, String id, String name, String phone, String uid, String location, String description) {
+    public Washer(double langtitude, double longtitude, int boxes, int freeBoxes, int stars, String state, boolean cafe, boolean wifi, boolean restRoom, boolean lunchRoom, boolean wc, boolean tire, String hours, String id, String name, String phone, String uid, String location, String description) {
         this.langtitude = langtitude;
         this.longtitude = longtitude;
         this.boxes = boxes;
         this.freeBoxes = freeBoxes;
         this.stars = stars;
-        this.status = status;
+        this.state = state;
         this.cafe = cafe;
         this.wifi = wifi;
         this.restRoom = restRoom;

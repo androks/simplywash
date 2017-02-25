@@ -40,8 +40,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +54,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androks.simplywash.Activities.LoginActivity;
 import androks.simplywash.Activities.WasherDetailsActivity;
@@ -61,6 +64,8 @@ import androks.simplywash.DirectionsApi.DirectionsManager;
 import androks.simplywash.Models.Order;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
+import androks.simplywash.Utils;
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -97,6 +102,10 @@ public class MapFragment extends BaseFragment implements
     @BindView(R.id.fab_get_direction) FloatingActionButton mOrderToNearestWash;
     @BindView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
     private Unbinder unbinder;
+
+    @BindColor(android.R.color.holo_red_dark) int red;
+    @BindColor(android.R.color.holo_green_light) int green;
+    @BindColor(android.R.color.darker_gray) int gray;
     /** End bindings  **/
 
 
@@ -111,11 +120,12 @@ public class MapFragment extends BaseFragment implements
 
     /**  Database section **/
     //Reference for downloading all washers
-    private DatabaseReference mWashersReference = getWasherReference();
+    private DatabaseReference mWashersReference = getWasher();
 
     //Reference for downloading Ids of free washers
-    private DatabaseReference mFreeWashersReference = getFreeWasherReference();
-    ValueEventListener mListenerForDownloadWashers, mListenerForDownloadFreeWashersList;
+    private DatabaseReference mFreeWashersReference = getStatesOfWashers();
+    ValueEventListener mUploadWashers;
+    ChildEventListener mChangeWasherStatusListener;
     /** End database section **/
 
 
@@ -268,61 +278,85 @@ public class MapFragment extends BaseFragment implements
     }
 
     private void setListenersForDatabase(){
-        mWashersReference.addValueEventListener(mListenerForDownloadWashers);
-        mFreeWashersReference.addValueEventListener(mListenerForDownloadFreeWashersList);
+        mWashersReference.addValueEventListener(mUploadWashers);
+        mFreeWashersReference.addChildEventListener(mChangeWasherStatusListener);
     }
 
     private void deleteListenersForDatabase(){
-        mWashersReference.removeEventListener(mListenerForDownloadWashers);
-        mFreeWashersReference.removeEventListener(mListenerForDownloadFreeWashersList);
+        mWashersReference.removeEventListener(mUploadWashers);
+        mFreeWashersReference.removeEventListener(mChangeWasherStatusListener);
     }
 
     private void determineListenersForDatabase(){
-        mListenerForDownloadWashers = new ValueEventListener() {
+        mUploadWashers = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mProgressBar.setVisibility(View.VISIBLE);
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Washer temp = child.getValue(Washer.class);
-                    mWashersList.put(temp.getId(), temp);
+                if(dataSnapshot.hasChildren()) {
+                    mWashersList.putAll(dataSnapshot.getValue(
+                            new GenericTypeIndicator<Map<String, Washer>>() {
+                            }
+                    ));
+
+                    HashMap<String, String> states = new HashMap<>();
+                    for(Washer washer: mWashersList.values())
+                        states.put(washer.getId(), washer.getState());
+                    mWashersStatus.putAll(states);
+
+                    setMarkers();
                 }
-                mProgressBar.setVisibility(View.GONE);
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(mContext, "Error while download\n Check your internet connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        mContext,
+                        "Error while download\n Check your internet connection",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         };
 
-
-        mListenerForDownloadFreeWashersList = new ValueEventListener() {
+        mChangeWasherStatusListener = new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {}
 
-                if (dataSnapshot.hasChildren()) {
-                    GenericTypeIndicator<HashMap<String, String>> genericTypeIndicator
-                            = new GenericTypeIndicator<HashMap<String, String>>() {};
-                    if(!mWashersStatus.equals(dataSnapshot.getValue(genericTypeIndicator))) {
-                        mWashersStatus.putAll(dataSnapshot.getValue(genericTypeIndicator));
-                        updateWashersStatus();
-                    }
-                }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                mWashersStatus.put(dataSnapshot.getKey(), dataSnapshot.getValue(String.class));
+                updateMarker(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(mContext, "Error while download\n Check your internet connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, databaseError.toString(), Toast.LENGTH_SHORT).show();
             }
         };
     }
 
-    private void updateWashersStatus() {
-        for(String id: mWashersStatus.keySet())
-            if(mWashersList.get(id).getStatus().equals(mWashersStatus.get(id)))
-                mWashersList.get(id).setStatus(mWashersStatus.get(id));
+    private void setMarkers() {
+        for(Washer washer: mWashersList.values()){
+            MarkerOptions marker = new MarkerOptions()
+                    .title(washer.getId())
+                    .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()));
+            Utils.setMarkerIcon(marker, washer.getState());
+            mMarkersList.put(washer.getId(), mMap.addMarker(marker));
+        }
     }
 
+    private void updateMarker(String id) {
+        Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
+    }
 
     protected void checkLocationSettings() {
         PendingResult<LocationSettingsResult> result =
@@ -416,32 +450,6 @@ public class MapFragment extends BaseFragment implements
         mMap.setOnMapClickListener(this);
         LatLng kiev = new LatLng(50.4448235, 30.5497172);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(kiev, 10));
-    }
-
-    private void setWasherToMap(Washer washer) {
-        //Adding map is does not exist
-//        if (!mMarkersList.containsKey(washer.getId())) {
-//            mMarkersList.put(washer.getId(),
-//                    mMap.addMarker(new MarkerOptions()
-//                            .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()))
-//                            .title(washer.getName())
-//                            .icon(BitmapDescriptorFactory.defaultMarker(washer.getStatus() ? BitmapDescriptorFactory.HUE_GREEN : BitmapDescriptorFactory.HUE_RED))
-//                            .title(washer.getId())
-//                    )
-//            );
-//        } else {
-//            /**
-//             * Change marker parameters after changing marker status
-//             */
-//            //Set marker image
-//            mMarkersList.get(washer.getId()).setIcon(BitmapDescriptorFactory.defaultMarker(washer.getStatus() ? BitmapDescriptorFactory.HUE_GREEN : BitmapDescriptorFactory.HUE_RED));
-//            //Set washer visible if has free status
-//            if (washer.getStatus())
-//                mMarkersList.get(washer.getId()).setVisible(true);
-//            //Dont show marker if washer has false status and busy washers don't showing
-//            if (!busyWashersIsIncluded && !washer.getStatus())
-//                mMarkersList.get(washer.getId()).setVisible(false);
-//        }
     }
 
     @Override
