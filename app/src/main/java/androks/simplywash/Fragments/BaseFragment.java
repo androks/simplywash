@@ -1,15 +1,11 @@
 package androks.simplywash.Fragments;
 
-import android.app.ProgressDialog;
 import android.support.v4.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import androks.simplywash.Models.Car;
 
@@ -18,58 +14,38 @@ import androks.simplywash.Models.Car;
  */
 
 public abstract class BaseFragment extends Fragment {
-    ProgressDialog progress;
+
     protected Car mCurrentCar;
     protected FirebaseUser mCurrentUser;
+
+
+    BaseFragment(){}
 
     public FirebaseUser getCurrentUser(){
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void checkCurrentUser(){
-        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+    public static DatabaseReference getWasherReference(){
+        return FirebaseDatabase.getInstance().getReference().child("washers");
     }
 
-    public void checkCurrentCar(){
-        FirebaseUser user = getCurrentUser();
-        if(user != null) {
-            final DatabaseReference mUserRef = FirebaseDatabase.getInstance().getReference()
-                    .child("users")
-                    .child(user.getUid());
-
-            mUserRef.child("current-car").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    String currentCarId = dataSnapshot.getValue(String.class);
-
-                    mUserRef.child("cars").child(currentCarId).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            mCurrentCar = dataSnapshot.getValue(Car.class);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
+    public static DatabaseReference getWasherReference(String id){
+        return FirebaseDatabase.getInstance().getReference().child("washers").child(id);
     }
 
-    protected void showProgressDialog(){
-        progress = ProgressDialog.show(getActivity(), "Please wait a few second",
-                "Loading...", true);
+    public static DatabaseReference getFreeWasherReference(){
+        return  FirebaseDatabase.getInstance().getReference().child("free-washers");
     }
 
-    protected void hideProgressDialog(){
-        progress.dismiss();
+    public static DatabaseReference getReviewsFor(String washerId){
+        return  FirebaseDatabase.getInstance().getReference().child("reviews").child(washerId);
+    }
+
+    public static DatabaseReference getUserInfo(String userId){
+        return  FirebaseDatabase.getInstance().getReference().child("users").child(userId);
+    }
+
+    public static DatabaseReference getPricesFor(String washerId){
+        return  FirebaseDatabase.getInstance().getReference().child("prices").child(washerId);
     }
 }

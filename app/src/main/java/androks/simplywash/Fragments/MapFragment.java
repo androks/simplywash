@@ -59,7 +59,6 @@ import androks.simplywash.Activities.WasherDetailsActivity;
 import androks.simplywash.Dialogs.OrderDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
-import androks.simplywash.FirebaseReferences;
 import androks.simplywash.Models.Order;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
@@ -82,52 +81,49 @@ public class MapFragment extends BaseFragment implements
         ResultCallback<LocationSettingsResult>,
         OrderDialog.OrderToWashListener, DirectionsManager.Listener {
 
-
-    private static final int SIGN_IN = 25;
+    /** Define constant values  **/
+    private static final int SIGN_IN = 10;
     private static final String CURRENT_WASHER_ID = "CURRENT_WASHER_ID";
 
-    public static final int REQUEST_CHECK_SETTINGS = 0x1;
+    public static final int REQUEST_CHECK_SETTINGS = 11;
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+    /** End constant values  **/
 
 
+    /** Binding view with ButterKnife  **/
     @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
     @BindView(R.id.fab_status_marker) FloatingActionButton mShowOnlyFreeWashersFab;
     @BindView(R.id.fab_get_direction) FloatingActionButton mOrderToNearestWash;
     @BindView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
     private Unbinder unbinder;
+    /** End bindings  **/
+
+
+    /** Google Maps field and values **/
+    private GoogleMap mMap;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private LocationSettingsRequest mLocationSettingsRequest;
+    private Location mCurrentLocation;
+    /** End Google Maps section**/
+
+
+    /**  Database section **/
+    //Reference for downloading all washers
+    private DatabaseReference mWashersReference = getWasherReference();
+
+    //Reference for downloading Ids of free washers
+    private DatabaseReference mFreeWashersReference = getFreeWasherReference();
+    ValueEventListener mListenerForDownloadWashers, mListenerForDownloadFreeWashersList;
+    /** End database section **/
 
 
     private FragmentActivity mContext;
 
-    private GoogleMap mMap;
-
-    //Provides the entry point to Google Play services.
-    protected GoogleApiClient mGoogleApiClient;
-
-    //Stores parameters for requests to the FusedLocationProviderApi.
-    protected LocationRequest mLocationRequest;
-
-    /**
-     * Stores the types of location services the client is interested in using. Used for checking
-     * settings to determine if the device has optimal location settings.
-     */
-    protected LocationSettingsRequest mLocationSettingsRequest;
-
-    /**
-     * Represents a geographical location.
-     */
-    protected Location mCurrentLocation;
-
     //Polyline list using as buffer to build directions
-    private List<Polyline> polylinePaths = new ArrayList<>();
-
-    //Reference for downloading all washers
-    private DatabaseReference mWashersReference;
-    //Reference for downloading Ids of free washers
-    private DatabaseReference mFreeWashersReference;
-    ValueEventListener mListenerForDownloadWashers, mListenerForDownloadFreeWashersList;
+    private List<Polyline> mPolylinePaths = new ArrayList<>();
 
     //Relation between markers on map and list of washers
     private HashMap<String, Washer> mWashersList = new HashMap<>();
@@ -144,10 +140,10 @@ public class MapFragment extends BaseFragment implements
     private boolean routeToSelectedWashIsBuild = false;
     private boolean dialogIsShowing;
 
+
     public MapFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -155,28 +151,133 @@ public class MapFragment extends BaseFragment implements
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         mContext = getActivity();
-        mProgressBar.setVisibility(View.VISIBLE);
 
+        setUpMap();
+
+        determineListenersForDatabase();
+
+        return rootView;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mGoogleApiClient.isConnected())
+            startLocationUpdates();
+
+        setListenersForDatabase();
+    }
+
+
+    @Override
+    public void onStop() {
+
+        // Disconnecting the client invalidates it.
+        stopLocationUpdates();
+
+        // only stop if it's connected, otherwise we crash
+        if (mGoogleApiClient != null)
+            mGoogleApiClient.disconnect();
+
+        deleteListenersForDatabase();
+        super.onStop();
+    }
+
+    @Override
+    public void onDetach() {
+        unbinder.unbind();
+        super.onDetach();
+    }
+
+    @OnClick(R.id.moreBtn)
+    private void showWasherDetails(){
+        Intent intent = new Intent(getActivity(), WasherDetailsActivity.class);
+        intent.putExtra("id", bundle.getString(CURRENT_WASHER_ID));
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.fab_status_marker)
+    private void changeWashersFreeFlag(){
+        busyWashersIsIncluded = !busyWashersIsIncluded;
+        for (String washerId : mWashersNonfreeList)
+            mMarkersList.get(washerId).setVisible(busyWashersIsIncluded);
+        mShowOnlyFreeWashersFab.setImageResource(busyWashersIsIncluded ? R.mipmap.ic_marker_free : R.mipmap.ic_markers_all);
+    }
+
+    @OnClick(R.id.bottom_sheet_order_fab)
+    private void orderToWash(){
+        if (dialogIsShowing) {
+            Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        routeToSelectedWashIsBuild = true;
+        if (getCurrentUser() == null)
+            startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
+        else {
+            dialogIsShowing = true;
+            mProgressBar.setVisibility(View.VISIBLE);
+            checkLocationSettings();
+        }
+    }
+
+    @OnClick(R.id.fab_get_direction)
+    private void orderToTheNearestWash(){
+        if (dialogIsShowing) {
+            Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (mWashersList.isEmpty() || mMarkersList.isEmpty()) {
+            Toast.makeText(mContext, "No washers available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        routeToBestMatchWashIsBuilt = true;
+        if (getCurrentUser() == null)
+            startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
+        else {
+            dialogIsShowing = true;
+            mProgressBar.setVisibility(View.VISIBLE);
+            checkLocationSettings();
+        }
+    }
+
+    private void setUpMap(){
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         ((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
         // Kick off the process of building the GoogleApiClient, LocationRequest, and
         // LocationSettingsRequest objects.
         buildGoogleApiClient();
+
         createLocationRequest();
+
         buildLocationSettingsRequest();
 
         checkLocationSettings();
+    }
 
-        /**
-         * Database section
-         */
-        mWashersReference = FirebaseReferences.getWasherReference();
-        mFreeWashersReference = FirebaseReferences.getFreeWasherReference();
+    private void setListenersForDatabase(){
+        mWashersReference.addValueEventListener(mListenerForDownloadWashers);
+        mFreeWashersReference.addValueEventListener(mListenerForDownloadFreeWashersList);
+    }
 
-        /**
-         * Database listener implementation
-         */
+    private void deleteListenersForDatabase(){
+        mWashersReference.removeEventListener(mListenerForDownloadWashers);
+        mFreeWashersReference.removeEventListener(mListenerForDownloadFreeWashersList);
+    }
+
+    private void determineListenersForDatabase(){
         mListenerForDownloadWashers = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -223,28 +324,10 @@ public class MapFragment extends BaseFragment implements
                 Toast.makeText(mContext, "Error while download\n Check your internet connection", Toast.LENGTH_SHORT).show();
             }
         };
-
-
-        return rootView;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-    public void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
     }
 
 
-    /**
-     * Check if the device's location settings are adequate for the app's needs using the
-     * {@link com.google.android.gms.location.SettingsApi#checkLocationSettings(GoogleApiClient,
-     * LocationSettingsRequest)} method, with the results provided through a {@code PendingResult}.
-     */
+
     protected void checkLocationSettings() {
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi.checkLocationSettings(
@@ -295,43 +378,6 @@ public class MapFragment extends BaseFragment implements
                 checkLocationSettings();
                 break;
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (mGoogleApiClient.isConnected()) {
-            startLocationUpdates();
-        }
-        //Adding single value listener to download list of washers
-        mWashersReference.addValueEventListener(mListenerForDownloadWashers);
-        //Adding single value listener to download list of only free washers
-        mFreeWashersReference.addValueEventListener(mListenerForDownloadFreeWashersList);
-
-    }
-
-    @Override
-    public void onPause() {
-        // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-
-        // Disconnecting the client invalidates it.
-        stopLocationUpdates();
-
-        // only stop if it's connected, otherwise we crash
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-        //Adding single value listener to download list of washers
-        mWashersReference.removeEventListener(mListenerForDownloadWashers);
-        //Adding single value listener to download list of only free washers
-        mFreeWashersReference.removeEventListener(mListenerForDownloadFreeWashersList);
-        super.onStop();
     }
 
     /**
@@ -428,66 +474,8 @@ public class MapFragment extends BaseFragment implements
     }
 
     @Override
-    public void onDetach() {
-        unbinder.unbind();
-        super.onDetach();
-    }
-
-    @Override
     public void onMapClick(LatLng latLng) {
 
-    }
-
-
-    @OnClick(R.id.moreBtn)
-    private void showWasherDetails(){
-        Intent intent = new Intent(getActivity(), WasherDetailsActivity.class);
-        intent.putExtra("id", bundle.getString(CURRENT_WASHER_ID));
-        startActivity(intent);
-    }
-
-    @OnClick(R.id.fab_status_marker)
-    private void changeWashersFreeFlag(){
-        busyWashersIsIncluded = !busyWashersIsIncluded;
-        for (String washerId : mWashersNonfreeList)
-            mMarkersList.get(washerId).setVisible(busyWashersIsIncluded);
-        mShowOnlyFreeWashersFab.setImageResource(busyWashersIsIncluded ? R.mipmap.ic_marker_free : R.mipmap.ic_markers_all);
-    }
-
-    @OnClick(R.id.bottom_sheet_order_fab)
-    private void orderToWash(){
-        if (dialogIsShowing) {
-            Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        routeToSelectedWashIsBuild = true;
-        if (getCurrentUser() == null)
-            startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
-        else {
-            dialogIsShowing = true;
-            mProgressBar.setVisibility(View.VISIBLE);
-            checkLocationSettings();
-        }
-    }
-
-    @OnClick(R.id.fab_get_direction)
-    private void orderToTheNearestWash(){
-        if (dialogIsShowing) {
-            Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (mWashersList.isEmpty() || mMarkersList.isEmpty()) {
-            Toast.makeText(mContext, "No washers available", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        routeToBestMatchWashIsBuilt = true;
-        if (getCurrentUser() == null)
-            startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
-        else {
-            dialogIsShowing = true;
-            mProgressBar.setVisibility(View.VISIBLE);
-            checkLocationSettings();
-        }
     }
 
     @Override
@@ -496,13 +484,6 @@ public class MapFragment extends BaseFragment implements
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        // Note that this can be NULL if last location isn't already known.
-//        if (mCurrentLocation == null) {
-//            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 14));
-//        }
-
-        // Begin polling for new location updates.
         startLocationUpdates();
     }
 
@@ -633,11 +614,11 @@ public class MapFragment extends BaseFragment implements
 
     @Override
     public void onDirectionReady(Direction direction) {
-        if (polylinePaths != null)
-            for (Polyline polyline : polylinePaths)
+        if (mPolylinePaths != null)
+            for (Polyline polyline : mPolylinePaths)
                 polyline.remove();
 
-        polylinePaths = new ArrayList<>();
+        mPolylinePaths = new ArrayList<>();
 
         if (routeBuildFirstTime)
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(direction.startLocation, 16));
@@ -650,7 +631,7 @@ public class MapFragment extends BaseFragment implements
         for (int i = 0; i < direction.points.size(); i++)
             polylineOptions.add(direction.points.get(i));
 
-        polylinePaths.add(mMap.addPolyline(polylineOptions));
+        mPolylinePaths.add(mMap.addPolyline(polylineOptions));
 
         routeBuildFirstTime = false;
         mCurrentWasherLocation = direction.endLocation;
