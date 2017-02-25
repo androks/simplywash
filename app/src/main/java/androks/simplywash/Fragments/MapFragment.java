@@ -15,11 +15,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -49,7 +47,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -62,11 +59,13 @@ import androks.simplywash.Activities.WasherDetailsActivity;
 import androks.simplywash.Dialogs.OrderDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
+import androks.simplywash.FirebaseReferences;
 import androks.simplywash.Models.Order;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
@@ -76,7 +75,6 @@ import butterknife.Unbinder;
 public class MapFragment extends BaseFragment implements
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
-        View.OnClickListener,
         GoogleMap.OnMapClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -84,31 +82,24 @@ public class MapFragment extends BaseFragment implements
         ResultCallback<LocationSettingsResult>,
         OrderDialog.OrderToWashListener, DirectionsManager.Listener {
 
-    private static final String TAG = "DemoActivity";
-
 
     private static final int SIGN_IN = 25;
-
     private static final String CURRENT_WASHER_ID = "CURRENT_WASHER_ID";
 
-    private FragmentActivity mContext;
-
-    /**
-     * Constant used in the location settings dialog.
-     */
-    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
-
-    /**
-     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
-     */
+    public static final int REQUEST_CHECK_SETTINGS = 0x1;
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-
-    /**
-     * The fastest rate for active location updates. Exact. Updates will never be more frequent
-     * than this value.
-     */
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+
+    @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
+    @BindView(R.id.fab_status_marker) FloatingActionButton mShowOnlyFreeWashersFab;
+    @BindView(R.id.fab_get_direction) FloatingActionButton mOrderToNearestWash;
+    @BindView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
+    private Unbinder unbinder;
+
+
+    private FragmentActivity mContext;
 
     private GoogleMap mMap;
 
@@ -147,21 +138,10 @@ public class MapFragment extends BaseFragment implements
     private Bundle bundle = new Bundle();
 
 
-    /**
-     * Views
-     */
-
-    private Unbinder unbinder;
-    @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
-    @BindView(R.id.fab_status_marker) FloatingActionButton mShowOnlyFreeWashersFab;
-    @BindView(R.id.fab_get_direction) FloatingActionButton mOrderToNearestWash;
-    @BindView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
-
-
-    private boolean routeBuildFirstTime;
-    private boolean busyWashersIsIncluded;
-    private boolean routeToBestMatchWashIsBuilt;
-    private boolean routeToSelectedWashIsBuild;
+    private boolean routeBuildFirstTime = true;
+    private boolean busyWashersIsIncluded = true;
+    private boolean routeToBestMatchWashIsBuilt = false;
+    private boolean routeToSelectedWashIsBuild = false;
     private boolean dialogIsShowing;
 
     public MapFragment() {
@@ -172,37 +152,10 @@ public class MapFragment extends BaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContext = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        mContext = getActivity();
         mProgressBar.setVisibility(View.VISIBLE);
-
-        //setting flags
-        routeBuildFirstTime = true;
-        busyWashersIsIncluded = true;
-        routeToBestMatchWashIsBuilt = false;
-        routeToSelectedWashIsBuild = false;
-
-        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                Log.i(TAG, "onPanelSlide, offset " + slideOffset);
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                Log.i(TAG, "onPanelStateChanged " + newState);
-            }
-        });
-        mLayout.setFadeOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            }
-        });
-
-        mLayout.setAnchorPoint(0.7f);
-        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         ((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
@@ -218,8 +171,8 @@ public class MapFragment extends BaseFragment implements
         /**
          * Database section
          */
-        mWashersReference = FirebaseDatabase.getInstance().getReference().child("washers");
-        mFreeWashersReference = FirebaseDatabase.getInstance().getReference().child("free-washers");
+        mWashersReference = FirebaseReferences.getWasherReference();
+        mFreeWashersReference = FirebaseReferences.getFreeWasherReference();
 
         /**
          * Database listener implementation
@@ -271,33 +224,7 @@ public class MapFragment extends BaseFragment implements
             }
         };
 
-        /**
-         * FABs
-         */
 
-        mShowOnlyFreeWashersFab = (FloatingActionButton) rootView.findViewById(R.id.fab_status_marker);
-        mShowOnlyFreeWashersFab.setOnClickListener(this);
-
-        mOrderToNearestWash = (FloatingActionButton) rootView.findViewById(R.id.fab_get_direction);
-        mOrderToNearestWash.setOnClickListener(this);
-
-        /**
-         * Bottom Sheet
-         */
-
-        // To handle FAB animation upon entrance and exit
-        final Animation growAnimation = AnimationUtils.loadAnimation(mContext, R.anim.simple_grow);
-        final Animation shrinkAnimation = AnimationUtils.loadAnimation(mContext, R.anim.simple_shrink);
-
-        //Adding listeners for bottom sheet views
-        rootView.findViewById(R.id.bottom_sheet_title).setOnClickListener(this);
-        rootView.findViewById(R.id.bottom_sheet_order_fab).setOnClickListener(this);
-        rootView.findViewById(R.id.moreBtn).setOnClickListener(this);
-
-        DirectionsManager.with(this).buildDirection(
-                new LatLng(50.4472772,30.4461914),
-                new LatLng(50.441046,30.4338318)
-        );
         return rootView;
     }
 
@@ -511,58 +438,55 @@ public class MapFragment extends BaseFragment implements
 
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.moreBtn:
-                Intent intent = new Intent(getActivity(), WasherDetailsActivity.class);
-                intent.putExtra("id", bundle.getString(CURRENT_WASHER_ID));
-                startActivity(intent);
-                break;
-            case R.id.fab_status_marker:
-                busyWashersIsIncluded = !busyWashersIsIncluded;
-                for (String washerId : mWashersNonfreeList)
-                    mMarkersList.get(washerId).setVisible(busyWashersIsIncluded);
-                mShowOnlyFreeWashersFab.setImageResource(busyWashersIsIncluded ? R.mipmap.ic_marker_free : R.mipmap.ic_markers_all);
-                break;
 
-            case R.id.bottom_sheet_title:
-              //TODO:
-                break;
+    @OnClick(R.id.moreBtn)
+    private void showWasherDetails(){
+        Intent intent = new Intent(getActivity(), WasherDetailsActivity.class);
+        intent.putExtra("id", bundle.getString(CURRENT_WASHER_ID));
+        startActivity(intent);
+    }
 
-            case R.id.bottom_sheet_order_fab:
-                if (dialogIsShowing) {
-                    Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
-                    break;
-                }
-                routeToSelectedWashIsBuild = true;
-                if (getCurrentUser() == null)
-                    startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
-                else {
-                    dialogIsShowing = true;
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    checkLocationSettings();
-                }
-                break;
+    @OnClick(R.id.fab_status_marker)
+    private void changeWashersFreeFlag(){
+        busyWashersIsIncluded = !busyWashersIsIncluded;
+        for (String washerId : mWashersNonfreeList)
+            mMarkersList.get(washerId).setVisible(busyWashersIsIncluded);
+        mShowOnlyFreeWashersFab.setImageResource(busyWashersIsIncluded ? R.mipmap.ic_marker_free : R.mipmap.ic_markers_all);
+    }
 
-            case R.id.fab_get_direction:
-                if (dialogIsShowing) {
-                    Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
-                    break;
-                }
-                if (mWashersList.isEmpty() || mMarkersList.isEmpty()) {
-                    Toast.makeText(mContext, "No washers available", Toast.LENGTH_SHORT).show();
-                    break;
-                }
-                routeToBestMatchWashIsBuilt = true;
-                if (getCurrentUser() == null)
-                    startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
-                else {
-                    dialogIsShowing = true;
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    checkLocationSettings();
-                }
-                break;
+    @OnClick(R.id.bottom_sheet_order_fab)
+    private void orderToWash(){
+        if (dialogIsShowing) {
+            Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        routeToSelectedWashIsBuild = true;
+        if (getCurrentUser() == null)
+            startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
+        else {
+            dialogIsShowing = true;
+            mProgressBar.setVisibility(View.VISIBLE);
+            checkLocationSettings();
+        }
+    }
+
+    @OnClick(R.id.fab_get_direction)
+    private void orderToTheNearestWash(){
+        if (dialogIsShowing) {
+            Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (mWashersList.isEmpty() || mMarkersList.isEmpty()) {
+            Toast.makeText(mContext, "No washers available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        routeToBestMatchWashIsBuilt = true;
+        if (getCurrentUser() == null)
+            startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
+        else {
+            dialogIsShowing = true;
+            mProgressBar.setVisibility(View.VISIBLE);
+            checkLocationSettings();
         }
     }
 
@@ -621,7 +545,6 @@ public class MapFragment extends BaseFragment implements
         }
         buildRouteFromCurrentToMarkerLocation();
     }
-
 
     protected void buildRouteFromCurrentToMarkerLocation() {
         if (mCurrentLocation == null || mCurrentWasherLocation == null) return;
