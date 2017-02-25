@@ -41,7 +41,7 @@
             android:src="@drawable/ic_near" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_status_marker"
+            android:id="@+id/fab_state_marker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/fab_get_direction"

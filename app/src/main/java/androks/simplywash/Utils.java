@@ -13,10 +13,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Utils {
 
-    private static final String GRAY = "#9E9E9E";
-    private static final String BUSY = "busy";
-    private static final String AVAILABLE = "available";
-    private static final String OFFLINE = "offline";
+    public static final String BUSY = "busy";
+    public static final String AVAILABLE = "available";
+    public static final String OFFLINE = "offline";
 
     public static void setMarkerIcon(Marker marker, String state){
         switch (state){
@@ -27,7 +26,10 @@ public class Utils {
                 break;
 
             case OFFLINE:
-                marker.setIcon(getMarkerIcon(GRAY));
+                //TODO:Change color to gray
+                marker.setIcon(BitmapDescriptorFactory.defaultMarker(
+                        BitmapDescriptorFactory.HUE_RED
+                ));
                 break;
 
             case BUSY:
@@ -47,7 +49,10 @@ public class Utils {
                 break;
 
             case OFFLINE:
-                marker.icon(getMarkerIcon(GRAY));
+                //TODO:Change color to gray
+                marker.icon(BitmapDescriptorFactory.defaultMarker(
+                        BitmapDescriptorFactory.HUE_RED
+                ));
                 break;
 
             case BUSY:

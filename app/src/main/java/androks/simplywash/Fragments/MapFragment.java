@@ -98,7 +98,7 @@ public class MapFragment extends BaseFragment implements
 
     /** Binding view with ButterKnife  **/
     @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
-    @BindView(R.id.fab_status_marker) FloatingActionButton mShowOnlyFreeWashersFab;
+    @BindView(R.id.fab_state_marker) FloatingActionButton mChangeStateFab;
     @BindView(R.id.fab_get_direction) FloatingActionButton mOrderToNearestWash;
     @BindView(R.id.sliding_layout) SlidingUpPanelLayout mLayout;
     private Unbinder unbinder;
@@ -142,8 +142,8 @@ public class MapFragment extends BaseFragment implements
     private Bundle bundle = new Bundle();
 
 
+    private boolean displayAllStates = false;
     private boolean routeBuildFirstTime = true;
-    private boolean busyWashersIsIncluded = true;
     private boolean routeToBestMatchWashIsBuilt = false;
     private boolean routeToSelectedWashIsBuild = false;
     private boolean dialogIsShowing;
@@ -218,12 +218,23 @@ public class MapFragment extends BaseFragment implements
         startActivity(intent);
     }
 
-    @OnClick(R.id.fab_status_marker)
-    public void changeWashersFreeFlag(){
-//        busyWashersIsIncluded = !busyWashersIsIncluded;
-//        for (String washerId : mWashersNonfreeList)
-//            mMarkersList.get(washerId).setVisible(busyWashersIsIncluded);
-//        mShowOnlyFreeWashersFab.setImageResource(busyWashersIsIncluded ? R.mipmap.ic_marker_free : R.mipmap.ic_markers_all);
+    @OnClick(R.id.fab_state_marker)
+    public void changeWashersStateFlag(){
+        displayAllStates = !displayAllStates;
+        for (Washer washer : mWashersList.values())
+            if(displayAllStates && (
+                    washer.getState().equals(Utils.BUSY) ||
+                    washer.getState().equals(Utils.OFFLINE))
+                    )
+                mMarkersList.get(washer.getId()).setVisible(displayAllStates);
+            else if(!displayAllStates && (
+                        washer.getState().equals(Utils.BUSY) ||
+                        washer.getState().equals(Utils.OFFLINE))
+                    )
+                mMarkersList.get(washer.getId()).setVisible(displayAllStates);
+
+        mChangeStateFab.setImageResource(displayAllStates ?
+                R.mipmap.ic_markers_all : R.mipmap.ic_marker_free);
     }
 
     @OnClick(R.id.bottom_sheet_order_fab)
@@ -348,7 +359,8 @@ public class MapFragment extends BaseFragment implements
         for(Washer washer: mWashersList.values()){
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
-                    .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()));
+                    .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()))
+                    .visible(washer.getState().equals(Utils.AVAILABLE) || displayAllStates);
             Utils.setMarkerIcon(marker, washer.getState());
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
@@ -356,6 +368,9 @@ public class MapFragment extends BaseFragment implements
 
     private void updateMarker(String id) {
         Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
+        mMarkersList.get(id).setVisible(
+                mWashersList.get(id).getState().equals(Utils.AVAILABLE) || displayAllStates
+        );
     }
 
     protected void checkLocationSettings() {
