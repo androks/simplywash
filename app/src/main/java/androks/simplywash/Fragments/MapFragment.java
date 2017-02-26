@@ -379,6 +379,7 @@ public class MapFragment extends BaseFragment implements
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                mWashersList.get(dataSnapshot.getKey()).setState(dataSnapshot.getValue(String.class));
                 updateMarker(dataSnapshot.getKey());
             }
 
