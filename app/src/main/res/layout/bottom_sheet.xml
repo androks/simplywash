@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:orientation="vertical"
         android:paddingBottom="16dp">
@@ -76,6 +76,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -98,14 +99,21 @@
 
                         <TextView
                             android:id="@+id/distance"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:paddingEnd="16dp"
                             android:paddingRight="16dp"
                             android:paddingStart="16dp"
+                            android:visibility="visible"
                             android:textColor="?attr/colorPrimary"
                             tools:text="1 km" />
+
+                        <ProgressBar
+                            android:id="@+id/distance_in_progress"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:visibility="visible"
+                            style="@android:style/Widget.Holo.ProgressBar.Small"/>
 
                     </LinearLayout>
 
@@ -123,14 +131,20 @@
 
                         <TextView
                             android:id="@+id/duration"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:paddingEnd="16dp"
                             android:paddingRight="16dp"
                             android:paddingStart="16dp"
                             android:textColor="?attr/colorPrimary"
                             tools:text="12 min" />
+
+                        <ProgressBar
+                            android:id="@+id/duration_in_progress"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:visibility="visible"
+                            style="@android:style/Widget.Holo.ProgressBar.Small"/>
 
                     </LinearLayout>
                 </LinearLayout>

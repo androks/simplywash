@@ -8,7 +8,6 @@
     android:gravity="bottom"
     app:umanoDragView="@+id/drag_view"
     app:umanoPanelHeight="140dp"
-    app:umanoAnchorPoint="0.6"
     app:umanoShadowHeight="8dp"
     app:umanoParallaxOffset="100dp"
     app:umanoInitialState="hidden">
@@ -57,7 +56,7 @@
         android:id="@+id/drag_view"
         layout="@layout/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="false" />
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

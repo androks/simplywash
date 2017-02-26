@@ -54,6 +54,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.SphericalUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
@@ -66,7 +67,6 @@ import androks.simplywash.Activities.WasherDetailsActivity;
 import androks.simplywash.Dialogs.OrderDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
-import androks.simplywash.DirectionsApi.Utils.DirectionBuildModes;
 import androks.simplywash.Models.Order;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
@@ -90,6 +90,8 @@ public class MapFragment extends BaseFragment implements
     /**
      * Define constant values
      **/
+    private static final String TAG_CALCULATE_DIS_DUR = "TAG_CALCULATE_DIS_DUR";
+    private static final String TAG_BUILD_ROUTE = "TAG_BUILD_ROUTE";
     private static final int SIGN_IN = 10;
     private static final String CURRENT_WASHER_ID = "CURRENT_WASHER_ID";
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
@@ -106,32 +108,21 @@ public class MapFragment extends BaseFragment implements
     @BindView(R.id.sliding_layout)
     SlidingUpPanelLayout mSlidingLayout;
 
-    @BindView(R.id.name)
-    TextView mName;
-    @BindView(R.id.location)
-    TextView mLocation;
-    @BindView(R.id.phone)
-    TextView mPhone;
-    @BindView(R.id.opening_hours)
-    TextView mOpeningHours;
-    @BindView(R.id.boxes_status)
-    TextView mBoxesStatus;
-    @BindView(R.id.duration)
-    TextView mDuration;
-    @BindView(R.id.distance)
-    TextView mDistance;
-    @BindView(R.id.wifi)
-    ImageView mWifi;
-    @BindView(R.id.coffee)
-    ImageView mCoffee;
-    @BindView(R.id.lunch_room)
-    ImageView mLunchRoom;
-    @BindView(R.id.rest_room)
-    ImageView mRestRoom;
-    @BindView(R.id.wc)
-    ImageView mWC;
-    @BindView(R.id.tire)
-    ImageView mTire;
+    @BindView(R.id.name) TextView mName;
+    @BindView(R.id.location) TextView mLocation;
+    @BindView(R.id.phone) TextView mPhone;
+    @BindView(R.id.opening_hours) TextView mOpeningHours;
+    @BindView(R.id.boxes_status) TextView mBoxesStatus;
+    @BindView(R.id.duration) TextView mDuration;
+    @BindView(R.id.duration_in_progress) View mDurationInProgress;
+    @BindView(R.id.distance) TextView mDistance;
+    @BindView(R.id.distance_in_progress) View mDistanceInProgress;
+    @BindView(R.id.wifi) ImageView mWifi;
+    @BindView(R.id.coffee) ImageView mCoffee;
+    @BindView(R.id.lunch_room) ImageView mLunchRoom;
+    @BindView(R.id.rest_room) ImageView mRestRoom;
+    @BindView(R.id.wc) ImageView mWC;
+    @BindView(R.id.tire) ImageView mTire;
     private Unbinder unbinder;
     /** End bindings  **/
 
@@ -166,15 +157,16 @@ public class MapFragment extends BaseFragment implements
     private List<Polyline> mPolylinePaths = new ArrayList<>();
     private Washer mShowingWasher;
     private Washer mCurrentWasher;
-    private Location mCurrentLocation;
+    private Washer mTheNearestFreeWasher;
+    private LatLng mCurrentLocation;
 
     //Relation between markers on map and list of washers
     private HashMap<String, Washer> mWashersList = new HashMap<>();
     private HashMap<String, Marker> mMarkersList = new HashMap<>();
 
-    private boolean displayAllStates = false;
-    private boolean dialogInProcess = false;
-    private boolean distanceAndDurationToShowingWasher = false;
+    private boolean FLAG_DISPLAY_ALL_STATES = false;
+    private boolean FLAG_DIALOG_IN_PROCESS = false;
+    private boolean FLAG_DIS_DUR_CALCULATE = false;
 
     public MapFragment(){}
 
@@ -252,26 +244,26 @@ public class MapFragment extends BaseFragment implements
 
     @OnClick(R.id.fab_state_marker)
     public void changeWashersStateFlag(FloatingActionButton fab) {
-        displayAllStates = !displayAllStates;
+        FLAG_DISPLAY_ALL_STATES = !FLAG_DISPLAY_ALL_STATES;
         for (Washer washer : mWashersList.values())
-            if (displayAllStates && (
+            if (FLAG_DISPLAY_ALL_STATES && (
                     washer.getState().equals(Utils.BUSY) ||
                             washer.getState().equals(Utils.OFFLINE))
                     )
-                mMarkersList.get(washer.getId()).setVisible(displayAllStates);
-            else if (!displayAllStates && (
+                mMarkersList.get(washer.getId()).setVisible(FLAG_DISPLAY_ALL_STATES);
+            else if (!FLAG_DISPLAY_ALL_STATES && (
                     washer.getState().equals(Utils.BUSY) ||
                             washer.getState().equals(Utils.OFFLINE))
                     )
-                mMarkersList.get(washer.getId()).setVisible(displayAllStates);
+                mMarkersList.get(washer.getId()).setVisible(FLAG_DISPLAY_ALL_STATES);
 
-        fab.setImageResource(displayAllStates ?
+        fab.setImageResource(FLAG_DISPLAY_ALL_STATES ?
                 R.mipmap.ic_markers_all : R.mipmap.ic_marker_free);
     }
 
     @OnClick({R.id.order_to_showing_wash, R.id.fab_get_direction})
     public void orderToWash(FloatingActionButton fab) {
-        if (dialogInProcess) {
+        if (FLAG_DIALOG_IN_PROCESS) {
             Toast.makeText(mContext, "Loading... \n Wait for previous task", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -284,7 +276,7 @@ public class MapFragment extends BaseFragment implements
             return;
         }
         showProgress();
-        dialogInProcess = true;
+        FLAG_DIALOG_IN_PROCESS = true;
     }
 
     private void setUpMap() {
@@ -376,7 +368,7 @@ public class MapFragment extends BaseFragment implements
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
                     .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()))
-                    .visible(washer.getState().equals(Utils.AVAILABLE) || displayAllStates);
+                    .visible(washer.getState().equals(Utils.AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
             Utils.setMarkerIcon(marker, washer.getState());
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
@@ -386,7 +378,7 @@ public class MapFragment extends BaseFragment implements
     private void updateMarker(String id) {
         Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
         mMarkersList.get(id).setVisible(
-                mWashersList.get(id).getState().equals(Utils.AVAILABLE) || displayAllStates
+                mWashersList.get(id).getState().equals(Utils.AVAILABLE) || FLAG_DISPLAY_ALL_STATES
         );
     }
 
@@ -425,7 +417,7 @@ public class MapFragment extends BaseFragment implements
         final Status status = locationSettingsResult.getStatus();
         switch (status.getStatusCode()) {
             case LocationSettingsStatusCodes.SUCCESS:
-                locationChangedIsOn(true);
+                makeRequests();
                 break;
             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                 //Location settings are not satisfied. Show the user a dialog to upgrade location settings
@@ -439,7 +431,7 @@ public class MapFragment extends BaseFragment implements
                 }
                 break;
             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                locationChangedIsOn(false);
+                setAllFlagsToFalse();
                 break;
         }
     }
@@ -455,30 +447,32 @@ public class MapFragment extends BaseFragment implements
             case Utils.REQUEST_CHECK_LOCATION_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        locationChangedIsOn(true);
+                        makeRequests();
                         break;
 
                     case Activity.RESULT_CANCELED:
-                        locationChangedIsOn(false);
+                        setAllFlagsToFalse();
                         break;
                 }
                 break;
         }
     }
 
-    private void locationChangedIsOn(boolean value){
-        if(value){
-            if(distanceAndDurationToShowingWasher) {
-                mDuration.setText("Calculating...");
-                mDistance.setText("Calculating...");
+    /**
+     * Location settings request was accepted, so we can handle requests
+     */
+    private void makeRequests(){
+        if(mCurrentLocation != null){
+            if(FLAG_DIS_DUR_CALCULATE)
                 calculateDistanceAndTime(mShowingWasher.getLanLng());
-            }
-        }else {
-            dialogInProcess = false;
-            distanceAndDurationToShowingWasher = false;
-            mDuration.setText("No current location available");
-            mDistance.setText("No current location available");
         }
+    }
+
+    /**
+     * Location settings request was denied
+     */
+    private void setAllFlagsToFalse(){
+        FLAG_DIS_DUR_CALCULATE = false;
     }
 
     /**
@@ -523,8 +517,13 @@ public class MapFragment extends BaseFragment implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
+        FLAG_DIS_DUR_CALCULATE = true;
+
         mShowingWasher = mWashersList.get(marker.getTitle());
+
+        checkLocationSettings();
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
         //Inflating bottom sheet view by washer details
         inflateWasherDetails();
         //Show bottom sheet as collapsed
@@ -533,6 +532,10 @@ public class MapFragment extends BaseFragment implements
     }
 
     private void inflateWasherDetails() {
+        mDistanceInProgress.setVisibility(View.VISIBLE);
+        mDurationInProgress.setVisibility(View.VISIBLE);
+        mDuration.setVisibility(View.GONE);
+        mDistance.setVisibility(View.GONE);
         mName.setText(mShowingWasher.getName());
         mLocation.setText(mShowingWasher.getLocation());
         mPhone.setText(mShowingWasher.getPhone());
@@ -557,11 +560,6 @@ public class MapFragment extends BaseFragment implements
         mTire.setColorFilter(mShowingWasher.getTire() ?
                 ContextCompat.getColor(mContext, R.color.colorServiceAvailable) :
                 ContextCompat.getColor(mContext, R.color.colorServiceNotAvailable));
-
-        distanceAndDurationToShowingWasher = true;
-        mDuration.setText("No current location available");
-        mDistance.setText("No current location available");
-        checkLocationSettings();
     }
 
     @Override
@@ -607,8 +605,30 @@ public class MapFragment extends BaseFragment implements
     @Override
     public void onLocationChanged(Location location) {
         // New location has now been determined
-        mCurrentLocation = location;
+        mCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        makeRequests();
+        findTheNearestWasher();
+    }
 
+    private void findTheNearestWasher() {
+        String washerId = null;
+        Double[] distances = new Double[mWashersList.size()];
+        Double bestMatch = (double) -1;
+        int i = 0;
+        for(Washer washer: mWashersList.values()) {
+            if (washer.getState().equals(Utils.AVAILABLE)) {
+                distances[i] = SphericalUtil.computeDistanceBetween(
+                        mCurrentLocation,
+                        washer.getLanLng()
+                );
+                if(bestMatch.equals((double) -1) || bestMatch > distances[i]){
+                    bestMatch = distances[i];
+                    washerId = washer.getId();
+                }
+            }
+            i++;
+        }
+        mTheNearestFreeWasher = mWashersList.get(washerId);
     }
 
     private void buildRoute(LatLng origin, LatLng destination) {
@@ -616,63 +636,26 @@ public class MapFragment extends BaseFragment implements
         DirectionsManager.with(this).buildDirection(
                 origin,
                 destination,
-                DirectionBuildModes.BUILD_ROUTE
+                TAG_BUILD_ROUTE
         );
     }
 
-    private void buildRoute(LatLng destination) {
+    private void buildRouteFromCurrentPosition(LatLng destination) {
         if (mCurrentLocation == null || destination == null) return;
         DirectionsManager.with(this).buildDirection(
-                new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()),
+                mCurrentLocation,
                 destination,
-                DirectionBuildModes.BUILD_ROUTE
+                TAG_BUILD_ROUTE
         );
     }
 
     private void calculateDistanceAndTime(LatLng destination) {
         if (mCurrentLocation == null || destination == null) return;
         DirectionsManager.with(this).buildDirection(
-                new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()),
+                mCurrentLocation,
                 destination,
-                DirectionBuildModes.GET_TIME_AND_DISTANCE
+                TAG_CALCULATE_DIS_DUR
         );
-    }
-
-    private Marker find_closest_marker() {
-        if (mCurrentLocation == null) return null;
-        double pi = Math.PI;
-        int R = 6371; //equatorial radius
-        double[] distances = new double[mWashersList.size()];
-        int i = 0;
-        int closest = -1;
-        String closestId = "";
-        for (Washer washer : mWashersList.values()) {
-            if (washer.getState().equals(Utils.AVAILABLE)) {
-                double lat2 = washer.getLangtitude();
-                double lon2 = washer.getLongtitude();
-
-                double chLat = lat2 - mCurrentLocation.getLatitude();
-                double chLon = lon2 - mCurrentLocation.getLongitude();
-
-                double dLat = chLat * (pi / 180);
-                double dLon = chLon * (pi / 180);
-
-                double rLat1 = mCurrentLocation.getLatitude() * (pi / 180);
-                double rLat2 = lat2 * (pi / 180);
-
-                double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(rLat1) * Math.cos(rLat2);
-                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                double d = R * c;
-
-                distances[i] = d;
-                if (closest == -1 || d < distances[closest]) {
-                    closest = i;
-                    closestId = washer.getId();
-                }
-            }
-        }
-        return mMarkersList.get(closestId);
     }
 
     /**
@@ -703,7 +686,7 @@ public class MapFragment extends BaseFragment implements
 //            addCarDialog.show(getFragmentManager(), "Order");
 //            mProgressBar.setVisibility(View.GONE);
 //        }
-//        dialogInProcess = false;
+//        FLAG_DIALOG_IN_PROCESS = false;
     }
 
     private void orderToCurrentWash() {
@@ -712,17 +695,7 @@ public class MapFragment extends BaseFragment implements
         addCarDialog.setTargetFragment(MapFragment.this, 12);
         addCarDialog.show(getFragmentManager(), "Order");
         mProgressBar.setVisibility(View.GONE);
-        dialogInProcess = false;
-    }
-
-    public void onBackPressed(){
-        if (mSlidingLayout != null &&
-                (mSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED
-                        || mSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
-            mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        } else {
-            getActivity().onBackPressed();
-        }
+        FLAG_DIALOG_IN_PROCESS = false;
     }
 
     @Override
@@ -735,16 +708,23 @@ public class MapFragment extends BaseFragment implements
         if(direction == null)
             return;
 
-        switch (direction.mode) {
-            case DirectionBuildModes.GET_TIME_AND_DISTANCE:
-                if (distanceAndDurationToShowingWasher) {
+        switch (direction.getTag()) {
+            case TAG_CALCULATE_DIS_DUR:
+                if (FLAG_DIS_DUR_CALCULATE) {
+
                     mDistance.setText(direction.distance.getText());
                     mDuration.setText(direction.duration.getText());
-                    distanceAndDurationToShowingWasher = false;
+
+                    mDurationInProgress.setVisibility(View.GONE);
+                    mDistanceInProgress.setVisibility(View.GONE);
+
+                    mDistance.setVisibility(View.VISIBLE);
+                    mDuration.setVisibility(View.VISIBLE);
+                    FLAG_DIS_DUR_CALCULATE = false;
                 }
                 break;
 
-            case DirectionBuildModes.BUILD_ROUTE:
+            case TAG_BUILD_ROUTE:
 
                 //Todo: write correct behavior
                 if (mPolylinePaths != null)

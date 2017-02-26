@@ -14,7 +14,7 @@ import androks.simplywash.DirectionsApi.Models.Route;
 public class DirectionsManager implements ApiManager.Listener {
 
     private Listener listener;
-    private String mode;
+    private String tag;
 
     public interface Listener {
         void onDirectionFindStart();
@@ -29,9 +29,9 @@ public class DirectionsManager implements ApiManager.Listener {
         return new DirectionsManager(listener);
     }
 
-    public void buildDirection(LatLng origin, LatLng destination, String mode) {
+    public void buildDirection(LatLng origin, LatLng destination, String tag) {
         listener.onDirectionFindStart();
-        this.mode = mode;
+        this.tag = tag;
         ApiManager.with(this).getDirection(origin, destination);
     }
 
@@ -41,7 +41,7 @@ public class DirectionsManager implements ApiManager.Listener {
             return;
 
         if(routes != null && !routes.isEmpty())
-            listener.onDirectionReady(new Direction(routes, mode));
+            listener.onDirectionReady(new Direction(routes, tag));
         else
             listener.onDirectionReady(null);
     }
