@@ -11,7 +11,8 @@ public class Washer {
     private double longtitude;
     private int boxes;
     private int freeBoxes;
-    private int stars;
+    private int votes;
+    private float stars;
     private boolean cafe;
     private boolean wifi;
     private boolean restRoom;
@@ -35,7 +36,7 @@ public class Washer {
         return wc;
     }
 
-    public int getStars() {
+    public float getStars() {
         return stars;
     }
 
@@ -111,33 +112,9 @@ public class Washer {
         return uid;
     }
 
+    public int getVotes() {
+        return votes;
+    }
+
     Washer(){}
-
-    public Washer(double langtitude, double longtitude, String id){
-        this.langtitude = langtitude;
-        this.longtitude = longtitude;
-        this.id = id;
-    }
-
-    public Washer(double langtitude, double longtitude, int boxes, int freeBoxes, int stars, String state, boolean cafe, boolean wifi, boolean restRoom, boolean lunchRoom, boolean wc, boolean tire, String hours, String id, String name, String phone, String uid, String location, String description) {
-        this.langtitude = langtitude;
-        this.longtitude = longtitude;
-        this.boxes = boxes;
-        this.freeBoxes = freeBoxes;
-        this.stars = stars;
-        this.state = state;
-        this.cafe = cafe;
-        this.wifi = wifi;
-        this.restRoom = restRoom;
-        this.lunchRoom = lunchRoom;
-        this.wc = wc;
-        this.tire = tire;
-        this.hours = hours;
-        this.id = id;
-        this.name = name;
-        this.phone = phone;
-        this.uid = uid;
-        this.location = location;
-        this.description = description;
-    }
 }

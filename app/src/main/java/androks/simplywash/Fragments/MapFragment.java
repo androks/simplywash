@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import androks.simplywash.Activities.LoginActivity;
@@ -109,6 +111,8 @@ public class MapFragment extends BaseFragment implements
     SlidingUpPanelLayout mSlidingLayout;
 
     @BindView(R.id.name) TextView mName;
+    @BindView(R.id.rating_bar) RatingBar mRatingBar;
+    @BindView(R.id.rating_text) TextView mRatingText;
     @BindView(R.id.location) TextView mLocation;
     @BindView(R.id.phone) TextView mPhone;
     @BindView(R.id.opening_hours) TextView mOpeningHours;
@@ -531,12 +535,28 @@ public class MapFragment extends BaseFragment implements
         return true;
     }
 
-    private void inflateWasherDetails() {
+    private void showProgressBarsForDisAndDur(){
         mDistanceInProgress.setVisibility(View.VISIBLE);
         mDurationInProgress.setVisibility(View.VISIBLE);
         mDuration.setVisibility(View.GONE);
         mDistance.setVisibility(View.GONE);
+    }
+    private void hideProgressBarsForDisAndDur(){
+        mDistanceInProgress.setVisibility(View.GONE);
+        mDurationInProgress.setVisibility(View.GONE);
+        mDuration.setVisibility(View.VISIBLE);
+        mDistance.setVisibility(View.VISIBLE);}
+
+    private void inflateWasherDetails() {
+        showProgressBarsForDisAndDur();
+
         mName.setText(mShowingWasher.getName());
+        mRatingBar.setRating(mShowingWasher.getStars());
+        mRatingText.setText(String.format(
+                Locale.getDefault(),
+                " %.1f (%d votes)",
+                mShowingWasher.getStars(),
+                mShowingWasher.getVotes()));
         mLocation.setText(mShowingWasher.getLocation());
         mPhone.setText(mShowingWasher.getPhone());
         mOpeningHours.setText(mShowingWasher.getHours());
@@ -715,11 +735,7 @@ public class MapFragment extends BaseFragment implements
                     mDistance.setText(direction.distance.getText());
                     mDuration.setText(direction.duration.getText());
 
-                    mDurationInProgress.setVisibility(View.GONE);
-                    mDistanceInProgress.setVisibility(View.GONE);
-
-                    mDistance.setVisibility(View.VISIBLE);
-                    mDuration.setVisibility(View.VISIBLE);
+                    hideProgressBarsForDisAndDur();
                     FLAG_DIS_DUR_CALCULATE = false;
                 }
                 break;
