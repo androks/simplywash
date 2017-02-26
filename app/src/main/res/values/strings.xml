@@ -40,6 +40,8 @@
     <string name="reviews">Reviews</string>
     <string name="description">Description</string>
     <string name="read_more">Read more</string>
+    <string name="order">Order</string>
+    <string name="boxes_available">Boxes available</string>
 
 
 </resources>

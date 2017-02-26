@@ -1,5 +1,7 @@
 package androks.simplywash.Models;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by androks on 11/17/2016.
  */
@@ -59,6 +61,10 @@ public class Washer {
 
     public String getLocation() {
         return location;
+    }
+
+    public LatLng getLanLng(){
+        return new LatLng(langtitude, longtitude);
     }
 
     public void setState(String status) {

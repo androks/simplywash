@@ -1,16 +1,16 @@
 <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    sothree:umanoDragView="@+id/drag_view"
-    sothree:umanoPanelHeight="146dp"
-    sothree:umanoShadowHeight="8dp"
-    sothree:umanoParallaxOffset="100dp">
+    app:umanoDragView="@+id/drag_view"
+    app:umanoPanelHeight="140dp"
+    app:umanoShadowHeight="8dp"
+    app:umanoParallaxOffset="100dp"
+    app:umanoInitialState="hidden">
 
     <RelativeLayout
         android:id="@+id/mainContent"

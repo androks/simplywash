@@ -216,6 +216,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(getCurrentFragment() != null)
+            getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mInternetReceiver);
@@ -238,5 +245,16 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
+    }
+
+    private Fragment getCurrentFragment(){
+        switch (currentFragment) {
+            case 0:
+                return mapFragment;
+            case 1:
+                return carsFragment;
+            default:
+                return null;
+        }
     }
 }

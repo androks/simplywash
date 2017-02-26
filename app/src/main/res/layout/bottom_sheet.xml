@@ -5,23 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/bottom_sheet_order_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:clickable="true"
-        android:src="@drawable/ic_schedule_white"
-        android:visibility="visible"
-        app:elevation="8dp"
-        app:fabSize="normal" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="25dp"
         android:background="@android:color/white"
         android:orientation="vertical"
         android:paddingBottom="16dp">
@@ -29,126 +15,199 @@
         <LinearLayout
             android:id="@+id/bottom_sheet_title"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="140dp"
             android:orientation="vertical"
             android:paddingEnd="8dp"
             android:paddingLeft="36dp"
             android:paddingRight="8dp"
             android:paddingStart="36dp"
-            android:paddingTop="15dp">
-
-            <TextView
-                android:id="@+id/name"
-                style="@style/TextAppearance.AppCompat.Headline"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dandelion Chocolate" />
+            android:paddingTop="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="4dp"
-                android:gravity="end"
                 android:orientation="horizontal">
 
-                <RatingBar
-                    android:id="@+id/rating_bar"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/rating_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="4.7 (51)" />
-
-                <TextView
-                    android:id="@+id/time_to_take"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="end"
-                    android:paddingEnd="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingStart="16dp"
-                    android:textColor="?attr/colorPrimary"
-                    tools:text="12 min away" />
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/name"
+                        style="@style/TextAppearance.AppCompat.Headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Dandelion Chocolate" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RatingBar
+                            android:id="@+id/rating_bar"
+                            style="@style/Widget.AppCompat.RatingBar.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/rating_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="4.7 (51)" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/order_to_showing_wash"
+                    style="?attr/buttonBarNeutralButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_schedule_black"
+                    android:text="@string/order"
+                    android:textAllCaps="false"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    android:textColor="@color/colorAccent" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:alpha="0.12"
-                android:background="@android:color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/boxes_status"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingBottom="8dp"
-                    android:paddingTop="8dp"
-                    android:textColor="?attr/colorPrimary"
-                    tools:text="7 of 12 boxes free" />
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/wifi"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="4dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_directions" />
+
+                        <TextView
+                            android:id="@+id/distance"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingEnd="16dp"
+                            android:paddingRight="16dp"
+                            android:paddingStart="16dp"
+                            android:textColor="?attr/colorPrimary"
+                            tools:text="1 km" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="4dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_access_time" />
+
+                        <TextView
+                            android:id="@+id/duration"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingEnd="16dp"
+                            android:paddingRight="16dp"
+                            android:paddingStart="16dp"
+                            android:textColor="?attr/colorPrimary"
+                            tools:text="12 min" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:alpha="0.3"
-                    android:gravity="end"
-                    android:src="@drawable/ic_action_wifi"
-                    android:visibility="gone"
-                    tools:visibility="visible"/>
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/coffee"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.3"
-                    android:gravity="end"
-                    android:src="@drawable/ic_action_coffee"
-                    android:visibility="gone"
-                    tools:visibility="visible"/>
+                    <TextView
+                        android:id="@+id/boxes_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="8dp"
+                        android:paddingTop="8dp"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                        tools:text="7 of 12" />
 
-                <ImageView
-                    android:id="@+id/rest_room"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.3"
-                    android:gravity="end"
-                    android:src="@drawable/ic_action_rest_room"
-                    android:visibility="gone"
-                    tools:visibility="visible"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/boxes_available"/>
 
-                <ImageView
-                    android:id="@+id/lunch_room"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.3"
-                    android:gravity="end"
-                    android:src="@drawable/ic_action_restaurant"
-                    android:visibility="gone"
-                    tools:visibility="visible"/>
+                </LinearLayout>
 
             </LinearLayout>
-
-
         </LinearLayout>
 
-        <View
+        <LinearLayout
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:alpha="0.12"
-            android:background="@android:color/black" />
+            android:layout_height="wrap_content"
+            android:background="#F7F7F7"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="24dp">
+
+            <ImageView
+                android:id="@+id/wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:src="@drawable/ic_action_wifi" />
+
+            <ImageView
+                android:id="@+id/coffee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_coffee" />
+
+            <ImageView
+                android:id="@+id/rest_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_rest_room" />
+
+            <ImageView
+                android:id="@+id/lunch_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_restaurant" />
+
+            <ImageView
+                android:id="@+id/wc"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_wc" />
+
+            <ImageView
+                android:id="@+id/tire"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_tire" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
