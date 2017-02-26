@@ -8,6 +8,7 @@
     android:gravity="bottom"
     app:umanoDragView="@+id/drag_view"
     app:umanoPanelHeight="140dp"
+    app:umanoAnchorPoint="0.6"
     app:umanoShadowHeight="8dp"
     app:umanoParallaxOffset="100dp"
     app:umanoInitialState="hidden">

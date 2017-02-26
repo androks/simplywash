@@ -64,8 +64,8 @@
                 <Button
                     android:id="@+id/order_to_showing_wash"
                     style="?attr/buttonBarNeutralButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="86dp"
+                    android:layout_height="64dp"
                     android:drawableTop="@drawable/ic_schedule_black"
                     android:text="@string/order"
                     android:textAllCaps="false"

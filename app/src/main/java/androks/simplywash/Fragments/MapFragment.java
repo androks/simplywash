@@ -160,7 +160,6 @@ public class MapFragment extends BaseFragment implements
      * End database section
      **/
 
-
     private FragmentActivity mContext;
 
     //Polyline list using as buffer to build directions
@@ -193,6 +192,12 @@ public class MapFragment extends BaseFragment implements
 
         determineListenersForDatabase();
 
+        mSlidingLayout.setFadeOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
         return rootView;
     }
 
@@ -708,6 +713,16 @@ public class MapFragment extends BaseFragment implements
         addCarDialog.show(getFragmentManager(), "Order");
         mProgressBar.setVisibility(View.GONE);
         dialogInProcess = false;
+    }
+
+    public void onBackPressed(){
+        if (mSlidingLayout != null &&
+                (mSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED
+                        || mSlidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+            mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        } else {
+            getActivity().onBackPressed();
+        }
     }
 
     @Override
