@@ -42,6 +42,7 @@
     <string name="read_more">Read more</string>
     <string name="order">Order</string>
     <string name="boxes_available">Boxes available</string>
+    <string name="no_service">No service</string>
 
 
 </resources>

@@ -109,13 +109,13 @@
                             android:paddingStart="16dp"
                             android:visibility="visible"
                             android:textColor="?attr/colorPrimary"
-                            tools:text="1 km" />
+                            android:text="@string/no_service" />
 
                         <ProgressBar
                             android:id="@+id/distance_in_progress"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             style="@android:style/Widget.Holo.ProgressBar.Small"/>
 
                     </LinearLayout>
@@ -140,13 +140,13 @@
                             android:paddingRight="16dp"
                             android:paddingStart="16dp"
                             android:textColor="?attr/colorPrimary"
-                            tools:text="12 min" />
+                            android:text="@string/no_service" />
 
                         <ProgressBar
                             android:id="@+id/duration_in_progress"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             style="@android:style/Widget.Holo.ProgressBar.Small"/>
 
                     </LinearLayout>
@@ -235,7 +235,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_place" />
+                android:src="@drawable/ic_place_red" />
 
             <TextView
                 android:id="@+id/location"

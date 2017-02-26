@@ -1,8 +1,5 @@
 package androks.simplywash;
 
-import android.graphics.Color;
-
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -23,22 +20,15 @@ public class Utils {
     public static void setMarkerIcon(Marker marker, String state){
         switch (state){
             case AVAILABLE:
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_GREEN
-                ));
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_green));
                 break;
 
             case OFFLINE:
-                //TODO:Change color to gray
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_RED
-                ));
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_gray));
                 break;
 
             case BUSY:
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_RED
-                ));
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red));
                 break;
         }
     }
@@ -46,30 +36,17 @@ public class Utils {
     public static void setMarkerIcon(MarkerOptions marker, String state){
         switch (state){
             case AVAILABLE:
-                marker.icon(BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_GREEN
-                ));
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_green));
                 break;
 
             case OFFLINE:
-                //TODO:Change color to gray
-                marker.icon(BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_RED
-                ));
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_gray));
                 break;
 
             case BUSY:
-                marker.icon(BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_RED
-                ));
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red));
                 break;
         }
-    }
-
-    private static BitmapDescriptor getMarkerIcon(String color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[2]);
     }
 
     public static DatabaseReference getWasher(){

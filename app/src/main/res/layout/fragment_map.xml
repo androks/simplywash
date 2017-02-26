@@ -31,42 +31,40 @@
             android:layout_marginTop="-7dp"
             android:indeterminate="true" />
 
-        <LinearLayout
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_get_direction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true">
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_near" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_get_direction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_near" />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_state_marker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:src="@mipmap/ic_marker_free"
-                app:backgroundTint="@android:color/background_light" />
-        </LinearLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_state_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/fab_get_direction"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="16dp"
+            android:src="@mipmap/ic_marker_free"
+            app:backgroundTint="@android:color/background_light" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_location_settings"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin= "16dp"
-            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:src="@drawable/ic_my_location"
-            app:backgroundTint="@android:color/background_light"
-            android:tint="@color/colorPrimaryDark"/>
+            android:tint="@color/colorPrimaryDark"
+            app:backgroundTint="@android:color/background_light" />
     </RelativeLayout>
 
     <include

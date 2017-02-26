@@ -79,6 +79,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static androks.simplywash.Utils.AVAILABLE;
+
 public class MapFragment extends BaseFragment implements
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
@@ -181,7 +183,7 @@ public class MapFragment extends BaseFragment implements
      * End database section
      **/
 
-    private FragmentActivity mContext;
+    private static FragmentActivity mContext;
 
     //Polyline list using as buffer to build directions
     private List<Polyline> mPolylinePaths = new ArrayList<>();
@@ -210,12 +212,10 @@ public class MapFragment extends BaseFragment implements
         showProgress();
         mContext = getActivity();
 
-        determineListenersForDatabase();
-        setListenersForDatabase();
         setUpMap();
 
         determineListenersForDatabase();
-
+        setListenersForDatabase();
         mSlidingLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -242,8 +242,6 @@ public class MapFragment extends BaseFragment implements
 
         if (mGoogleApiClient.isConnected())
             startLocationUpdates();
-
-        setListenersForDatabase();
     }
 
 
@@ -257,13 +255,13 @@ public class MapFragment extends BaseFragment implements
         if (mGoogleApiClient != null)
             mGoogleApiClient.disconnect();
 
-        deleteListenersForDatabase();
         super.onStop();
     }
 
     @Override
     public void onDetach() {
         unbinder.unbind();
+        deleteListenersForDatabase();
         super.onDetach();
     }
 
@@ -282,12 +280,12 @@ public class MapFragment extends BaseFragment implements
                     washer.getState().equals(Utils.BUSY) ||
                             washer.getState().equals(Utils.OFFLINE))
                     )
-                mMarkersList.get(washer.getId()).setVisible(FLAG_DISPLAY_ALL_STATES);
+                mMarkersList.get(washer.getId()).setVisible(true);
             else if (!FLAG_DISPLAY_ALL_STATES && (
                     washer.getState().equals(Utils.BUSY) ||
                             washer.getState().equals(Utils.OFFLINE))
                     )
-                mMarkersList.get(washer.getId()).setVisible(FLAG_DISPLAY_ALL_STATES);
+                mMarkersList.get(washer.getId()).setVisible(false);
 
         fab.setImageResource(FLAG_DISPLAY_ALL_STATES ?
                 R.mipmap.ic_markers_all : R.mipmap.ic_marker_free);
@@ -341,7 +339,7 @@ public class MapFragment extends BaseFragment implements
     }
 
     private void setListenersForDatabase() {
-        mWashersReference.addValueEventListener(mUploadWashers);
+        mWashersReference.addListenerForSingleValueEvent(mUploadWashers);
         mFreeWashersReference.addChildEventListener(mChangeWasherStatusListener);
     }
 
@@ -406,7 +404,7 @@ public class MapFragment extends BaseFragment implements
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
                     .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()))
-                    .visible(washer.getState().equals(Utils.AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
+                    .visible(washer.getState().equals(AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
             Utils.setMarkerIcon(marker, washer.getState());
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
@@ -416,7 +414,7 @@ public class MapFragment extends BaseFragment implements
     private void updateMarker(String id) {
         Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
         mMarkersList.get(id).setVisible(
-                mWashersList.get(id).getState().equals(Utils.AVAILABLE) || FLAG_DISPLAY_ALL_STATES
+                mWashersList.get(id).getState().equals(AVAILABLE) || FLAG_DISPLAY_ALL_STATES
         );
     }
 
@@ -488,7 +486,7 @@ public class MapFragment extends BaseFragment implements
                         break;
 
                     case Activity.RESULT_CANCELED:
-                        setAllFlagsToFalse();
+                        //setAllFlagsToFalse();
                         break;
                 }
                 break;
@@ -500,8 +498,15 @@ public class MapFragment extends BaseFragment implements
      */
     private void makeRequests() {
         if (mCurrentLocation != null) {
-            if (FLAG_DIS_DUR_CALCULATE)
+            if (FLAG_DIS_DUR_CALCULATE
+                    && mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN) {
+                showProgressBarsForDisAndDur();
                 calculateDistanceAndTime(mShowingWasher.getLanLng());
+            }
+            else
+                hideProgressBarsForDisAndDur();
+
+
             if (FLAG_FIND_MY_CURRENT_LOCATION) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 16));
                 mMyLocationFab.setColorFilter(colorAccent);
@@ -574,9 +579,12 @@ public class MapFragment extends BaseFragment implements
     public boolean onMarkerClick(Marker marker) {
         FLAG_DIS_DUR_CALCULATE = true;
 
-        mShowingWasher = mWashersList.get(marker.getTitle());
+        makeRequests();
+        if(mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
+                mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN)
+            return true;
 
-        checkLocationSettings();
+        mShowingWasher = mWashersList.get(marker.getTitle());
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
         //Inflating bottom sheet view by washer details
@@ -601,8 +609,6 @@ public class MapFragment extends BaseFragment implements
     }
 
     private void inflateWasherDetails() {
-        showProgressBarsForDisAndDur();
-
         mName.setText(mShowingWasher.getName());
         mRatingBar.setRating(mShowingWasher.getStars());
         mRatingText.setText(String.format(
@@ -690,7 +696,7 @@ public class MapFragment extends BaseFragment implements
         Double bestMatch = (double) -1;
         int i = 0;
         for (Washer washer : mWashersList.values()) {
-            if (washer.getState().equals(Utils.AVAILABLE)) {
+            if (washer.getState().equals(AVAILABLE)) {
                 distances[i] = SphericalUtil.computeDistanceBetween(
                         mCurrentLocation,
                         washer.getLanLng()
