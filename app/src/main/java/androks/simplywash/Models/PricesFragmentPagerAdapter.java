@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.HashMap;
 
-import androks.simplywash.Enums.CarTypes;
+import androks.simplywash.Enums.CarType;
 import androks.simplywash.Fragments.PriceFragment;
 
 /**
@@ -28,12 +28,12 @@ public class PricesFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if(position == CarTypes.MINIVAN.ordinal())
-            return PriceFragment.newInstance(mPrices.get(CarTypes.MINIVAN.toString()));
-        else if(position == CarTypes.SUV.ordinal())
-            return PriceFragment.newInstance(mPrices.get(CarTypes.SUV.toString()));
+        if(position == CarType.MINIVAN.ordinal())
+            return PriceFragment.newInstance(mPrices.get(CarType.MINIVAN.toString()));
+        else if(position == CarType.SUV.ordinal())
+            return PriceFragment.newInstance(mPrices.get(CarType.SUV.toString()));
         else
-            return PriceFragment.newInstance(mPrices.get(CarTypes.CAR.toString()));
+            return PriceFragment.newInstance(mPrices.get(CarType.CAR.toString()));
     }
 
     @Override

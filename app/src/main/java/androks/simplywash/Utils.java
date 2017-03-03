@@ -12,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Utils {
 
+    public static final int SIGN_IN = 10;
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 11;
     public static final String BUSY = "busy";
     public static final String AVAILABLE = "available";
@@ -40,7 +41,7 @@ public class Utils {
                 break;
 
             case OFFLINE:
-                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_gray));
+               // marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_gray));
                 break;
 
             case BUSY:

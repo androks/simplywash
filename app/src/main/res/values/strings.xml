@@ -43,6 +43,11 @@
     <string name="order">Order</string>
     <string name="boxes_available">Boxes available</string>
     <string name="no_service">No service</string>
+    <string name="skip">Skip</string>
+    <string name="finish">Finish</string>
+    <string name="or">or</string>
+    <string name="sing_in_with_google">Sing In with Google</string>
+    <string name="car_maker">Car maker</string>
 
 
 </resources>

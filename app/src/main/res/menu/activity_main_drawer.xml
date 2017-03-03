@@ -6,10 +6,6 @@
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_map"
             android:title="Map" />
-        <item
-            android:id="@+id/nav_cars"
-            android:icon="@drawable/ic_car"
-            android:title="Your cars" />
     </group>
 
     <item android:title="Communicate">

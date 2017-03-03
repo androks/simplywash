@@ -71,9 +71,7 @@ public class AddCarDialog extends AppCompatDialogFragment implements  View.OnCli
         mCarModel.setThreshold(0);
         mAddCarForm = view.findViewById(R.id.add_car_form);
         mAddCarForm.setVisibility(View.GONE);
-        mProgressBar = view.findViewById(R.id.loading_car_lists);
         mProgressBar.setVisibility(View.VISIBLE);
-        mConfirmButton = (Button) view.findViewById(R.id.car_confirm);
         mConfirmButton.setOnClickListener(this);
 
         mCarMaker.setOnTouchListener(new View.OnTouchListener() {

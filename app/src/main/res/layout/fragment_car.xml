@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bd_white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_padding">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/car_maker_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <AutoCompleteTextView
+            android:hint="@string/car_maker"
+            android:id="@+id/car_maker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

@@ -64,7 +64,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import androks.simplywash.Activities.LoginActivity;
 import androks.simplywash.Activities.WasherDetailsActivity;
 import androks.simplywash.Dialogs.OrderDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
@@ -79,7 +78,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static androks.simplywash.Utils.AVAILABLE;
 
 public class MapFragment extends BaseFragment implements
         OnMapReadyCallback,
@@ -97,7 +95,6 @@ public class MapFragment extends BaseFragment implements
      **/
     private static final String TAG_CALCULATE_DIS_DUR = "TAG_CALCULATE_DIS_DUR";
     private static final String TAG_BUILD_ROUTE = "TAG_BUILD_ROUTE";
-    private static final int SIGN_IN = 10;
     private static final String CURRENT_WASHER_ID = "CURRENT_WASHER_ID";
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
@@ -301,11 +298,11 @@ public class MapFragment extends BaseFragment implements
             Toast.makeText(mContext, "No washers available", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (getCurrentUser() == null) {
-            startActivityForResult(new Intent(getActivity(), LoginActivity.class), SIGN_IN);
-            return;
-        }
-        showProgress();
+//        if (getCurrentUser() == null) {
+//            startActivityForResult(new Intent(getActivity(), LoginActivity.class), Utils.SIGN_IN);
+//            return;
+//        }
+
         FLAG_DIALOG_IN_PROCESS = true;
     }
 
@@ -405,17 +402,17 @@ public class MapFragment extends BaseFragment implements
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
                     .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()))
-                    .visible(washer.getState().equals(AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
-            Utils.setMarkerIcon(marker, washer.getState());
+                    .visible(washer.getState().equals(Utils.AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
+            //Utils.setMarkerIcon(marker, washer.getState());
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
         hideProgress();
     }
 
     private void updateMarker(String id) {
-        Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
+        //Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
         mMarkersList.get(id).setVisible(
-                mWashersList.get(id).getState().equals(AVAILABLE) || FLAG_DISPLAY_ALL_STATES
+                mWashersList.get(id).getState().equals(Utils.AVAILABLE) || FLAG_DISPLAY_ALL_STATES
         );
     }
 
@@ -477,7 +474,7 @@ public class MapFragment extends BaseFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case SIGN_IN:
+            case Utils.SIGN_IN:
                 //TODO:Build route
                 //checkLocationSettings();
                 break;
@@ -562,6 +559,7 @@ public class MapFragment extends BaseFragment implements
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setBuildingsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         LatLng kiev = new LatLng(50.4448235, 30.5497172);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(kiev, 10));
@@ -697,7 +695,7 @@ public class MapFragment extends BaseFragment implements
         Double bestMatch = (double) -1;
         int i = 0;
         for (Washer washer : mWashersList.values()) {
-            if (washer.getState().equals(AVAILABLE)) {
+            if (washer.getState().equals(Utils.AVAILABLE)) {
                 distances[i] = SphericalUtil.computeDistanceBetween(
                         mCurrentLocation,
                         washer.getLanLng()

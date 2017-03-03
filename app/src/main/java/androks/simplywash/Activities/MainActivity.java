@@ -24,7 +24,6 @@ import android.view.MenuItem;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import androks.simplywash.Fragments.CarsFragment;
 import androks.simplywash.Fragments.MapFragment;
 import androks.simplywash.R;
 import butterknife.BindView;
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private int currentFragment = 0;
 
     private Fragment mapFragment;
-    private Fragment carsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mapFragment = new MapFragment();
-        carsFragment = new CarsFragment();
 
         mDrawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(mDrawerToggle);
@@ -246,9 +243,6 @@ public class MainActivity extends AppCompatActivity {
             case 0:
                 fragment = mapFragment;
                 break;
-            case 1:
-                fragment = carsFragment;
-                break;
             default:
                 fragment = mapFragment;
                 break;
@@ -262,8 +256,6 @@ public class MainActivity extends AppCompatActivity {
         switch (currentFragment) {
             case 0:
                 return mapFragment;
-            case 1:
-                return carsFragment;
             default:
                 return null;
         }
