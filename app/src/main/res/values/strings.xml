@@ -48,6 +48,9 @@
     <string name="or">or</string>
     <string name="sing_in_with_google">Sing In with Google</string>
     <string name="car_maker">Car maker</string>
+    <string name="title_activity_reviews">ReviewsActivity</string>
+    <string name="rate_this_washer">Rate this washer</string>
+    <string name="write_some_words_about_washer">Write some words about washer</string>
 
 
 </resources>

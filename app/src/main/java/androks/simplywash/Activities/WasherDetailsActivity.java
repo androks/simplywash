@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import androks.simplywash.Dialogs.AddReviewDialog;
 import androks.simplywash.Entity.TabEntity;
@@ -273,11 +274,9 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onReviewAdded(Review review) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         review.setDate(sdf.format(new Date()));
         review.setWasherId(mWasherId);
-        review.setUid(getCurrentUser().getUid());
-        review.setEmail(getCurrentUser().getEmail());
         String id = FirebaseDatabase.getInstance().getReference().child("reviews").child(review.getWasherId()).push().getKey();
         FirebaseDatabase.getInstance().getReference().child("reviews").child(review.getWasherId()).child(id).setValue(review);
     }

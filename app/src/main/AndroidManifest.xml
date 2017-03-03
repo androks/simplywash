@@ -66,7 +66,11 @@
             android:name="io.fabric.ApiKey"
             android:value="11efa5e61555132f35cb2dcebd1dcd6161c1a7ee" />
 
-        <activity android:name=".Activities.OrderActivity"></activity>
+        <activity android:name=".Activities.OrderActivity" />
+        <activity
+            android:name=".Activities.ReviewsActivity"
+            android:label="@string/title_activity_reviews"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
