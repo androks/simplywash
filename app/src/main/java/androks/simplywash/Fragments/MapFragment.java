@@ -65,6 +65,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import androks.simplywash.Activities.WasherDetailsActivity;
+import androks.simplywash.Constants;
 import androks.simplywash.Dialogs.OrderDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
@@ -274,13 +275,13 @@ public class MapFragment extends BaseFragment implements
         FLAG_DISPLAY_ALL_STATES = !FLAG_DISPLAY_ALL_STATES;
         for (Washer washer : mWashersList.values())
             if (FLAG_DISPLAY_ALL_STATES && (
-                    washer.getState().equals(Utils.BUSY) ||
-                            washer.getState().equals(Utils.OFFLINE))
+                    washer.getState().equals(Constants.BUSY) ||
+                            washer.getState().equals(Constants.OFFLINE))
                     )
                 mMarkersList.get(washer.getId()).setVisible(true);
             else if (!FLAG_DISPLAY_ALL_STATES && (
-                    washer.getState().equals(Utils.BUSY) ||
-                            washer.getState().equals(Utils.OFFLINE))
+                    washer.getState().equals(Constants.BUSY) ||
+                            washer.getState().equals(Constants.OFFLINE))
                     )
                 mMarkersList.get(washer.getId()).setVisible(false);
 
@@ -402,7 +403,7 @@ public class MapFragment extends BaseFragment implements
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
                     .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()))
-                    .visible(washer.getState().equals(Utils.AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
+                    .visible(washer.getState().equals(Constants.AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
             //Utils.setMarkerIcon(marker, washer.getState());
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
@@ -412,7 +413,7 @@ public class MapFragment extends BaseFragment implements
     private void updateMarker(String id) {
         //Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
         mMarkersList.get(id).setVisible(
-                mWashersList.get(id).getState().equals(Utils.AVAILABLE) || FLAG_DISPLAY_ALL_STATES
+                mWashersList.get(id).getState().equals(Constants.AVAILABLE) || FLAG_DISPLAY_ALL_STATES
         );
     }
 
@@ -458,7 +459,7 @@ public class MapFragment extends BaseFragment implements
                 try {
                     // Show the dialog by calling startResolutionForResult(), and check the result
                     // in onActivityResult().
-                    status.startResolutionForResult(mContext, Utils.REQUEST_CHECK_LOCATION_SETTINGS);
+                    status.startResolutionForResult(mContext, Constants.REQUEST_CHECK_LOCATION_SETTINGS);
                 } catch (IntentSender.SendIntentException e) {
                     //PendingIntent unable to execute request
 
@@ -474,11 +475,11 @@ public class MapFragment extends BaseFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case Utils.SIGN_IN:
+            case Constants.SIGN_IN:
                 //TODO:Build route
                 //checkLocationSettings();
                 break;
-            case Utils.REQUEST_CHECK_LOCATION_SETTINGS:
+            case Constants.REQUEST_CHECK_LOCATION_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         break;
@@ -695,7 +696,7 @@ public class MapFragment extends BaseFragment implements
         Double bestMatch = (double) -1;
         int i = 0;
         for (Washer washer : mWashersList.values()) {
-            if (washer.getState().equals(Utils.AVAILABLE)) {
+            if (washer.getState().equals(Constants.AVAILABLE)) {
                 distances[i] = SphericalUtil.computeDistanceBetween(
                         mCurrentLocation,
                         washer.getLanLng()

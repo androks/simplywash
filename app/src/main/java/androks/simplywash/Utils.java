@@ -12,23 +12,17 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Utils {
 
-    public static final int SIGN_IN = 10;
-    public static final int REQUEST_CHECK_LOCATION_SETTINGS = 11;
-    public static final String BUSY = "busy";
-    public static final String AVAILABLE = "available";
-    public static final String OFFLINE = "offline";
-
     public static void setMarkerIcon(Marker marker, String state){
         switch (state){
-            case AVAILABLE:
+            case Constants.AVAILABLE:
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_green));
                 break;
 
-            case OFFLINE:
+            case Constants.OFFLINE:
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_gray));
                 break;
 
-            case BUSY:
+            case Constants.BUSY:
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red));
                 break;
         }
@@ -36,15 +30,15 @@ public class Utils {
 
     public static void setMarkerIcon(MarkerOptions marker, String state){
         switch (state){
-            case AVAILABLE:
+            case Constants.AVAILABLE:
                 marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_green));
                 break;
 
-            case OFFLINE:
+            case Constants.OFFLINE:
                // marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_gray));
                 break;
 
-            case BUSY:
+            case Constants.BUSY:
                 marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red));
                 break;
         }

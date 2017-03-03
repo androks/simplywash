@@ -71,6 +71,12 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.animated_toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

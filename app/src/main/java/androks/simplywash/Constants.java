@@ -5,6 +5,10 @@ package androks.simplywash;
  */
 
 public class Constants {
-    public static final String AUTH_PREFS = "AUTH_PREFS";
     public static final String AUTH_UUID = "AUTH_UUID";
+    public static final int SIGN_IN = 10;
+    public static final int REQUEST_CHECK_LOCATION_SETTINGS = 11;
+    public static final String BUSY = "busy";
+    public static final String AVAILABLE = "available";
+    public static final String OFFLINE = "offline";
 }

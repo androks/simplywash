@@ -50,14 +50,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
-        if (!mSharedPrefs.contains(Constants.AUTH_UUID)) {
-            Intent toLogin = new Intent(this, LoginActivity.class);
-            startActivity(toLogin);
-            return;
-        }
-
+        mSharedPrefs = getPreferences(MODE_PRIVATE);
+        checkIfUserLoggedIn();
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
@@ -71,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mNVDrawer);
 
         setCurrentFragment();
+    }
+
+    private void checkIfUserLoggedIn(){
+        if (!mSharedPrefs.contains(Constants.AUTH_UUID)) {
+            Intent toLogin = new Intent(this, LoginActivity.class);
+            startActivity(toLogin);
+            finish();
+        }
     }
 
     @Override
