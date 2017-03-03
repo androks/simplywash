@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFERNCES, MODE_PRIVATE);
-        checkIfUserLoggedIn();
+        //checkIfUserLoggedIn();
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);

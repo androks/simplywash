@@ -1,87 +1,149 @@
 package androks.simplywash.Dialogs;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import androks.simplywash.Constants;
 import androks.simplywash.Models.Review;
 import androks.simplywash.R;
+import androks.simplywash.Utils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
  * Created by androks on 1/22/2017.
  */
 
-public class AddReviewDialog extends AppCompatDialogFragment implements View.OnClickListener {
+public class AddReviewDialog extends AppCompatDialogFragment{
 
     public interface AddReviewDialogListener {
-        void onReviewAdded(Review review);
+        void onReviewAdded(String userPhone, Review review);
     }
 
-    private EditText mTextEdit;
-    private RatingBar mRatingBar;
-    private TextInputLayout mTextLayout;
+    @BindView(R.id.text) EditText mReviewText;
+    @BindView(R.id.rate) RatingBar mRatingBar;
+    @BindView(R.id.name) EditText mName;
+    @BindView(R.id.add) View mBtnAdd;
+    @BindView(R.id.cancel) View mBtnCancel;
+
+    private DatabaseReference mReviewReference;
+    private Review mReview;
+    private String mUserPhone;
 
     public AddReviewDialog() {
         // Empty constructor required for DialogFragment
     }
 
+    public static AddReviewDialog newInstance(String washerId){
+        AddReviewDialog dialog = new AddReviewDialog();
+        Bundle arguments = new Bundle();
+        arguments.putString(Constants.WASHER_ID, washerId);
+        dialog.setArguments(arguments);
+        return dialog;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        SharedPreferences prefs = getActivity().getSharedPreferences(
+                Constants.AUTH_PREFERNCES,
+                Context.MODE_PRIVATE
+        );
+        mUserPhone = prefs.getString(Constants.AUTH_UUID_PREF, "Undefined");
+        mReviewReference = Utils.getUserReview(
+                bundle.getString(Constants.WASHER_ID),
+                mUserPhone
+        );
+        uploadReview();
+    }
+
+    private void uploadReview() {
+        mReviewReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren())
+                    mReview = dataSnapshot.getValue(Review.class);
+
+                inflateAndEnableViews();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void inflateAndEnableViews() {
+        if(mReview != null){
+            mName.setText(mReview.getText());
+            mReviewText.setText(mReview.getText());
+            mRatingBar.setRating(mReview.getRating());
+        }
+
+        mName.setEnabled(true);
+        mReviewText.setEnabled(true);
+        mBtnAdd.setEnabled(true);
+        mBtnCancel.setEnabled(true);
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_add_review, container, false);
+        ButterKnife.bind(this, view);
         Dialog dialog = getDialog();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
 
-        mTextEdit = (EditText) view.findViewById(R.id.review_text);
-        mRatingBar = (RatingBar) view.findViewById(R.id.review_rate);
-        mTextLayout = (TextInputLayout) view.findViewById(R.id.review_layout);
-
-        view.findViewById(R.id.add).setOnClickListener(this);
-        view.findViewById(R.id.cancel).setOnClickListener(this);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if(getDialog().getWindow() != null)
+            getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.cancel:
-                this.dismiss();
-                break;
-
-            case R.id.add:
-                if(!validateForm()){
-                    break;
-                }
-                // Return input text to activity
-                ((AddReviewDialogListener) getActivity()).onReviewAdded(new Review(mTextEdit.getText().toString(), mRatingBar.getRating()));
-                this.dismiss();
-                break;
-        }
-
+    @OnClick(R.id.cancel)
+    public void cancel(){
+        this.dismiss();
     }
 
-    private boolean validateForm() {
-        if(mRatingBar.getRating() < 0 || mRatingBar.getRating() > 5) {
-            return false;
-        }
-        else if(mTextEdit.getText().toString().trim().length() < 5){
-            mTextLayout.setError("Must be more than 5 characters");
-            return false;
-        }
-        return true;
+    @OnClick(R.id.add)
+    public void addReview(){
+        String name = mName.getText().toString();
+        String text = mReviewText.getText().toString();
+        Float rating = mRatingBar.getRating();
+        // Return input text to activity
+        ((AddReviewDialogListener) getActivity()).onReviewAdded(mUserPhone, new Review(name, text, rating));
+        this.dismiss();
     }
+
 }

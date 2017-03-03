@@ -3,6 +3,7 @@ package androks.simplywash;
 import android.app.Application;
 
 import com.digits.sdk.android.Digits;
+import com.google.firebase.auth.FirebaseAuth;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
@@ -23,5 +24,6 @@ public class App extends Application {
         super.onCreate();
         TwitterAuthConfig authConfig =  new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new TwitterCore(authConfig), new Digits.Builder().build());
+        FirebaseAuth.getInstance().signInAnonymously();
     }
 }

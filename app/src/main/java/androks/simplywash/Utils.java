@@ -60,6 +60,14 @@ public class Utils {
         return  FirebaseDatabase.getInstance().getReference().child("reviews").child(washerId);
     }
 
+    public static DatabaseReference getUserReview(String washerId, String userPhone){
+        return  FirebaseDatabase.getInstance().getReference().child("reviews").child(washerId).child(userPhone);
+    }
+
+    public static DatabaseReference getExpandedReviews(String washerId){
+        return  FirebaseDatabase.getInstance().getReference().child("full-reviews").child(washerId);
+    }
+
     public static DatabaseReference getUserInfo(String userId){
         return  FirebaseDatabase.getInstance().getReference().child("users").child(userId);
     }

@@ -57,7 +57,7 @@
             android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".Activities.WasherDetailsActivity"
+            android:name=".Activities.WasherActivity"
             android:label="@string/title_activity_washer_details"
             android:parentActivityName=".Activities.MainActivity"
             android:theme="@style/AppTheme" />

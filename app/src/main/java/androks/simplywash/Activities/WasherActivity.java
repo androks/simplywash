@@ -21,20 +21,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
 import androks.simplywash.Dialogs.AddReviewDialog;
 import androks.simplywash.Entity.TabEntity;
@@ -43,8 +42,9 @@ import androks.simplywash.Models.PricesFragmentPagerAdapter;
 import androks.simplywash.Models.Review;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
+import androks.simplywash.Utils;
 
-public class WasherDetailsActivity extends BaseActivity implements View.OnClickListener, AddReviewDialog.AddReviewDialogListener {
+public class WasherActivity extends BaseActivity implements View.OnClickListener, AddReviewDialog.AddReviewDialogListener {
 
     private static final int NUM_OF_REVIEWS = 3;
     private final String[] mTitles = {"Car", "SUV", "Minivan"};
@@ -140,35 +140,38 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
     }
 
     private void downloadReviews() {
-        FirebaseDatabase.getInstance().getReference().child("reviews").child(mWasherId).limitToLast(NUM_OF_REVIEWS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
-                    LinearLayout container = (LinearLayout) findViewById(R.id.review_container);
-                    int pos = 0;
+        Utils.getExpandedReviews(mWasherId).limitToLast(NUM_OF_REVIEWS)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChildren()) {
+                            LinearLayout container = (LinearLayout) findViewById(R.id.review_container);
+                            container.removeAllViews();
+                            int pos = 0;
 
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Review temp = child.getValue(Review.class);
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                Review temp = child.getValue(Review.class);
 
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View reviewView = inflater.inflate(R.layout.item_review, null);
-                        reviewView.setId(pos);
-                        ((TextView) reviewView.findViewById(R.id.email)).setText(temp.getEmail());
-                        ((TextView) reviewView.findViewById(R.id.date)).setText(temp.getDate());
-                        ((TextView) reviewView.findViewById(R.id.text)).setText(temp.getText());
-                        ((RatingBar) reviewView.findViewById(R.id.rate)).setRating(temp.getRating());
-                        pos++;
-                        container.addView(reviewView);
+                                LayoutInflater inflater =
+                                        (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                View reviewView = inflater.inflate(R.layout.item_review, null);
+                                reviewView.setId(pos);
+                                ((TextView) reviewView.findViewById(R.id.name)).setText(temp.getName());
+                                ((TextView) reviewView.findViewById(R.id.date)).setText(temp.getDate());
+                                ((TextView) reviewView.findViewById(R.id.text)).setText(temp.getText());
+                                ((RatingBar) reviewView.findViewById(R.id.rate)).setRating(temp.getRating());
+                                pos++;
+                                container.addView(reviewView);
+                            }
+                            findViewById(R.id.no_items).setVisibility(View.GONE);
+                        }
                     }
-                    findViewById(R.id.no_items).setVisibility(View.GONE);
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
     }
 
     private void inflateView() {
@@ -240,7 +243,7 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.add_review_btn:
-                AppCompatDialogFragment addReviewDialog = new AddReviewDialog();
+                AppCompatDialogFragment addReviewDialog = AddReviewDialog.newInstance(mWasherId);
                 addReviewDialog.show(getSupportFragmentManager(), "Add review");
                 break;
             case R.id.more_reviews:
@@ -262,7 +265,7 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
                 break;
 
             case R.id.location_layout:
-                Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLangtitude() + "," + mWasher.getLongtitude() + "?q="  + mWasher.getLangtitude() + "," + mWasher.getLongtitude());
+                Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLangtitude() + "," + mWasher.getLongtitude() + "?q=" + mWasher.getLangtitude() + "," + mWasher.getLongtitude());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getPackageManager()) != null)
@@ -273,11 +276,20 @@ public class WasherDetailsActivity extends BaseActivity implements View.OnClickL
 
 
     @Override
-    public void onReviewAdded(Review review) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-        review.setDate(sdf.format(new Date()));
-        review.setWasherId(mWasherId);
-        String id = FirebaseDatabase.getInstance().getReference().child("reviews").child(review.getWasherId()).push().getKey();
-        FirebaseDatabase.getInstance().getReference().child("reviews").child(review.getWasherId()).child(id).setValue(review);
+    public void onReviewAdded(String userPhone, Review review) {
+        showProgressDialog();
+        if (!review.getText().isEmpty()) {
+            if (review.getName().isEmpty())
+                review.setName("Anonym");
+            Utils.getExpandedReviews(mWasherId).child(userPhone).setValue(review);
+        }
+        Utils.getReviewsFor(mWasherId).child(userPhone).setValue(review, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                hideProgressDialog();
+                Toast.makeText(WasherActivity.this, "Added", Toast.LENGTH_SHORT).show();
+                downloadReviews();
+            }
+        });
     }
 }

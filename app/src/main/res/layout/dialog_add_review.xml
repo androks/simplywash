@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/order_form"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:elevation="24dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +25,7 @@
                 android:text="@string/rate_this_washer" />
 
             <RatingBar
-                android:id="@+id/review_rate"
+                android:id="@+id/rate"
                 style="@style/Widget.AppCompat.RatingBar.Indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,7 +36,6 @@
                 tools:rating="3.5" />
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -46,11 +44,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:gravity="top|left"
-                    android:hint="Name (optional)"
+                    android:hint="@string/name_optional"
                     android:inputType="text"
                     android:lines="1"
                     android:maxLines="10"
+                    android:enabled="false"
                     android:minLines="4"
                     android:scrollbars="vertical"
                     android:singleLine="true" />
@@ -59,18 +57,21 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/review_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:counterEnabled="true"
+                app:counterMaxLength="100">
 
                 <EditText
-                    android:id="@+id/review_text"
+                    android:id="@+id/text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:gravity="top|left"
-                    android:hint="Some words about it"
+                    android:hint="@string/some_words_about_it"
                     android:inputType="textMultiLine"
                     android:lines="5"
+                    android:gravity="start"
                     android:maxLines="10"
+                    android:enabled="false"
                     android:minLines="4"
                     android:scrollbars="vertical" />
             </android.support.design.widget.TextInputLayout>
@@ -91,10 +92,12 @@
                 android:layout_height="36dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:enabled="false"
                 android:text="@string/cancel" />
 
             <Button
                 android:id="@+id/add"
+                android:enabled="false"
                 style="?attr/buttonBarPositiveButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
@@ -103,4 +106,4 @@
         </LinearLayout>
 
     </LinearLayout>
-</ScrollView>
+</RelativeLayout>

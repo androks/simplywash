@@ -64,7 +64,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import androks.simplywash.Activities.OrderActivity;
-import androks.simplywash.Activities.WasherDetailsActivity;
+import androks.simplywash.Activities.WasherActivity;
 import androks.simplywash.Constants;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
@@ -269,7 +269,7 @@ public class MapFragment extends Fragment implements
 
     @OnClick(R.id.moreBtn)
     public void showWasherDetails() {
-        Intent intent = new Intent(getActivity(), WasherDetailsActivity.class);
+        Intent intent = new Intent(getActivity(), WasherActivity.class);
         intent.putExtra("id", mShowingWasher.getId());
         startActivity(intent);
     }

@@ -1,45 +1,32 @@
 package androks.simplywash.Models;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
  * Created by androks on 1/22/2017.
  */
 
 public class Review {
-    private String id;
-    private String uid;
-    private String washerId;
+    private String name;
     private String text;
     private String date;
-    private String email;
     private float rating;
 
     Review(){}
 
-    public Review(String id, String uid, String washerId, String text, String date, String email, float rating) {
-        this.id = id;
-        this.uid = uid;
-        this.washerId = washerId;
-        this.text = text;
-        this.date = date;
-        this.email = email;
-        this.rating = rating;
-    }
-
-    public Review(String text, float rating) {
+    public Review(String name, String text, float rating) {
+        this.name = name;
         this.text = text;
         this.rating = rating;
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        date = format.format(calendar.getTime());
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public String getWasherId() {
-        return washerId;
+    public String getName() {
+        return name;
     }
 
     public String getText() {
@@ -54,35 +41,7 @@ public class Review {
         return rating;
     }
 
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public void setWasherId(String washerId) {
-        this.washerId = washerId;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setName(String name) {
+        this.name = name;
     }
 }
