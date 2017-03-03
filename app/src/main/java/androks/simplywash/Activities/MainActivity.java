@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSharedPrefs = getPreferences(MODE_PRIVATE);
+        mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFERNCES, MODE_PRIVATE);
         checkIfUserLoggedIn();
         setContentView(R.layout.activity_main);
 
@@ -68,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkIfUserLoggedIn(){
-        if (!mSharedPrefs.contains(Constants.AUTH_UUID)) {
+        String phone = mSharedPrefs.getString(Constants.AUTH_UUID_PREF, null);
+        if (phone == null) {
             Intent toLogin = new Intent(this, LoginActivity.class);
             startActivity(toLogin);
             finish();

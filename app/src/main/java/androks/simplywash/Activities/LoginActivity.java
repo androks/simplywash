@@ -40,9 +40,9 @@ public class LoginActivity extends AppCompatActivity {
             public void success(DigitsSession session, String phoneNumber) {
                 Toast.makeText(getApplicationContext(), "Authentication successful for \n"
                         + phoneNumber, Toast.LENGTH_LONG).show();
-                SharedPreferences sp = getPreferences(MODE_PRIVATE);
+                SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERNCES, MODE_PRIVATE);
                 SharedPreferences.Editor edit = sp.edit();
-                edit.putString(Constants.AUTH_UUID, session.getPhoneNumber());
+                edit.putString(Constants.AUTH_UUID_PREF, phoneNumber);
                 edit.apply();
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
