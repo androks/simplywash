@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import androks.simplywash.Constants;
 import androks.simplywash.Fragments.MapFragment;
 import androks.simplywash.R;
 import butterknife.BindView;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private BroadcastReceiver mInternetReceiver;
+    private SharedPreferences mSharedPrefs;
 
     private int currentFragment = 0;
 
@@ -47,7 +50,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
+        if (!mSharedPrefs.contains(Constants.AUTH_UUID)) {
+            Intent toLogin = new Intent(this, LoginActivity.class);
+            startActivity(toLogin);
+            return;
+        }
+
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -118,10 +130,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_map:
                 changeFragment = (currentFragment == 0);
                 currentFragment = 0;
-                break;
-            case R.id.nav_cars:
-                changeFragment = (currentFragment == 1);
-                currentFragment = 1;
                 break;
         }
 

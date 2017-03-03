@@ -1,55 +1,58 @@
 package androks.simplywash.Activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
-import androks.simplywash.Fragments.LoginFragment;
+import com.digits.sdk.android.AuthCallback;
+import com.digits.sdk.android.DigitsAuthButton;
+import com.digits.sdk.android.DigitsException;
+import com.digits.sdk.android.DigitsSession;
+
+import androks.simplywash.Constants;
 import androks.simplywash.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private AuthCallback authCallback;
+
+    @BindView(R.id.auth_button) DigitsAuthButton mAuthButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+
+        implementAuthCallback();
+        mAuthButton.setCallback(authCallback);
+        mAuthButton.setAuthTheme(R.style.DigitsTheme);
+        mAuthButton.performClick();
     }
 
-    public static class LoginPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 3;
+    private void implementAuthCallback(){
+        authCallback = new AuthCallback() {
+            @Override
+            public void success(DigitsSession session, String phoneNumber) {
+                Toast.makeText(getApplicationContext(), "Authentication successful for \n"
+                        + phoneNumber, Toast.LENGTH_LONG).show();
+                SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFS, MODE_PRIVATE);
+                SharedPreferences.Editor edit = sp.edit();
+                edit.putString(Constants.AUTH_UUID, session.getPhoneNumber());
+                edit.apply();
 
-        public LoginPagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        // Returns total number of pages
-        @Override
-        public int getCount() {
-            return NUM_ITEMS;
-        }
-
-        // Returns the fragment to display for that page
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
-                    return new LoginFragment();
-                case 1: // Fragment # 0 - This will show FirstFragment different title
-                    return FirstFragment.newInstance(1, "Page # 2");
-                case 2: // Fragment # 1 - This will show SecondFragment
-                    return SecondFragment.newInstance(2, "Page # 3");
-                default:
-                    return null;
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
             }
-        }
 
-        // Returns the page title for the top indicator
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "Page " + position;
-        }
-
+            @Override
+            public void failure(DigitsException exception) {
+                Toast.makeText(LoginActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 }
