@@ -1,14 +1,9 @@
 package androks.simplywash.Activities;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -17,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -195,44 +189,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //Receiver for stable internet connection
-        mInternetReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                checkInternetConnection();
-            }
-        };
-        registerReceiver(mInternetReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+//        mInternetReceiver = new BroadcastReceiver() {
+//            public void onReceive(Context context, Intent intent) {
+//                checkInternetConnection();
+//            }
+//        };
+//        registerReceiver(mInternetReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
-    private void checkInternetConnection() {
-        boolean isProcess;
-        try {
-            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            isProcess = networkInfo != null && networkInfo.isConnected();
-        } catch (Exception e) {
-            isProcess = false;
-            e.printStackTrace();
-        }
-
-        if (!isProcess) {
-            try {
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(MainActivity.this, android.R.style.DeviceDefault_Light_ButtonBar_AlertDialog);
-                builder.setTitle("Internet not available");
-                builder.setMessage("You are offline. Please, check your internet connection");
-                builder.setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        checkInternetConnection();
-                    }
-                });
-                builder.setCancelable(false);
-                builder.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private void checkInternetConnection() {
+//        boolean isProcess;
+//        try {
+//            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+//            isProcess = networkInfo != null && networkInfo.isConnected();
+//        } catch (Exception e) {
+//            isProcess = false;
+//            e.printStackTrace();
+//        }
+//
+//        if (!isProcess) {
+//            try {
+//                AlertDialog.Builder builder =
+//                        new AlertDialog.Builder(MainActivity.this, android.R.style.DeviceDefault_Light_ButtonBar_AlertDialog);
+//                builder.setTitle("Internet not available");
+//                builder.setMessage("You are offline. Please, check your internet connection");
+//                builder.setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        checkInternetConnection();
+//                    }
+//                });
+//                builder.setCancelable(false);
+//                builder.show();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
