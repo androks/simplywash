@@ -1,75 +1,62 @@
 package androks.simplywash.Models;
 
-import com.google.android.gms.maps.model.LatLng;
-
 /**
  * Created by androks on 11/17/2016.
  */
 
 public class Washer {
-    private double langtitude;
-    private double longtitude;
-    private int boxes;
-    private int freeBoxes;
-    private int votes;
-    private float stars;
-    private boolean cafe;
-    private boolean wifi;
-    private boolean restRoom;
-    private boolean lunchRoom;
-    private boolean wc;
-    private boolean tire;
-    private String state;
-    private String hours;
     private String id;
+    private String userId;
     private String name;
     private String phone;
-    private String uid;
     private String location;
     private String description;
+    private String placeId;
+    private String state;
+    private double langtitude;
+    private double longtitude;
+    private float rating;
+    private int boxes;
+    private int availableBoxes;
+    private int votesCount;
+    private int workHoursFrom;
+    private int workHoursTo;
+    private boolean restRoom;
+    private boolean wifi;
+    private boolean toilet;
+    private boolean coeffee;
+    private boolean shop;
+    private boolean cardPayment;
+    private boolean serviceStation;
 
-    public boolean getTire() {
-        return tire;
+    public Washer() {}
+
+    public String getId() {
+        return id;
     }
 
-    public boolean getWc() {
-        return wc;
+    public String getUserId() {
+        return userId;
     }
 
-    public float getStars() {
-        return stars;
+    public String getName() {
+        return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean getLunchRoom() {
-        return lunchRoom;
-    }
-
-    public int getBoxes() {
-        return boxes;
-    }
-
-    public int getFreeBoxes() {
-        return freeBoxes;
-    }
-
-    public boolean getRestRoom() {
-        return restRoom;
+    public String getPhone() {
+        return phone;
     }
 
     public String getLocation() {
         return location;
     }
 
-    public LatLng getLanLng(){
-        return new LatLng(langtitude, longtitude);
+    public String getDescription() {
+        return description;
     }
 
-    public void setState(String status) {
-        this.state = status;
+    public String getPlaceId() {
+        return placeId;
     }
 
     public String getState() {
@@ -84,37 +71,55 @@ public class Washer {
         return longtitude;
     }
 
-    public boolean getCafe() {
-        return cafe;
+    public float getRating() {
+        return rating;
     }
 
-    public boolean getWifi() {
+    public int getBoxes() {
+        return boxes;
+    }
+
+    public int getAvailableBoxes() {
+        return availableBoxes;
+    }
+
+    public int getVotesCount() {
+        return votesCount;
+    }
+
+    public int getWorkHoursFrom() {
+        return workHoursFrom;
+    }
+
+    public int getWorkHoursTo() {
+        return workHoursTo;
+    }
+
+    public boolean isRestRoom() {
+        return restRoom;
+    }
+
+    public boolean isWifi() {
         return wifi;
     }
 
-    public String getHours() {
-        return hours;
+    public boolean isToilet() {
+        return toilet;
     }
 
-    public String getId() {
-        return id;
+    public boolean isCoeffee() {
+        return coeffee;
     }
 
-    public String getName() {
-        return name;
+    public boolean isShop() {
+        return shop;
     }
 
-    public String getPhone() {
-        return phone;
+    public boolean isCardPayment() {
+        return cardPayment;
     }
 
-    public String getUid() {
-        return uid;
+    public boolean isServiceStation() {
+        return serviceStation;
     }
-
-    public int getVotes() {
-        return votes;
-    }
-
-    Washer(){}
 }

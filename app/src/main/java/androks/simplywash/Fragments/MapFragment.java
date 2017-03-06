@@ -666,6 +666,9 @@ public class MapFragment extends Fragment implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(location != null)
+            mCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         // Get last known recent location.
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
