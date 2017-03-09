@@ -81,4 +81,8 @@ public class Utils {
     public static String workHoursToString(Washer washer){
         return (washer.getWorkHoursFrom() + ":00" + " - " + washer.getWorkHoursTo() + ":00");
     }
+
+    public static int getServiceAvailabledColor(boolean available){
+        return available? R.color.colorAccent: R.color.black_trans80;
+    }
 }

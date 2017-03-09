@@ -21,6 +21,7 @@ public class Washer {
     private int boxes;
     private int availableBoxes;
     private int votesCount;
+    private int countOfFavourites;
     private int workHoursFrom;
     private int workHoursTo;
     private boolean restRoom;
@@ -32,6 +33,14 @@ public class Washer {
     private boolean serviceStation;
 
     public Washer() {}
+
+    public int getCountOfFavourites() {
+        return countOfFavourites;
+    }
+
+    public void setCountOfFavourites(int countOfFavourites) {
+        this.countOfFavourites = countOfFavourites;
+    }
 
     public String getId() {
         return id;

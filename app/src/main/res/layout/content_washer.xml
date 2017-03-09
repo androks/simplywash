@@ -135,7 +135,7 @@
                 app:srcCompat="@drawable/ic_tag" />
 
             <TextView
-                android:id="@+id/free_boxes"
+                android:id="@+id/boxes_status"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -192,6 +192,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_settings_black_24dp" />
+
+            <ImageView
+                android:id="@+id/cardPayment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_credit_card_black_24dp" />
 
             <ImageView
                 android:id="@+id/coffee"

@@ -18,7 +18,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,12 +118,15 @@ public class MapFragment extends Fragment implements
     @BindView(R.id.duration_in_progress) View mDurationInProgress;
     @BindView(R.id.distance) TextView mDistance;
     @BindView(R.id.distance_in_progress) View mDistanceInProgress;
+
+
     @BindView(R.id.wifi) ImageView mWifi;
     @BindView(R.id.coffee) ImageView mCoffee;
-    @BindView(R.id.lunch_room) ImageView mLunchRoom;
     @BindView(R.id.rest_room) ImageView mRestRoom;
+    @BindView(R.id.grocery) ImageView mGrocery;
     @BindView(R.id.wc) ImageView mWC;
-    @BindView(R.id.tire) ImageView mTire;
+    @BindView(R.id.tire) ImageView mServiceStation;
+    @BindView(R.id.cardPayment) ImageView mCardPayment;
 
     @BindView(R.id.fab_location_settings) FloatingActionButton mMyLocationFab;
 
@@ -639,12 +641,13 @@ public class MapFragment extends Fragment implements
         mOpeningHours.setText(Utils.workHoursToString(mShowingWasher));
         mBoxesStatus.setText(mShowingWasher.getAvailableBoxes() + " of " + mShowingWasher.getBoxes());
 
+        mWC.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isToilet()));
         mWifi.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isWifi()));
-        mCoffee.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoeffee()));
-        mLunchRoom.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isL()));
-        mRestRoom.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoeffee()));
-        mWC.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoeffee()));
-        mTire.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoeffee()));
+        mCoffee.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoffee()));
+        mGrocery.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isShop()));
+        mRestRoom.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isRestRoom()));
+        mCardPayment.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCardPayment()));
+        mServiceStation.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isServiceStation()));
     }
 
     @Override
@@ -708,7 +711,7 @@ public class MapFragment extends Fragment implements
             if (washer.getState().equals(Constants.AVAILABLE)) {
                 distances[i] = SphericalUtil.computeDistanceBetween(
                         mCurrentLocation,
-                        washer.getLanLng()
+                        washer.getLatLng()
                 );
                 if (bestMatch.equals((double) -1) || bestMatch > distances[i]) {
                     bestMatch = distances[i];

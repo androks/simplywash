@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.graphics.Palette;
@@ -29,7 +28,6 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -43,9 +41,37 @@ import androks.simplywash.Models.Review;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
-import butterknife.BindDrawable;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class WasherActivity extends BaseActivity implements View.OnClickListener, AddReviewDialog.AddReviewDialogListener {
+public class WasherActivity extends BaseActivity implements AddReviewDialog.AddReviewDialogListener {
+
+    // Binding general views
+    @BindView(R.id.animated_toolbar) Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+
+    /**
+     * Start binding washerInfo views
+     */
+    @BindView(R.id.name) TextView mName;
+    @BindView(R.id.location) TextView mLocation;
+    @BindView(R.id.phone) TextView mPhone;
+    @BindView(R.id.opening_hours) TextView mOpeningHours;
+    @BindView(R.id.boxes_status) TextView mBoxesStatus;
+    @BindView(R.id.favourites_count) TextView mCountOfFavourites;
+
+    @BindView(R.id.wifi) ImageView mWifi;
+    @BindView(R.id.coffee) ImageView mCoffee;
+    @BindView(R.id.rest_room) ImageView mRestRoom;
+    @BindView(R.id.grocery) ImageView mGrocery;
+    @BindView(R.id.wc) ImageView mWC;
+    @BindView(R.id.tire) ImageView mServiceStation;
+    @BindView(R.id.cardPayment) ImageView mCardPayment;
+    /**
+     * End binding washerInfo views
+     */
+
 
     private static final int NUM_OF_REVIEWS = 3;
     private final String[] mTitles = {"Car", "SUV", "Minivan"};
@@ -69,23 +95,21 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_washer);
+        ButterKnife.bind(this);
         showProgressDialog();
 
         mWasherId = getIntent().getStringExtra("id");
+        checkForNotNullIntent();
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.animated_toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        setUpToolbar();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        downloadWasherInfo();
 
-        //Upload washer info
-        FirebaseDatabase.getInstance().getReference().child("washers").child(mWasherId).addValueEventListener(new ValueEventListener() {
+        downloadReviews();
+    }
+
+    private void downloadWasherInfo() {
+        Utils.getWasher(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mWasher = dataSnapshot.getValue(Washer.class);
@@ -99,7 +123,7 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
         });
 
         //Upload washer's prices
-        FirebaseDatabase.getInstance().getReference().child("prices").child(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
+        Utils.getPricesFor(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
@@ -116,14 +140,23 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
 
             }
         });
+    }
 
-        downloadReviews();
+    private void setUpToolbar() {
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Setting up toolbar image and color
-        mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         ImageView header = (ImageView) findViewById(R.id.header);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.vianor);
+
         header.setImageBitmap(bitmap);
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @SuppressWarnings("ResourceType")
@@ -134,12 +167,11 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
                 mCollapsingToolbar.setStatusBarScrimColor(R.color.black_trans80);
             }
         });
+    }
 
-        //Setting up on listeners
-        findViewById(R.id.add_review_btn).setOnClickListener(this);
-        findViewById(R.id.phone_layout).setOnClickListener(this);
-        findViewById(R.id.location_layout).setOnClickListener(this);
-        findViewById(R.id.more_reviews).setOnClickListener(this);
+    private void checkForNotNullIntent() {
+        if(mWasherId == null)
+            onBackPressed();
     }
 
     private void downloadReviews() {
@@ -157,7 +189,7 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
 
                                 LayoutInflater inflater =
                                         (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                View reviewView = inflater.inflate(R.layout.item_review, null);
+                                View reviewView = inflater.inflate(R.layout.item_review, container, false);
                                 reviewView.setId(pos);
                                 ((TextView) reviewView.findViewById(R.id.name)).setText(temp.getName());
                                 ((TextView) reviewView.findViewById(R.id.date)).setText(temp.getDate());
@@ -179,25 +211,21 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
 
     private void inflateView() {
         mCollapsingToolbar.setTitle(mWasher.getName());
-        ((TextView) findViewById(R.id.stars)).setText(String.valueOf(mWasher.getRating()));
-        ((TextView) findViewById(R.id.location)).setText(mWasher.getLocation());
-        ((TextView) findViewById(R.id.phone)).setText(mWasher.getPhone());
-        ((TextView) findViewById(R.id.opening_hours)).setText(
-                Utils.workHoursToString(mWasher.getWorkHoursFrom(), mWasher.getWorkHoursTo())
-        );
-        ((TextView) findViewById(R.id.free_boxes)).setText(mWasher.getFreeBoxes() + " of " + mWasher.getBoxes() + " boxes are free");
-        ((ImageView) findViewById(R.id.wifi)).setColorFilter(mWasher.getWifi() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
-        ((ImageView) findViewById(R.id.coffee)).setColorFilter(mWasher.getCafe() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
-        ((ImageView) findViewById(R.id.lunch_room)).setColorFilter(mWasher.getLunchRoom() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
-        ((ImageView) findViewById(R.id.rest_room)).setColorFilter(mWasher.getRestRoom() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
-        ((ImageView) findViewById(R.id.wc)).setColorFilter(mWasher.getWc() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
-        ((ImageView) findViewById(R.id.tire)).setColorFilter(mWasher.getTire() ?
-                ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
+
+        mName.setText(mWasher.getName());
+        mLocation.setText(mWasher.getLocation());
+        mPhone.setText(mWasher.getPhone());
+        mOpeningHours.setText(Utils.workHoursToString(mWasher));
+        mBoxesStatus.setText(mWasher.getAvailableBoxes() + " of " + mWasher.getBoxes());
+        mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
+
+        mWC.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isToilet()));
+        mWifi.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isWifi()));
+        mCoffee.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isCoffee()));
+        mGrocery.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isShop()));
+        mRestRoom.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isRestRoom()));
+        mCardPayment.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isCardPayment()));
+        mServiceStation.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isServiceStation()));
 
         ((TextView) findViewById(R.id.description)).setText(mWasher.getDescription());
         hideProgressDialog();
@@ -244,39 +272,40 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
         });
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.add_review_btn:
-                AppCompatDialogFragment addReviewDialog = AddReviewDialog.newInstance(mWasherId);
-                addReviewDialog.show(getSupportFragmentManager(), "Add review");
-                break;
-            case R.id.more_reviews:
+    @OnClick(R.id.add_review_btn)
+    public void addReview(){
+        AppCompatDialogFragment addReviewDialog = AddReviewDialog.newInstance(mWasherId);
+        addReviewDialog.show(getSupportFragmentManager(), "Add review");
+    }
 
-                break;
-            case R.id.phone_layout:
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.getPhone()));
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                startActivity(intent);
-                break;
+    @OnClick(R.id.more_reviews)
+    public void showMoreReviews(){
 
-            case R.id.location_layout:
-                Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLangtitude() + "," + mWasher.getLongtitude() + "?q=" + mWasher.getLangtitude() + "," + mWasher.getLongtitude());
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(getPackageManager()) != null)
-                    startActivity(mapIntent);
-                break;
+    }
+
+    @OnClick(R.id.phone_layout)
+    public void callToWasher(){
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.getPhone()));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.location_layout)
+    public void showWasherOnGoogleMap(){
+        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLangtitude() + "," + mWasher.getLongtitude() + "?q=" + mWasher.getLangtitude() + "," + mWasher.getLongtitude());
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null)
+            startActivity(mapIntent);
     }
 
 
