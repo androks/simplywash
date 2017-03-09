@@ -38,11 +38,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_vertical"
-                android:layout_marginBottom="28dp"
+                android:layout_marginBottom="18dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginLeft="48dp"
+                android:layout_marginLeft="55dp"
                 android:layout_marginRight="64dp"
-                android:layout_marginStart="48dp"
+                android:layout_marginStart="55dp"
                 android:orientation="horizontal"
                 app:layout_collapseMode="parallax">
 
@@ -77,7 +77,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/stars_fab"
+        android:id="@+id/favourite_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

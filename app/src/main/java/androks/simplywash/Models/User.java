@@ -5,34 +5,20 @@ package androks.simplywash.Models;
  */
 
 public class User {
-    private String mEmail;
-    private String mPhone;
+    private String phone;
 
-    public User(){}
-
-    public User(String mEmail) {
-        this.mEmail = mEmail;
+    public User(String phone) {
+        this.phone = phone;
     }
 
-    public User(String mEmail, String mPhone) {
-        this.mEmail = mEmail;
-        this.mPhone = mPhone;
-    }
-
-    public String getEmail() {
-        return mEmail;
-    }
-
-    public void setEmail(String mEmail) {
-        this.mEmail = mEmail;
+    public User() {
     }
 
     public String getPhone() {
-        return mPhone;
+        return phone;
     }
 
-    public void setPhone(String mPhone) {
-        this.mPhone = mPhone;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
-
 }
