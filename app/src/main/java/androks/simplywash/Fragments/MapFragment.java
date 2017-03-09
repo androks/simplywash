@@ -417,7 +417,7 @@ public class MapFragment extends Fragment implements
         for (Washer washer : mWashersList.values()) {
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
-                    .position(new LatLng(washer.getLangtitude(), washer.getLongtitude()))
+                    .position(new LatLng(washer.getLatitude(), washer.getLongitude()))
                     .visible(washer.getState().equals(Constants.AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
             //Utils.setMarkerIcon(marker, washer.getState());
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));

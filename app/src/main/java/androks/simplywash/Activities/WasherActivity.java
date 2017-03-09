@@ -270,7 +270,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.location_layout)
     public void showWasherOnGoogleMap() {
-        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLangtitude() + "," + mWasher.getLongtitude() + "?q=" + mWasher.getLangtitude() + "," + mWasher.getLongtitude());
+        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLatitude() + "," + mWasher.getLongitude() + "?q=" + mWasher.getLatitude() + "," + mWasher.getLongitude());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(getPackageManager()) != null)

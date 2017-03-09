@@ -1,6 +1,7 @@
 package androks.simplywash.Models;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.Exclude;
 
 import androks.simplywash.Utils;
 
@@ -17,8 +18,8 @@ public class Washer {
     private String description;
     private String placeId;
     private String state;
-    private double langtitude;
-    private double longtitude;
+    private double latitude;
+    private double longitude;
     private float rating;
     private int boxes;
     private int availableBoxes;
@@ -103,12 +104,12 @@ public class Washer {
         return state;
     }
 
-    public double getLangtitude() {
-        return langtitude;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public double getLongtitude() {
-        return longtitude;
+    public double getLongitude() {
+        return longitude;
     }
 
     public float getRating() {
@@ -195,12 +196,12 @@ public class Washer {
         this.state = state;
     }
 
-    public void setLangtitude(double langtitude) {
-        this.langtitude = langtitude;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public void setLongtitude(double longtitude) {
-        this.longtitude = longtitude;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public void setRating(float rating) {
@@ -255,7 +256,8 @@ public class Washer {
         this.serviceStation = serviceStation;
     }
 
+    @Exclude
     public LatLng getLatLng(){
-        return new LatLng(langtitude, longtitude);
+        return new LatLng(latitude, longitude);
     }
 }
