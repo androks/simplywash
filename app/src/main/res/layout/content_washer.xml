@@ -109,10 +109,9 @@
                 tools:text="Wed, 10 AM - 9 PM" />
 
             <TextView
-                android:id="@+id/open_status"
+                android:id="@+id/is_washer_open"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/holo_green_dark"
                 tools:text="Open" />
 
         </LinearLayout>
@@ -144,6 +143,41 @@
                 android:textColor="@android:color/primary_text_light"
                 tools:text="7 of 12 boxes free" />
 
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.10"
+            android:background="@android:color/black" />
+
+        <LinearLayout
+            android:id="@+id/prices"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:srcCompat="@drawable/ic_attach_money_black_24dp" />
+
+            <TextView
+                style="?attr/titleTextAppearance"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:text="See price list"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"/>
         </LinearLayout>
 
         <View
@@ -211,39 +245,6 @@
             android:layout_height="1dp"
             android:alpha="0.10"
             android:background="@android:color/black" />
-
-        <com.flyco.tablayout.CommonTabLayout
-            android:id="@+id/sliding_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="#ffffff"
-            android:paddingTop="16dp"
-            app:tl_iconGravity="TOP"
-            app:tl_iconHeight="18dp"
-            app:tl_iconMargin="0dp"
-            app:tl_iconWidth="18dp"
-            app:tl_indicator_bounce_enable="true"
-            app:tl_indicator_color="@color/colorAccent"
-            app:tl_indicator_corner_radius="1.5dp"
-            app:tl_indicator_gravity="BOTTOM"
-            app:tl_indicator_height="3dp"
-            app:tl_indicator_width="10dp"
-            app:tl_textSelectColor="@color/colorAccent"
-            app:tl_textUnselectColor="#66000000"
-            app:tl_textsize="15sp" />
-
-        <androks.simplywash.Models.WrapContentHeightViewPager
-            android:id="@+id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:alpha="0.10"
-            android:background="@android:color/black" />
-
         <LinearLayout
             android:id="@+id/more_reviews"
             style="@style/Widget.AppCompat.Button.Borderless"

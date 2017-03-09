@@ -6,6 +6,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
+
 import androks.simplywash.Models.Washer;
 
 /**
@@ -84,5 +86,14 @@ public class Utils {
 
     public static int getServiceAvailabledColor(boolean available){
         return available? R.color.colorAccent: R.color.black_trans80;
+    }
+
+    public static boolean isWasherOpenAtTheTime(Washer washer){
+        if(washer.isRoundTheClock())
+            return true;
+        Calendar now = Calendar.getInstance();
+        int hours = now.get(Calendar.HOUR_OF_DAY);
+
+        return hours >= washer.getWorkHoursFrom() && hours < washer.getWorkHoursTo();
     }
 }

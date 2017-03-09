@@ -31,8 +31,17 @@ public class Washer {
     private boolean shop;
     private boolean cardPayment;
     private boolean serviceStation;
+    public boolean roundTheClock;
 
     public Washer() {}
+
+    public boolean isRoundTheClock() {
+        return roundTheClock;
+    }
+
+    public void setRoundTheClock(boolean roundTheClock) {
+        this.roundTheClock = roundTheClock;
+    }
 
     public int getCountOfFavourites() {
         return countOfFavourites;

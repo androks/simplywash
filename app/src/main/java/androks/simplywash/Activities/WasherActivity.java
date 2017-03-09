@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -22,30 +21,28 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flyco.tablayout.CommonTabLayout;
-import com.flyco.tablayout.listener.CustomTabEntity;
-import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import androks.simplywash.Dialogs.AddReviewDialog;
-import androks.simplywash.Entity.PriceTabEntity;
-import androks.simplywash.Models.Price;
-import androks.simplywash.Models.PricesFragmentPagerAdapter;
 import androks.simplywash.Models.Review;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class WasherActivity extends BaseActivity implements AddReviewDialog.AddReviewDialogListener {
+
+    private static final int NUM_OF_REVIEWS = 3;
+
+    //Binding colors
+    @BindColor(R.color.green) int green;
+    @BindColor(R.color.red) int red;
 
     // Binding general views
     @BindView(R.id.animated_toolbar) Toolbar toolbar;
@@ -60,6 +57,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     @BindView(R.id.opening_hours) TextView mOpeningHours;
     @BindView(R.id.boxes_status) TextView mBoxesStatus;
     @BindView(R.id.favourites_count) TextView mCountOfFavourites;
+    @BindView(R.id.description) TextView mDescription;
+    @BindView(R.id.is_washer_open) TextView mIsWasherOpen;
 
     @BindView(R.id.wifi) ImageView mWifi;
     @BindView(R.id.coffee) ImageView mCoffee;
@@ -72,23 +71,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
      * End binding washerInfo views
      */
 
-
-    private static final int NUM_OF_REVIEWS = 3;
-    private final String[] mTitles = {"Car", "SUV", "Minivan"};
-    private final int[] mIconUnselectIds = {
-            R.drawable.ic_sedan, R.drawable.ic_suv,
-            R.drawable.ic_minivan};
-    private final int[] mIconSelectIds = {
-            R.drawable.ic_sedan_selected, R.drawable.ic_suv_selected,
-            R.drawable.ic_minivan_selected};
-
-    private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
-
-    private CommonTabLayout mTabLayout;
-    private CollapsingToolbarLayout mCollapsingToolbar;
     private String mWasherId;
     private Washer mWasher;
-    private HashMap<String, Price> mPrices = new HashMap<>();
     private int mutedColor = R.attr.colorPrimary;
 
     @Override
@@ -121,25 +105,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
             }
         });
-
-        //Upload washer's prices
-        Utils.getPricesFor(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Price temp = child.getValue(Price.class);
-                        mPrices.put(child.getKey(), temp);
-                    }
-                    inflatePrices();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void setUpToolbar() {
@@ -150,7 +115,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 onBackPressed();
             }
         });
-        if(getSupportActionBar() != null)
+        if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ImageView header = (ImageView) findViewById(R.id.header);
@@ -163,14 +128,14 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             @Override
             public void onGenerated(Palette palette) {
                 mutedColor = palette.getMutedColor(R.color.primary_500);
-                mCollapsingToolbar.setContentScrimColor(mutedColor);
-                mCollapsingToolbar.setStatusBarScrimColor(R.color.black_trans80);
+                collapsingToolbarLayout.setContentScrimColor(mutedColor);
+                collapsingToolbarLayout.setStatusBarScrimColor(R.color.black_trans80);
             }
         });
     }
 
     private void checkForNotNullIntent() {
-        if(mWasherId == null)
+        if (mWasherId == null)
             onBackPressed();
     }
 
@@ -210,7 +175,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     private void inflateView() {
-        mCollapsingToolbar.setTitle(mWasher.getName());
+        collapsingToolbarLayout.setTitle(mWasher.getName());
 
         mName.setText(mWasher.getName());
         mLocation.setText(mWasher.getLocation());
@@ -218,6 +183,14 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mOpeningHours.setText(Utils.workHoursToString(mWasher));
         mBoxesStatus.setText(mWasher.getAvailableBoxes() + " of " + mWasher.getBoxes());
         mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
+
+        if(Utils.isWasherOpenAtTheTime(mWasher)){
+            mIsWasherOpen.setText("Open");
+            mIsWasherOpen.setTextColor(green);
+        }else{
+            mIsWasherOpen.setText("Closed");
+            mIsWasherOpen.setTextColor(red);
+        }
 
         mWC.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isToilet()));
         mWifi.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isWifi()));
@@ -227,64 +200,24 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mCardPayment.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isCardPayment()));
         mServiceStation.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isServiceStation()));
 
-        ((TextView) findViewById(R.id.description)).setText(mWasher.getDescription());
+        mDescription.setText(mWasher.getDescription());
         hideProgressDialog();
     }
 
-    private void inflatePrices() {
-        for (int i = 0; i < mTitles.length; i++) {
-            mTabEntities.add(new PriceTabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
-        }
-
-        mTabLayout = (CommonTabLayout) findViewById(R.id.sliding_tabs);
-        mTabLayout.setTabData(mTabEntities);
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new PricesFragmentPagerAdapter(getSupportFragmentManager(), mPrices));
-
-        mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelect(int position) {
-                viewPager.setCurrentItem(position);
-            }
-
-            @Override
-            public void onTabReselect(int position) {
-
-            }
-        });
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mTabLayout.setCurrentTab(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }
 
     @OnClick(R.id.add_review_btn)
-    public void addReview(){
+    public void addReview() {
         AppCompatDialogFragment addReviewDialog = AddReviewDialog.newInstance(mWasherId);
         addReviewDialog.show(getSupportFragmentManager(), "Add review");
     }
 
     @OnClick(R.id.more_reviews)
-    public void showMoreReviews(){
+    public void showMoreReviews() {
 
     }
 
     @OnClick(R.id.phone_layout)
-    public void callToWasher(){
+    public void callToWasher() {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.getPhone()));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -300,7 +233,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     @OnClick(R.id.location_layout)
-    public void showWasherOnGoogleMap(){
+    public void showWasherOnGoogleMap() {
         Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLangtitude() + "," + mWasher.getLongtitude() + "?q=" + mWasher.getLangtitude() + "," + mWasher.getLongtitude());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
