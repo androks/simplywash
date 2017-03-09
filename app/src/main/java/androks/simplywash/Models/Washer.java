@@ -44,14 +44,13 @@ public class Washer {
     }
 
     public void updateRate(float oldValue, float newValue){
-        if(oldValue <= 0.1f){
-            rating = ((rating*votesCount)+oldValue)/++votesCount;
-            Utils.getWasher(id).child("rating").setValue(rating);
-            Utils.getWasher(id).child("votesCount").setValue(votesCount);
-        }else{
+        if(oldValue <= 0.1f)
+            rating = ((rating*votesCount)+newValue)/++votesCount;
+        else
             rating = ((rating*votesCount-oldValue) + newValue)/votesCount;
-            Utils.getWasher(id).child("rating").setValue(rating);
-        }
+
+        Utils.getWasher(id).child("rating").setValue(rating);
+        Utils.getWasher(id).child("votesCount").setValue(votesCount);
     }
 
     public Washer() {}

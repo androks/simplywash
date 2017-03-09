@@ -73,20 +73,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     @BindView(R.id.is_washer_open)
     TextView mIsWasherOpen;
 
-    @BindView(R.id.wifi)
-    ImageView mWifi;
-    @BindView(R.id.coffee)
-    ImageView mCoffee;
-    @BindView(R.id.rest_room)
-    ImageView mRestRoom;
-    @BindView(R.id.grocery)
-    ImageView mGrocery;
-    @BindView(R.id.wc)
-    ImageView mWC;
-    @BindView(R.id.tire)
-    ImageView mServiceStation;
-    @BindView(R.id.cardPayment)
-    ImageView mCardPayment;
+    @BindView(R.id.wifi) ImageView mWifi;
+    @BindView(R.id.coffee) ImageView mCoffee;
+    @BindView(R.id.rest_room) ImageView mRestRoom;
+    @BindView(R.id.grocery) ImageView mGrocery;
+    @BindView(R.id.wc) ImageView mWC;
+    @BindView(R.id.tire) ImageView mServiceStation;
+    @BindView(R.id.cardPayment) ImageView mCardPayment;
     /**
      * End binding washerInfo views
      */
@@ -109,20 +102,24 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
         setUpToolbar();
 
-        checkIfWasherIfFavourite();
+        initializeFavouriteFab();
 
         downloadWasherInfo();
 
         downloadReviews();
     }
 
-    private void checkIfWasherIfFavourite() {
+    private void initializeFavouriteFab() {
         Utils.getFavourites(getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         FLAG_IS_FAVOURITE = dataSnapshot.hasChild(mWasherId);
-                        initializeFavouriteFab();
+                        mFavouritesFab.setImageResource(FLAG_IS_FAVOURITE ?
+                                R.drawable.ic_favorite_white_24dp :
+                                R.drawable.ic_favorite_border_white_24dp
+                        );
+                        mFavouritesFab.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -130,14 +127,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
                     }
                 });
-    }
-
-    public void initializeFavouriteFab(){
-        mFavouritesFab.setImageResource(FLAG_IS_FAVOURITE ?
-                R.drawable.ic_favorite_white_24dp :
-                R.drawable.ic_favorite_border_white_24dp
-        );
-        mFavouritesFab.setVisibility(View.VISIBLE);
     }
 
     private void downloadWasherInfo() {
@@ -192,9 +181,9 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        LinearLayout container = (LinearLayout) findViewById(R.id.review_container);
+                        container.removeAllViews();
                         if (dataSnapshot.hasChildren()) {
-                            LinearLayout container = (LinearLayout) findViewById(R.id.review_container);
-                            container.removeAllViews();
                             int pos = 0;
 
                             for (DataSnapshot child : dataSnapshot.getChildren()) {
@@ -302,14 +291,17 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     @Override
-    public void onReviewAdded(String userPhone, Review review, float oldRating) {
+    public void onReviewAdded(Review review, float oldRating) {
         showProgressDialog();
+
         if (!review.getText().isEmpty()) {
             if (review.getName().isEmpty())
                 review.setName("Anonym");
-            Utils.getExpandedReviews(mWasherId).child(userPhone).setValue(review);
-        }
-        Utils.getReviewsFor(mWasherId).child(userPhone).setValue(review, new DatabaseReference.CompletionListener() {
+            Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).setValue(review);
+        }else
+            Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).removeValue();
+
+        Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 hideProgressDialog();
@@ -318,5 +310,19 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             }
         });
         mWasher.updateRate(oldRating, review.getRating());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveChangesToDB();
+    }
+
+    private void saveChangesToDB() {
+        Utils.getWasher(mWasherId).setValue(mWasher);
+        if(FLAG_IS_FAVOURITE)
+            Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).setValue(true);
+        else
+            Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).removeValue();
     }
 }

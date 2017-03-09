@@ -1,8 +1,6 @@
 package androks.simplywash.Dialogs;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -13,6 +11,7 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +35,7 @@ public class AddReviewDialog extends AppCompatDialogFragment{
     private float oldRating = 0.0f;
 
     public interface AddReviewDialogListener {
-        void onReviewAdded(String userPhone, Review review, float oldRating);
+        void onReviewAdded(Review review, float oldRating);
     }
 
     @BindView(R.id.text) EditText mReviewText;
@@ -65,14 +64,9 @@ public class AddReviewDialog extends AppCompatDialogFragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        SharedPreferences prefs = getActivity().getSharedPreferences(
-                Constants.AUTH_PREFERNCES,
-                Context.MODE_PRIVATE
-        );
-        mUserPhone = prefs.getString(Constants.AUTH_UUID_PREF, "Undefined");
         mReviewReference = Utils.getUserReview(
                 bundle.getString(Constants.WASHER_ID),
-                mUserPhone
+                FirebaseAuth.getInstance().getCurrentUser().getUid()
         );
         uploadReview();
     }
@@ -97,7 +91,7 @@ public class AddReviewDialog extends AppCompatDialogFragment{
     private void inflateAndEnableViews() {
         if(mReview != null){
             oldRating = mReview.getRating();
-            mName.setText(mReview.getText());
+            mName.setText(mReview.getName());
             mReviewText.setText(mReview.getText());
             mRatingBar.setRating(mReview.getRating());
         }
@@ -144,7 +138,7 @@ public class AddReviewDialog extends AppCompatDialogFragment{
         String text = mReviewText.getText().toString();
         Float rating = mRatingBar.getRating();
         // Return input text to activity
-        ((AddReviewDialogListener) getActivity()).onReviewAdded(mUserPhone, new Review(name, text, rating), oldRating);
+        ((AddReviewDialogListener) getActivity()).onReviewAdded(new Review(name, text, rating), oldRating);
         this.dismiss();
     }
 
