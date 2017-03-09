@@ -51,7 +51,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     /**
      * Start binding washerInfo views
      */
-    @BindView(R.id.name) TextView mName;
     @BindView(R.id.location) TextView mLocation;
     @BindView(R.id.phone) TextView mPhone;
     @BindView(R.id.opening_hours) TextView mOpeningHours;
@@ -177,7 +176,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     private void inflateView() {
         collapsingToolbarLayout.setTitle(mWasher.getName());
 
-        mName.setText(mWasher.getName());
         mLocation.setText(mWasher.getLocation());
         mPhone.setText(mWasher.getPhone());
         mOpeningHours.setText(Utils.workHoursToString(mWasher));
