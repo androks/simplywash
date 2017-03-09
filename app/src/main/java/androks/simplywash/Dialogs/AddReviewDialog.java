@@ -33,8 +33,10 @@ import butterknife.OnClick;
 
 public class AddReviewDialog extends AppCompatDialogFragment{
 
+    private float oldRating = 0.0f;
+
     public interface AddReviewDialogListener {
-        void onReviewAdded(String userPhone, Review review);
+        void onReviewAdded(String userPhone, Review review, float oldRating);
     }
 
     @BindView(R.id.text) EditText mReviewText;
@@ -94,6 +96,7 @@ public class AddReviewDialog extends AppCompatDialogFragment{
 
     private void inflateAndEnableViews() {
         if(mReview != null){
+            oldRating = mReview.getRating();
             mName.setText(mReview.getText());
             mReviewText.setText(mReview.getText());
             mRatingBar.setRating(mReview.getRating());
@@ -121,7 +124,6 @@ public class AddReviewDialog extends AppCompatDialogFragment{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     @Override
@@ -142,7 +144,7 @@ public class AddReviewDialog extends AppCompatDialogFragment{
         String text = mReviewText.getText().toString();
         Float rating = mRatingBar.getRating();
         // Return input text to activity
-        ((AddReviewDialogListener) getActivity()).onReviewAdded(mUserPhone, new Review(name, text, rating));
+        ((AddReviewDialogListener) getActivity()).onReviewAdded(mUserPhone, new Review(name, text, rating), oldRating);
         this.dismiss();
     }
 

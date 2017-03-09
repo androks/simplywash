@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.graphics.Palette;
@@ -41,31 +42,51 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     private static final int NUM_OF_REVIEWS = 3;
 
     //Binding colors
-    @BindColor(R.color.green) int green;
-    @BindColor(R.color.red) int red;
+    @BindColor(R.color.green)
+    int green;
+    @BindColor(R.color.red)
+    int red;
 
     // Binding general views
-    @BindView(R.id.animated_toolbar) Toolbar toolbar;
-    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.animated_toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.favourite_fab)
+    FloatingActionButton mFavouritesFab;
 
     /**
      * Start binding washerInfo views
      */
-    @BindView(R.id.location) TextView mLocation;
-    @BindView(R.id.phone) TextView mPhone;
-    @BindView(R.id.opening_hours) TextView mOpeningHours;
-    @BindView(R.id.boxes_status) TextView mBoxesStatus;
-    @BindView(R.id.favourites_count) TextView mCountOfFavourites;
-    @BindView(R.id.description) TextView mDescription;
-    @BindView(R.id.is_washer_open) TextView mIsWasherOpen;
+    @BindView(R.id.location)
+    TextView mLocation;
+    @BindView(R.id.phone)
+    TextView mPhone;
+    @BindView(R.id.opening_hours)
+    TextView mOpeningHours;
+    @BindView(R.id.boxes_status)
+    TextView mBoxesStatus;
+    @BindView(R.id.favourites_count)
+    TextView mCountOfFavourites;
+    @BindView(R.id.description)
+    TextView mDescription;
+    @BindView(R.id.is_washer_open)
+    TextView mIsWasherOpen;
 
-    @BindView(R.id.wifi) ImageView mWifi;
-    @BindView(R.id.coffee) ImageView mCoffee;
-    @BindView(R.id.rest_room) ImageView mRestRoom;
-    @BindView(R.id.grocery) ImageView mGrocery;
-    @BindView(R.id.wc) ImageView mWC;
-    @BindView(R.id.tire) ImageView mServiceStation;
-    @BindView(R.id.cardPayment) ImageView mCardPayment;
+    @BindView(R.id.wifi)
+    ImageView mWifi;
+    @BindView(R.id.coffee)
+    ImageView mCoffee;
+    @BindView(R.id.rest_room)
+    ImageView mRestRoom;
+    @BindView(R.id.grocery)
+    ImageView mGrocery;
+    @BindView(R.id.wc)
+    ImageView mWC;
+    @BindView(R.id.tire)
+    ImageView mServiceStation;
+    @BindView(R.id.cardPayment)
+    ImageView mCardPayment;
     /**
      * End binding washerInfo views
      */
@@ -73,6 +94,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     private String mWasherId;
     private Washer mWasher;
     private int mutedColor = R.attr.colorPrimary;
+
+    private boolean FLAG_IS_FAVOURITE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +109,35 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
         setUpToolbar();
 
+        checkIfWasherIfFavourite();
+
         downloadWasherInfo();
 
         downloadReviews();
+    }
+
+    private void checkIfWasherIfFavourite() {
+        Utils.getFavourites(getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        FLAG_IS_FAVOURITE = dataSnapshot.hasChild(mWasherId);
+                        initializeFavouriteFab();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void initializeFavouriteFab(){
+        mFavouritesFab.setImageResource(FLAG_IS_FAVOURITE ?
+                R.drawable.ic_favorite_white_24dp :
+                R.drawable.ic_favorite_border_white_24dp
+        );
+        mFavouritesFab.setVisibility(View.VISIBLE);
     }
 
     private void downloadWasherInfo() {
@@ -182,10 +231,10 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mBoxesStatus.setText(mWasher.getAvailableBoxes() + " of " + mWasher.getBoxes());
         mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
 
-        if(Utils.isWasherOpenAtTheTime(mWasher)){
+        if (Utils.isWasherOpenAtTheTime(mWasher)) {
             mIsWasherOpen.setText("Open");
             mIsWasherOpen.setTextColor(green);
-        }else{
+        } else {
             mIsWasherOpen.setText("Closed");
             mIsWasherOpen.setTextColor(red);
         }
@@ -239,9 +288,21 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             startActivity(mapIntent);
     }
 
+    @OnClick(R.id.favourite_fab)
+    public void toggleFavourite() {
+        FLAG_IS_FAVOURITE = !FLAG_IS_FAVOURITE;
+        mFavouritesFab.setImageResource(FLAG_IS_FAVOURITE ?
+                R.drawable.ic_favorite_white_24dp :
+                R.drawable.ic_favorite_border_white_24dp
+        );
+        mCountOfFavourites.setText(String.valueOf(FLAG_IS_FAVOURITE?
+                mWasher.increaseCountOfFavourites():
+                mWasher.decreaseCountOfFavourites()
+        ));
+    }
 
     @Override
-    public void onReviewAdded(String userPhone, Review review) {
+    public void onReviewAdded(String userPhone, Review review, float oldRating) {
         showProgressDialog();
         if (!review.getText().isEmpty()) {
             if (review.getName().isEmpty())
@@ -256,5 +317,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 downloadReviews();
             }
         });
+        mWasher.updateRate(oldRating, review.getRating());
     }
 }

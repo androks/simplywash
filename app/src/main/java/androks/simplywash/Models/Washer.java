@@ -2,6 +2,8 @@ package androks.simplywash.Models;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import androks.simplywash.Utils;
+
 /**
  * Created by androks on 11/17/2016.
  */
@@ -32,6 +34,25 @@ public class Washer {
     private boolean cardPayment;
     private boolean serviceStation;
     public boolean roundTheClock;
+
+    public int increaseCountOfFavourites(){
+        return ++countOfFavourites;
+    }
+
+    public int decreaseCountOfFavourites(){
+        return --countOfFavourites;
+    }
+
+    public void updateRate(float oldValue, float newValue){
+        if(oldValue <= 0.1f){
+            rating = ((rating*votesCount)+oldValue)/++votesCount;
+            Utils.getWasher(id).child("rating").setValue(rating);
+            Utils.getWasher(id).child("votesCount").setValue(votesCount);
+        }else{
+            rating = ((rating*votesCount-oldValue) + newValue)/votesCount;
+            Utils.getWasher(id).child("rating").setValue(rating);
+        }
+    }
 
     public Washer() {}
 

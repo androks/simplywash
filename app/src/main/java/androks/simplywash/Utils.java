@@ -80,6 +80,10 @@ public class Utils {
         return  FirebaseDatabase.getInstance().getReference().child("prices").child(washerId);
     }
 
+    public static DatabaseReference getFavourites(String userId){
+        return FirebaseDatabase.getInstance().getReference().child("favourites").child(userId);
+    }
+
     public static String workHoursToString(Washer washer){
         return (washer.getWorkHoursFrom() + ":00" + " - " + washer.getWorkHoursTo() + ":00");
     }
