@@ -6,6 +6,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import androks.simplywash.Models.Washer;
+
 /**
  * Created by androks on 2/25/2017.
  */
@@ -74,5 +76,9 @@ public class Utils {
 
     public static DatabaseReference getPricesFor(String washerId){
         return  FirebaseDatabase.getInstance().getReference().child("prices").child(washerId);
+    }
+
+    public static String workHoursToString(Washer washer){
+        return (washer.getWorkHoursFrom() + ":00" + " - " + washer.getWorkHoursTo() + ":00");
     }
 }

@@ -513,7 +513,7 @@ public class MapFragment extends Fragment implements
             if (FLAG_DIS_DUR_CALCULATE
                     && mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN) {
                 showProgressBarsForDisAndDur();
-                calculateDistanceAndTime(mShowingWasher.getLanLng());
+                calculateDistanceAndTime(mShowingWasher.getLatLng());
             }
             else
                 hideProgressBarsForDisAndDur();
@@ -628,35 +628,23 @@ public class MapFragment extends Fragment implements
 
     private void inflateWasherDetails() {
         mName.setText(mShowingWasher.getName());
-        mRatingBar.setRating(mShowingWasher.getStars());
+        mRatingBar.setRating(mShowingWasher.getRating());
         mRatingText.setText(String.format(
                 Locale.getDefault(),
                 " %.1f (%d votes)",
-                mShowingWasher.getStars(),
-                mShowingWasher.getVotes()));
+                mShowingWasher.getRating(),
+                mShowingWasher.getVotesCount()));
         mLocation.setText(mShowingWasher.getLocation());
         mPhone.setText(mShowingWasher.getPhone());
-        mOpeningHours.setText(mShowingWasher.getHours());
-        mBoxesStatus.setText(mShowingWasher.getFreeBoxes() + " of " + mShowingWasher.getBoxes());
+        mOpeningHours.setText(Utils.workHoursToString(mShowingWasher));
+        mBoxesStatus.setText(mShowingWasher.getAvailableBoxes() + " of " + mShowingWasher.getBoxes());
 
-        mWifi.setColorFilter(mShowingWasher.getWifi() ?
-                ContextCompat.getColor(mContext, R.color.colorServiceAvailable) :
-                ContextCompat.getColor(mContext, R.color.colorServiceNotAvailable));
-        mCoffee.setColorFilter(mShowingWasher.getCafe() ?
-                ContextCompat.getColor(mContext, R.color.colorServiceAvailable) :
-                ContextCompat.getColor(mContext, R.color.colorServiceNotAvailable));
-        mLunchRoom.setColorFilter(mShowingWasher.getLunchRoom() ?
-                ContextCompat.getColor(mContext, R.color.colorServiceAvailable) :
-                ContextCompat.getColor(mContext, R.color.colorServiceNotAvailable));
-        mRestRoom.setColorFilter(mShowingWasher.getRestRoom() ?
-                ContextCompat.getColor(mContext, R.color.colorServiceAvailable) :
-                ContextCompat.getColor(mContext, R.color.colorServiceNotAvailable));
-        mWC.setColorFilter(mShowingWasher.getWc() ?
-                ContextCompat.getColor(mContext, R.color.colorServiceAvailable) :
-                ContextCompat.getColor(mContext, R.color.colorServiceNotAvailable));
-        mTire.setColorFilter(mShowingWasher.getTire() ?
-                ContextCompat.getColor(mContext, R.color.colorServiceAvailable) :
-                ContextCompat.getColor(mContext, R.color.colorServiceNotAvailable));
+        mWifi.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isWifi()));
+        mCoffee.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoeffee()));
+        mLunchRoom.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isL()));
+        mRestRoom.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoeffee()));
+        mWC.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoeffee()));
+        mTire.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoeffee()));
     }
 
     @Override

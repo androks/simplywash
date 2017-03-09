@@ -53,6 +53,7 @@
     <string name="write_some_words_about_washer">Write some words about washer</string>
     <string name="name_optional">Name (optional)</string>
     <string name="some_words_about_it">Some words about it</string>
+    <string name="people_like_it">people like it</string>
 
 
 </resources>

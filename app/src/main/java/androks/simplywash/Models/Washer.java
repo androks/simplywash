@@ -1,5 +1,7 @@
 package androks.simplywash.Models;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by androks on 11/17/2016.
  */
@@ -24,7 +26,7 @@ public class Washer {
     private boolean restRoom;
     private boolean wifi;
     private boolean toilet;
-    private boolean coeffee;
+    private boolean coffee;
     private boolean shop;
     private boolean cardPayment;
     private boolean serviceStation;
@@ -107,8 +109,8 @@ public class Washer {
         return toilet;
     }
 
-    public boolean isCoeffee() {
-        return coeffee;
+    public boolean isCoffee() {
+        return coffee;
     }
 
     public boolean isShop() {
@@ -121,5 +123,101 @@ public class Washer {
 
     public boolean isServiceStation() {
         return serviceStation;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setLangtitude(double langtitude) {
+        this.langtitude = langtitude;
+    }
+
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public void setBoxes(int boxes) {
+        this.boxes = boxes;
+    }
+
+    public void setAvailableBoxes(int availableBoxes) {
+        this.availableBoxes = availableBoxes;
+    }
+
+    public void setVotesCount(int votesCount) {
+        this.votesCount = votesCount;
+    }
+
+    public void setWorkHoursFrom(int workHoursFrom) {
+        this.workHoursFrom = workHoursFrom;
+    }
+
+    public void setWorkHoursTo(int workHoursTo) {
+        this.workHoursTo = workHoursTo;
+    }
+
+    public void setRestRoom(boolean restRoom) {
+        this.restRoom = restRoom;
+    }
+
+    public void setWifi(boolean wifi) {
+        this.wifi = wifi;
+    }
+
+    public void setToilet(boolean toilet) {
+        this.toilet = toilet;
+    }
+
+    public void setCoffee(boolean coffee) {
+        this.coffee = coffee;
+    }
+
+    public void setShop(boolean shop) {
+        this.shop = shop;
+    }
+
+    public void setCardPayment(boolean cardPayment) {
+        this.cardPayment = cardPayment;
+    }
+
+    public void setServiceStation(boolean serviceStation) {
+        this.serviceStation = serviceStation;
+    }
+
+    public LatLng getLatLng(){
+        return new LatLng(langtitude, longtitude);
     }
 }

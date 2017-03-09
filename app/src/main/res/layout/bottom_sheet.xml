@@ -69,7 +69,6 @@
                     style="?attr/buttonBarNeutralButtonStyle"
                     android:layout_width="86dp"
                     android:layout_height="64dp"
-                    android:drawableTop="@drawable/ic_schedule_black"
                     android:text="@string/order"
                     android:textAllCaps="false"
                     android:textAppearance="@android:style/TextAppearance.Small"
@@ -130,7 +129,7 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_access_time" />
+                            android:src="@drawable/ic_access_time_black_24dp" />
 
                         <TextView
                             android:id="@+id/duration"
@@ -193,37 +192,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:src="@drawable/ic_action_wifi" />
-
-            <ImageView
-                android:id="@+id/coffee"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_coffee" />
+                app:srcCompat="@drawable/ic_action_wifi" />
 
             <ImageView
                 android:id="@+id/rest_room"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_rest_room" />
+                app:srcCompat="@drawable/ic_rest_black_24dp" />
 
             <ImageView
-                android:id="@+id/lunch_room"
+                android:id="@+id/grocery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_restaurant" />
+                app:srcCompat="@drawable/ic_store_black_24dp" />
 
             <ImageView
                 android:id="@+id/wc"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_wc" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_wc_black_24dp" />
 
             <ImageView
                 android:id="@+id/tire"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_tire" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_settings_black_24dp" />
+
+            <ImageView
+                android:id="@+id/coffee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_service_coffee_black_24dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -235,7 +234,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_place_red" />
+                app:srcCompat="@drawable/ic_place_black_24dp" />
 
             <TextView
                 android:id="@+id/location"
@@ -257,7 +256,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_action_phone_start" />
+                app:srcCompat="@drawable/ic_local_phone_black_24dp" />
 
             <TextView
                 android:id="@+id/phone"
@@ -279,7 +278,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_schedule_black" />
+                app:srcCompat="@drawable/ic_access_time_black_24dp" />
 
             <TextView
                 android:id="@+id/opening_hours"
@@ -298,8 +297,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:drawableEnd="@drawable/ic_action_arrow_right"
-            android:drawableRight="@drawable/ic_action_arrow_right"
             android:text="@string/more" />
     </LinearLayout>
 </FrameLayout>

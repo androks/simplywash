@@ -36,13 +36,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import androks.simplywash.Dialogs.AddReviewDialog;
-import androks.simplywash.Entity.TabEntity;
+import androks.simplywash.Entity.PriceTabEntity;
 import androks.simplywash.Models.Price;
 import androks.simplywash.Models.PricesFragmentPagerAdapter;
 import androks.simplywash.Models.Review;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
+import butterknife.BindDrawable;
 
 public class WasherActivity extends BaseActivity implements View.OnClickListener, AddReviewDialog.AddReviewDialogListener {
 
@@ -54,7 +55,9 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
     private final int[] mIconSelectIds = {
             R.drawable.ic_sedan_selected, R.drawable.ic_suv_selected,
             R.drawable.ic_minivan_selected};
+
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
+
     private CommonTabLayout mTabLayout;
     private CollapsingToolbarLayout mCollapsingToolbar;
     private String mWasherId;
@@ -176,10 +179,12 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
 
     private void inflateView() {
         mCollapsingToolbar.setTitle(mWasher.getName());
-        ((TextView) findViewById(R.id.stars)).setText(String.valueOf(mWasher.getStars() + " people like it"));
+        ((TextView) findViewById(R.id.stars)).setText(String.valueOf(mWasher.getRating()));
         ((TextView) findViewById(R.id.location)).setText(mWasher.getLocation());
         ((TextView) findViewById(R.id.phone)).setText(mWasher.getPhone());
-        ((TextView) findViewById(R.id.opening_hours)).setText(mWasher.getHours());
+        ((TextView) findViewById(R.id.opening_hours)).setText(
+                Utils.workHoursToString(mWasher.getWorkHoursFrom(), mWasher.getWorkHoursTo())
+        );
         ((TextView) findViewById(R.id.free_boxes)).setText(mWasher.getFreeBoxes() + " of " + mWasher.getBoxes() + " boxes are free");
         ((ImageView) findViewById(R.id.wifi)).setColorFilter(mWasher.getWifi() ?
                 ContextCompat.getColor(this, R.color.colorServiceAvailable) : ContextCompat.getColor(this, R.color.colorServiceNotAvailable));
@@ -200,7 +205,7 @@ public class WasherActivity extends BaseActivity implements View.OnClickListener
 
     private void inflatePrices() {
         for (int i = 0; i < mTitles.length; i++) {
-            mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
+            mTabEntities.add(new PriceTabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
         }
 
         mTabLayout = (CommonTabLayout) findViewById(R.id.sliding_tabs);
