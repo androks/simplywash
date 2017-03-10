@@ -234,13 +234,20 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             mIsWasherOpen.setTextColor(red);
         }
 
-        mWC.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isToilet()));
-        mWifi.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isWifi()));
-        mCoffee.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isCoffee()));
-        mGrocery.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isShop()));
-        mRestRoom.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isRestRoom()));
-        mCardPayment.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isCardPayment()));
-        mServiceStation.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isServiceStation()));
+        mWC.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(mWasher.isToilet())));
+        mWifi.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(mWasher.isWifi())));
+        mCoffee.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(mWasher.isCoffee())));
+        mGrocery.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(mWasher.isShop())));
+        mRestRoom.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(mWasher.isRestRoom())));
+        mCardPayment.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(mWasher.isCardPayment())));
+        mServiceStation.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(mWasher.isServiceStation())));
 
         setRatings();
 

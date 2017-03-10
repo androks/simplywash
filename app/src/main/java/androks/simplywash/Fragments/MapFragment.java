@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -161,6 +162,7 @@ public class MapFragment extends Fragment implements
      **/
 
     private static FragmentActivity mContext;
+    private static Resources mResources;
 
     //Polyline list using as buffer to build directions
     private List<Polyline> mPolylinePaths = new ArrayList<>();
@@ -188,6 +190,7 @@ public class MapFragment extends Fragment implements
         unbinder = ButterKnife.bind(this, rootView);
         showProgress();
         mContext = getActivity();
+        mResources = mContext.getResources();
 
         setUpMap();
 
@@ -599,6 +602,8 @@ public class MapFragment extends Fragment implements
     public boolean onMarkerClick(Marker marker) {
         FLAG_DIS_DUR_CALCULATE = true;
 
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
+
         makeRequests();
         if(mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
                 mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN)
@@ -606,7 +611,6 @@ public class MapFragment extends Fragment implements
 
         mShowingWasher = mWashersList.get(marker.getTitle());
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
         //Inflating bottom sheet view by washer details
         inflateWasherDetails();
         //Show bottom sheet as collapsed
@@ -641,13 +645,20 @@ public class MapFragment extends Fragment implements
         mOpeningHours.setText(Utils.workHoursToString(mShowingWasher));
         mBoxesStatus.setText(mShowingWasher.getAvailableBoxes() + " of " + mShowingWasher.getBoxes());
 
-        mWC.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isToilet()));
-        mWifi.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isWifi()));
-        mCoffee.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCoffee()));
-        mGrocery.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isShop()));
-        mRestRoom.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isRestRoom()));
-        mCardPayment.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isCardPayment()));
-        mServiceStation.setColorFilter(Utils.getServiceAvailabledColor(mShowingWasher.isServiceStation()));
+        mWC.setColorFilter(mResources
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isToilet())));
+        mWifi.setColorFilter(mResources
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWifi())));
+        mCoffee.setColorFilter(mResources
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isCoffee())));
+        mGrocery.setColorFilter(mResources
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isShop())));
+        mRestRoom.setColorFilter(mResources
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isRestRoom())));
+        mCardPayment.setColorFilter(mResources
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isCardPayment())));
+        mServiceStation.setColorFilter(mResources
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isServiceStation())));
     }
 
     @Override

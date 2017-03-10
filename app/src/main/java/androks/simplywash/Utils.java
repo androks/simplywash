@@ -88,8 +88,8 @@ public class Utils {
         return (washer.getWorkHoursFrom() + ":00" + " - " + washer.getWorkHoursTo() + ":00");
     }
 
-    public static int getServiceAvailabledColor(boolean available){
-        return available? R.color.colorAccent: R.color.black_trans80;
+    public static int getServiceAvailableColor(boolean available){
+        return available? R.color.colorAccent: R.color.mdtp_dark_gray;
     }
 
     public static boolean isWasherOpenAtTheTime(Washer washer){
