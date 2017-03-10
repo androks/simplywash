@@ -378,8 +378,7 @@ public class MapFragment extends Fragment implements
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
                     mWashersList.putAll(dataSnapshot.getValue(
-                            new GenericTypeIndicator<Map<String, Washer>>() {
-                            }
+                            new GenericTypeIndicator<Map<String, Washer>>() {}
                     ));
                     setMarkers();
                 }

@@ -2,6 +2,7 @@ package androks.simplywash.Activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -25,7 +27,8 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import androks.simplywash.Constants;
@@ -51,31 +54,51 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     int red;
 
     // Binding general views
-    @BindView(R.id.animated_toolbar) Toolbar toolbar;
-    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.favourite_fab) FloatingActionButton mFavouritesFab;
-    @BindView(R.id.rates_count) TextView mCountOfRates;
-    @BindView(R.id.rating_bar) RatingBar mRatingBar;
-    @BindView(R.id.rating_text) TextView mRatingText;
+    @BindView(R.id.animated_toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.favourite_fab)
+    FloatingActionButton mFavouritesFab;
+    @BindView(R.id.rates_count)
+    TextView mCountOfRates;
+    @BindView(R.id.rating_bar)
+    RatingBar mRatingBar;
+    @BindView(R.id.rating_text)
+    TextView mRatingText;
 
     /**
      * Start binding washerInfo views
      */
-    @BindView(R.id.location) TextView mLocation;
-    @BindView(R.id.phone) TextView mPhone;
-    @BindView(R.id.opening_hours) TextView mOpeningHours;
-    @BindView(R.id.boxes_status) TextView mBoxesStatus;
-    @BindView(R.id.favourites_count) TextView mCountOfFavourites;
-    @BindView(R.id.description) TextView mDescription;
-    @BindView(R.id.is_washer_open) TextView mIsWasherOpen;
+    @BindView(R.id.location)
+    TextView mLocation;
+    @BindView(R.id.phone)
+    TextView mPhone;
+    @BindView(R.id.opening_hours)
+    TextView mOpeningHours;
+    @BindView(R.id.boxes_status)
+    TextView mBoxesStatus;
+    @BindView(R.id.favourites_count)
+    TextView mCountOfFavourites;
+    @BindView(R.id.description)
+    TextView mDescription;
+    @BindView(R.id.is_washer_open)
+    TextView mIsWasherOpen;
 
-    @BindView(R.id.wifi) ImageView mWifi;
-    @BindView(R.id.coffee) ImageView mCoffee;
-    @BindView(R.id.restRoom) ImageView mRestRoom;
-    @BindView(R.id.grocery) ImageView mGrocery;
-    @BindView(R.id.wc) ImageView mWC;
-    @BindView(R.id.serviceStation) ImageView mServiceStation;
-    @BindView(R.id.cardPayment) ImageView mCardPayment;
+    @BindView(R.id.wifi)
+    ImageView mWifi;
+    @BindView(R.id.coffee)
+    ImageView mCoffee;
+    @BindView(R.id.restRoom)
+    ImageView mRestRoom;
+    @BindView(R.id.grocery)
+    ImageView mGrocery;
+    @BindView(R.id.wc)
+    ImageView mWC;
+    @BindView(R.id.serviceStation)
+    ImageView mServiceStation;
+    @BindView(R.id.cardPayment)
+    ImageView mCardPayment;
     /**
      * End binding washerInfo views
      */
@@ -292,19 +315,75 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.favourite_fab)
     public void toggleFavourite() {
-        FLAG_IS_FAVOURITE = !FLAG_IS_FAVOURITE;
-        mFavouritesFab.setImageResource(FLAG_IS_FAVOURITE ?
-                R.drawable.ic_favorite_white_24dp :
-                R.drawable.ic_favorite_border_white_24dp
-        );
-        mCountOfFavourites.setText(String.valueOf(FLAG_IS_FAVOURITE?
-                mWasher.countOfFavourites++:
-                mWasher.countOfFavourites--
-        ));
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(FLAG_IS_FAVOURITE?
+                                R.string.remove:
+                                R.string.add,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FLAG_IS_FAVOURITE = !FLAG_IS_FAVOURITE;
+                        mFavouritesFab.setImageResource(FLAG_IS_FAVOURITE ?
+                                R.drawable.ic_favorite_white_24dp :
+                                R.drawable.ic_favorite_border_white_24dp
+                        );
+                        onFavouriteAdded();
+                    }
+                })
+                .setMessage(FLAG_IS_FAVOURITE?
+                        "Do you really wanna remove this washer to favourites?" :
+                        "Do you really wanna add this washer to favourites?")
+                .setTitle("Favourites");
+        dialogBuilder.show();
     }
 
+    private void onFavouriteAdded() {
+        Utils.getWasher(mWasherId).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Washer washer = mutableData.getValue(Washer.class);
+                if (washer == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if (!FLAG_IS_FAVOURITE) {
+                    // Unstar the post and remove self from stars
+                    washer.decreaseCountOfFavourites();
+                    Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).removeValue();
+                } else {
+                    // Star the post and add self to stars
+                    washer.increaseCountOfFavourites();
+                    Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).setValue(true);
+                }
+
+                mWasher = washer;
+                // Set value and report transaction success
+                mutableData.setValue(washer);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Toast.makeText(
+                        WasherActivity.this,
+                        FLAG_IS_FAVOURITE ?"Add to favourite":"Removed from favourite",
+                        Toast.LENGTH_SHORT).show();
+                mCountOfFavourites.setText(String.valueOf(mWasher.countOfFavourites));
+            }
+        });
+    }
+
+
     @OnClick(R.id.services)
-    public void showServicesDialog(){
+    public void showServicesDialog() {
         DialogFragment dialog = ServicesDialog.newInstance(mWasher);
         dialog.show(getSupportFragmentManager(), "ServicesDialog");
     }
@@ -313,22 +392,56 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     public void onReviewAdded(final Review review, final float oldRating) {
         showProgressDialog();
 
+        updateExpandedReviews(review);
+
+        Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review);
+
+        onRatingChanged(review, oldRating);
+    }
+
+    private void onRatingChanged(final Review review, final float oldRating) {
+        Utils.getWasher(mWasherId).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Washer washer = mutableData.getValue(Washer.class);
+                if (washer == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if(oldRating <= 0.1f) {
+                    washer.rating = ((washer.rating * washer.votesCount) + review.rating) / ++washer.votesCount;
+                    washer.votesCount += 1;
+                }
+                else
+                    washer.rating = ((washer.rating * washer.votesCount - oldRating) + review.rating) / washer.votesCount;
+
+                mWasher = washer;
+                // Set value and report transaction success
+                mutableData.setValue(washer);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Toast.makeText(
+                        WasherActivity.this,
+                        "Thanks for review",
+                        Toast.LENGTH_SHORT).show();
+                downloadReviews();
+                setRatings();
+                hideProgressDialog();
+            }
+        });
+    }
+
+    private void updateExpandedReviews(Review review) {
         if (!review.text.isEmpty()) {
             if (review.name.isEmpty())
                 review.name = "Anonym";
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).setValue(review);
-        }else
+        } else
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).removeValue();
-
-        Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                hideProgressDialog();
-                Toast.makeText(WasherActivity.this, "Added", Toast.LENGTH_SHORT).show();
-                downloadReviews();
-                mWasher.updateRate(oldRating, review.rating);
-                setRatings();
-            }
-        });
     }
 }

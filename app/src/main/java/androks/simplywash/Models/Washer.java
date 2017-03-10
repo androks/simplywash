@@ -3,8 +3,6 @@ package androks.simplywash.Models;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
-import androks.simplywash.Utils;
-
 /**
  * Created by androks on 11/17/2016.
  */
@@ -37,14 +35,24 @@ public class Washer {
     public boolean roundTheClock;
 
     @Exclude
+    public void decreaseCountOfFavourites(){
+        if(countOfFavourites > 0)
+            countOfFavourites--;
+    }
+
+    @Exclude
+    public void increaseCountOfFavourites(){
+        countOfFavourites++;
+    }
+
+    @Exclude
     public void updateRate(float oldValue, float newValue){
         if(oldValue <= 0.1f)
             rating = ((rating*votesCount)+newValue)/++votesCount;
         else
             rating = ((rating*votesCount-oldValue) + newValue)/votesCount;
 
-        Utils.getWasher(id).child("rating").setValue(rating);
-        Utils.getWasher(id).child("votesCount").setValue(votesCount);
+        rating = (float) Math.floor(rating) + 0.5f;
     }
 
     public Washer() {}

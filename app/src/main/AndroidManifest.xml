@@ -72,7 +72,8 @@
         <activity
             android:name=".Activities.ReviewsActivity"
             android:label="@string/title_activity_reviews"
-            android:theme="@style/AppTheme" />
+            android:parentActivityName=".Activities.WasherActivity"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

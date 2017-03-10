@@ -13,7 +13,8 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import androks.simplywash.Constants;
@@ -51,7 +52,7 @@ public class ReviewsActivity extends BaseActivity implements
 
         getDataFromIntent();
 
-        setUptolbar();
+        setUptoolbar();
 
         setUpRecyclerLV();
 
@@ -110,7 +111,7 @@ public class ReviewsActivity extends BaseActivity implements
         mRecyclerLV.setAdapter(mRecyclerAdapter);
     }
 
-    private void setUptolbar() {
+    private void setUptoolbar() {
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -144,22 +145,54 @@ public class ReviewsActivity extends BaseActivity implements
     public void onReviewAdded(final Review review, final float oldRating) {
         showProgress();
 
+        updateExpandedReviews(review);
+
+        Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review);
+
+        onRatingChanged(review, oldRating);
+    }
+
+    private void onRatingChanged(final Review review, final float oldRating) {
+        Utils.getWasher(mWasherId).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Washer washer = mutableData.getValue(Washer.class);
+                if (washer == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if(oldRating <= 0.1f)
+                    washer.rating = ((washer.rating * washer.votesCount) + review.rating) / ++washer.votesCount;
+                else
+                    washer.rating = ((washer.rating * washer.votesCount - oldRating) + review.rating) / washer.votesCount;
+
+                mWasher = washer;
+                // Set value and report transaction success
+                mutableData.setValue(washer);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Toast.makeText(
+                        ReviewsActivity.this,
+                        "Thanks for review",
+                        Toast.LENGTH_SHORT).show();
+                setRatings();
+                hideProgressDialog();
+            }
+        });
+    }
+
+    private void updateExpandedReviews(Review review) {
         if (!review.text.isEmpty()) {
             if (review.name.isEmpty())
                 review.name = "Anonym";
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).setValue(review);
-        }else
+        } else
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).removeValue();
-
-        Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                hideProgressDialog();
-                Toast.makeText(ReviewsActivity.this, "Added", Toast.LENGTH_SHORT).show();
-                mWasher.updateRate(oldRating, review.rating);
-                setRatings();
-            }
-        });
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
