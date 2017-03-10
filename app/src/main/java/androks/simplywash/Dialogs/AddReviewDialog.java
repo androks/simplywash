@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
@@ -41,12 +42,11 @@ public class AddReviewDialog extends AppCompatDialogFragment{
     @BindView(R.id.text) EditText mReviewText;
     @BindView(R.id.rate) RatingBar mRatingBar;
     @BindView(R.id.name) EditText mName;
-    @BindView(R.id.add) View mBtnAdd;
-    @BindView(R.id.cancel) View mBtnCancel;
+    @BindView(R.id.add) Button mBtnAdd;
+    @BindView(R.id.cancel) Button mBtnCancel;
 
     private DatabaseReference mReviewReference;
     private Review mReview;
-    private String mUserPhone;
 
     public AddReviewDialog() {
         // Empty constructor required for DialogFragment
@@ -90,6 +90,7 @@ public class AddReviewDialog extends AppCompatDialogFragment{
 
     private void inflateAndEnableViews() {
         if(mReview != null){
+            mBtnAdd.setText(R.string.edit);
             oldRating = mReview.rating;
             mName.setText(mReview.name);
             mReviewText.setText(mReview.text);
@@ -137,6 +138,8 @@ public class AddReviewDialog extends AppCompatDialogFragment{
         String name = mName.getText().toString();
         String text = mReviewText.getText().toString();
         Float rating = mRatingBar.getRating();
+        if(text.isEmpty())
+            name = "";
         // Return input text to activity
         ((AddReviewDialogListener) getActivity()).onReviewAdded(new Review(name, text, rating), oldRating);
         this.dismiss();

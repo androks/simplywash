@@ -410,7 +410,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
                 if(oldRating <= 0.1f) {
                     washer.rating = ((washer.rating * washer.votesCount) + review.rating) / ++washer.votesCount;
-                    washer.votesCount += 1;
                 }
                 else
                     washer.rating = ((washer.rating * washer.votesCount - oldRating) + review.rating) / washer.votesCount;
