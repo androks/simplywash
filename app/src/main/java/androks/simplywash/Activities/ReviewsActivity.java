@@ -42,6 +42,7 @@ public class ReviewsActivity extends BaseActivity implements
     @BindView(R.id.recyclerLV) RecyclerView mRecyclerLV;
     @BindView(R.id.content) View content;
     @BindView(R.id.progressBar) View progressBar;
+    @BindView(R.id.empty_list) View listEmptyList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,11 +129,14 @@ public class ReviewsActivity extends BaseActivity implements
     private void showProgress(){
         content.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+        listEmptyList.setVisibility(View.GONE);
     }
 
     private void hideProgress(){
         content.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        if(mRecyclerAdapter.getItemCount() <= 0)
+            listEmptyList.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.add_review_btn)

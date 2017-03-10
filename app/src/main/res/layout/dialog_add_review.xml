@@ -65,14 +65,10 @@
                     android:id="@+id/text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="@string/some_words_about_it"
+                    android:hint="@string/tell_us_what_you_think"
                     android:inputType="textMultiLine"
-                    android:lines="5"
                     android:gravity="start"
-                    android:maxLines="10"
                     android:enabled="false"
-                    android:minLines="4"
                     android:scrollbars="vertical" />
             </android.support.design.widget.TextInputLayout>
 
