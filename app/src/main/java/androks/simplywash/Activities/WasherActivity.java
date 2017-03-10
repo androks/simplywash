@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import androks.simplywash.Constants;
 import androks.simplywash.Dialogs.AddReviewDialog;
 import androks.simplywash.Dialogs.ServicesDialog;
 import androks.simplywash.Models.Review;
@@ -259,7 +260,9 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick({R.id.more_reviews, R.id.rating_section})
     public void showMoreReviews() {
-        
+        Intent intent = new Intent(WasherActivity.this, ReviewsActivity.class);
+        intent.putExtra(Constants.WASHER_ID, mWasherId);
+        startActivity(intent);
     }
 
     @OnClick(R.id.phone_layout)

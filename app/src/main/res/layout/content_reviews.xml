@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="18dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/rating_text"
@@ -35,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -56,6 +56,13 @@
                 android:layout_height="wrap_content"
                 android:text="people(s) rated it" />
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.10"
+            android:background="@android:color/black"
+            android:layout_marginBottom="16dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerLV"
