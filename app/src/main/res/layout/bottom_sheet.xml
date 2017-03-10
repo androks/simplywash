@@ -179,6 +179,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/services"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -195,7 +196,7 @@
                 app:srcCompat="@drawable/ic_action_wifi" />
 
             <ImageView
-                android:id="@+id/rest_room"
+                android:id="@+id/restRoom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_rest_black_24dp" />
@@ -213,7 +214,7 @@
                 app:srcCompat="@drawable/ic_wc_black_24dp" />
 
             <ImageView
-                android:id="@+id/tire"
+                android:id="@+id/serviceStation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_settings_black_24dp" />

@@ -54,6 +54,14 @@
     <string name="name_optional">Name (optional)</string>
     <string name="some_words_about_it">Some words about it</string>
     <string name="people_like_it">people like it</string>
+    <string name="close">Close</string>
+    <string name="coffee">Coffee</string>
+    <string name="card_payment">Card payment</string>
+    <string name="wifi">WiFi</string>
+    <string name="shop">Shop</string>
+    <string name="wc">WC</string>
+    <string name="rest_room">Rest room</string>
+    <string name="service_station">Service station</string>
 
 
 </resources>

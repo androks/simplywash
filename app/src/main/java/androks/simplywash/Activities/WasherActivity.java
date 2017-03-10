@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import androks.simplywash.Dialogs.AddReviewDialog;
+import androks.simplywash.Dialogs.ServicesDialog;
 import androks.simplywash.Models.Review;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
@@ -48,43 +50,30 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     int red;
 
     // Binding general views
-    @BindView(R.id.animated_toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.favourite_fab)
-    FloatingActionButton mFavouritesFab;
-    @BindView(R.id.rates_count)
-    TextView mCountOfRates;
-    @BindView(R.id.rating_bar)
-    RatingBar mRatingBar;
-    @BindView(R.id.rating_text)
-    TextView mRatingText;
+    @BindView(R.id.animated_toolbar) Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.favourite_fab) FloatingActionButton mFavouritesFab;
+    @BindView(R.id.rates_count) TextView mCountOfRates;
+    @BindView(R.id.rating_bar) RatingBar mRatingBar;
+    @BindView(R.id.rating_text) TextView mRatingText;
 
     /**
      * Start binding washerInfo views
      */
-    @BindView(R.id.location)
-    TextView mLocation;
-    @BindView(R.id.phone)
-    TextView mPhone;
-    @BindView(R.id.opening_hours)
-    TextView mOpeningHours;
-    @BindView(R.id.boxes_status)
-    TextView mBoxesStatus;
-    @BindView(R.id.favourites_count)
-    TextView mCountOfFavourites;
-    @BindView(R.id.description)
-    TextView mDescription;
-    @BindView(R.id.is_washer_open)
-    TextView mIsWasherOpen;
+    @BindView(R.id.location) TextView mLocation;
+    @BindView(R.id.phone) TextView mPhone;
+    @BindView(R.id.opening_hours) TextView mOpeningHours;
+    @BindView(R.id.boxes_status) TextView mBoxesStatus;
+    @BindView(R.id.favourites_count) TextView mCountOfFavourites;
+    @BindView(R.id.description) TextView mDescription;
+    @BindView(R.id.is_washer_open) TextView mIsWasherOpen;
 
     @BindView(R.id.wifi) ImageView mWifi;
     @BindView(R.id.coffee) ImageView mCoffee;
-    @BindView(R.id.rest_room) ImageView mRestRoom;
+    @BindView(R.id.restRoom) ImageView mRestRoom;
     @BindView(R.id.grocery) ImageView mGrocery;
     @BindView(R.id.wc) ImageView mWC;
-    @BindView(R.id.tire) ImageView mServiceStation;
+    @BindView(R.id.serviceStation) ImageView mServiceStation;
     @BindView(R.id.cardPayment) ImageView mCardPayment;
     /**
      * End binding washerInfo views
@@ -309,6 +298,12 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 mWasher.increaseCountOfFavourites():
                 mWasher.decreaseCountOfFavourites()
         ));
+    }
+
+    @OnClick(R.id.services)
+    public void showServicesDialog(){
+        DialogFragment dialog = ServicesDialog.newInstance(mWasher);
+        dialog.show(getSupportFragmentManager(), "ServicesDialog");
     }
 
     @Override

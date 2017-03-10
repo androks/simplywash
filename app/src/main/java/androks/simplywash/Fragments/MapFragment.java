@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -66,6 +67,7 @@ import java.util.Map;
 import androks.simplywash.Activities.OrderActivity;
 import androks.simplywash.Activities.WasherActivity;
 import androks.simplywash.Constants;
+import androks.simplywash.Dialogs.ServicesDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
 import androks.simplywash.Models.Washer;
@@ -123,10 +125,10 @@ public class MapFragment extends Fragment implements
 
     @BindView(R.id.wifi) ImageView mWifi;
     @BindView(R.id.coffee) ImageView mCoffee;
-    @BindView(R.id.rest_room) ImageView mRestRoom;
+    @BindView(R.id.restRoom) ImageView mRestRoom;
     @BindView(R.id.grocery) ImageView mGrocery;
     @BindView(R.id.wc) ImageView mWC;
-    @BindView(R.id.tire) ImageView mServiceStation;
+    @BindView(R.id.serviceStation) ImageView mServiceStation;
     @BindView(R.id.cardPayment) ImageView mCardPayment;
 
     @BindView(R.id.fab_location_settings) FloatingActionButton mMyLocationFab;
@@ -329,6 +331,12 @@ public class MapFragment extends Fragment implements
     public void findCurrentLocation() {
         FLAG_FIND_MY_CURRENT_LOCATION = true;
         checkLocationSettings();
+    }
+
+    @OnClick(R.id.services)
+    public void showServiceDialog(){
+        DialogFragment dialog = ServicesDialog.newInstance(mShowingWasher);
+        dialog.show(mContext.getSupportFragmentManager(), "ServicesDialog");
     }
 
     private void setUpMap() {
