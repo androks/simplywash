@@ -84,9 +84,9 @@ public class ReviewsActivity extends BaseActivity implements
     }
 
     private void setRatings() {
-        mRatingBar.setRating(mWasher.getRating());
-        mRatingText.setText(String.valueOf(mWasher.getRating()));
-        mCountOfRates.setText(String.valueOf(mWasher.getVotesCount()));
+        mRatingBar.setRating(mWasher.rating);
+        mRatingText.setText(String.valueOf(mWasher.rating));
+        mCountOfRates.setText(String.valueOf(mWasher.votesCount));
         hideProgress();
     }
 
@@ -101,10 +101,10 @@ public class ReviewsActivity extends BaseActivity implements
         ) {
             @Override
             protected void populateViewHolder(ViewHolder viewHolder, Review model, int position) {
-                viewHolder.name.setText(model.getName());
-                viewHolder.date.setText(model.getDate());
-                viewHolder.text.setText(model.getText());
-                viewHolder.rate.setRating(model.getRating());
+                viewHolder.name.setText(model.name);
+                viewHolder.date.setText(model.date);
+                viewHolder.text.setText(model.text);
+                viewHolder.rate.setRating(model.rating);
             }
         };
         mRecyclerLV.setAdapter(mRecyclerAdapter);
@@ -144,9 +144,9 @@ public class ReviewsActivity extends BaseActivity implements
     public void onReviewAdded(final Review review, final float oldRating) {
         showProgress();
 
-        if (!review.getText().isEmpty()) {
-            if (review.getName().isEmpty())
-                review.setName("Anonym");
+        if (!review.text.isEmpty()) {
+            if (review.name.isEmpty())
+                review.name = "Anonym";
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).setValue(review);
         }else
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).removeValue();
@@ -156,7 +156,7 @@ public class ReviewsActivity extends BaseActivity implements
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 hideProgressDialog();
                 Toast.makeText(ReviewsActivity.this, "Added", Toast.LENGTH_SHORT).show();
-                mWasher.updateRate(oldRating, review.getRating());
+                mWasher.updateRate(oldRating, review.rating);
                 setRatings();
             }
         });

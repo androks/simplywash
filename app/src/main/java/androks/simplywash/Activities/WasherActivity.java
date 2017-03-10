@@ -189,10 +189,10 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                                         (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                                 View reviewView = inflater.inflate(R.layout.item_review, container, false);
                                 reviewView.setId(pos);
-                                ((TextView) reviewView.findViewById(R.id.name)).setText(temp.getName());
-                                ((TextView) reviewView.findViewById(R.id.date)).setText(temp.getDate());
-                                ((TextView) reviewView.findViewById(R.id.text)).setText(temp.getText());
-                                ((RatingBar) reviewView.findViewById(R.id.rate)).setRating(temp.getRating());
+                                ((TextView) reviewView.findViewById(R.id.name)).setText(temp.name);
+                                ((TextView) reviewView.findViewById(R.id.date)).setText(temp.date);
+                                ((TextView) reviewView.findViewById(R.id.text)).setText(temp.text);
+                                ((RatingBar) reviewView.findViewById(R.id.rate)).setRating(temp.rating);
                                 pos++;
                                 container.addView(reviewView);
                             }
@@ -208,13 +208,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     private void inflateView() {
-        collapsingToolbarLayout.setTitle(mWasher.getName());
+        collapsingToolbarLayout.setTitle(mWasher.name);
 
-        mLocation.setText(mWasher.getLocation());
-        mPhone.setText(mWasher.getPhone());
+        mLocation.setText(mWasher.location);
+        mPhone.setText(mWasher.phone);
         mOpeningHours.setText(Utils.workHoursToString(mWasher));
-        mBoxesStatus.setText(mWasher.getAvailableBoxes() + " of " + mWasher.getBoxes());
-        mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
+        mBoxesStatus.setText(mWasher.availableBoxes + " of " + mWasher.boxes);
+        mCountOfFavourites.setText(String.valueOf(mWasher.countOfFavourites));
 
         if (Utils.isWasherOpenAtTheTime(mWasher)) {
             mIsWasherOpen.setText("Open");
@@ -225,30 +225,30 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         }
 
         mWC.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isToilet())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.toilet)));
         mWifi.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isWifi())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.wifi)));
         mCoffee.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isCoffee())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.coffee)));
         mGrocery.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isShop())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.shop)));
         mRestRoom.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isRestRoom())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.restRoom)));
         mCardPayment.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isCardPayment())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.cardPayment)));
         mServiceStation.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isServiceStation())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.serviceStation)));
 
         setRatings();
 
-        mDescription.setText(mWasher.getDescription());
+        mDescription.setText(mWasher.description);
         hideProgressDialog();
     }
 
     private void setRatings() {
-        mRatingBar.setRating(mWasher.getRating());
-        mRatingText.setText(String.valueOf(mWasher.getRating()));
-        mCountOfRates.setText(String.valueOf(mWasher.getVotesCount()));
+        mRatingBar.setRating(mWasher.rating);
+        mRatingText.setText(String.valueOf(mWasher.rating));
+        mCountOfRates.setText(String.valueOf(mWasher.votesCount));
     }
 
 
@@ -267,7 +267,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.phone_layout)
     public void callToWasher() {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.getPhone()));
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.phone));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -283,7 +283,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.location_layout)
     public void showWasherOnGoogleMap() {
-        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLatitude() + "," + mWasher.getLongitude() + "?q=" + mWasher.getLatitude() + "," + mWasher.getLongitude());
+        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.latitude + "," + mWasher.longitude + "?q=" + mWasher.latitude + "," + mWasher.longitude);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(getPackageManager()) != null)
@@ -298,8 +298,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 R.drawable.ic_favorite_border_white_24dp
         );
         mCountOfFavourites.setText(String.valueOf(FLAG_IS_FAVOURITE?
-                mWasher.increaseCountOfFavourites():
-                mWasher.decreaseCountOfFavourites()
+                mWasher.countOfFavourites++:
+                mWasher.countOfFavourites--
         ));
     }
 
@@ -313,9 +313,9 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     public void onReviewAdded(final Review review, final float oldRating) {
         showProgressDialog();
 
-        if (!review.getText().isEmpty()) {
-            if (review.getName().isEmpty())
-                review.setName("Anonym");
+        if (!review.text.isEmpty()) {
+            if (review.name.isEmpty())
+                review.name = "Anonym";
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).setValue(review);
         }else
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).removeValue();
@@ -326,23 +326,9 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 hideProgressDialog();
                 Toast.makeText(WasherActivity.this, "Added", Toast.LENGTH_SHORT).show();
                 downloadReviews();
-                mWasher.updateRate(oldRating, review.getRating());
+                mWasher.updateRate(oldRating, review.rating);
                 setRatings();
             }
         });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        saveChangesToDB();
-    }
-
-    private void saveChangesToDB() {
-        Utils.getWasher(mWasherId).setValue(mWasher);
-        if(FLAG_IS_FAVOURITE)
-            Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).setValue(true);
-        else
-            Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).removeValue();
     }
 }

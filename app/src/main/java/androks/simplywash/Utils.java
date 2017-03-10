@@ -85,7 +85,7 @@ public class Utils {
     }
 
     public static String workHoursToString(Washer washer){
-        return (washer.getWorkHoursFrom() + ":00" + " - " + washer.getWorkHoursTo() + ":00");
+        return (washer.workHoursFrom + ":00" + " - " + washer.workHoursTo + ":00");
     }
 
     public static int getServiceAvailableColor(boolean available){
@@ -93,11 +93,11 @@ public class Utils {
     }
 
     public static boolean isWasherOpenAtTheTime(Washer washer){
-        if(washer.isRoundTheClock())
+        if(washer.roundTheClock)
             return true;
         Calendar now = Calendar.getInstance();
         int hours = now.get(Calendar.HOUR_OF_DAY);
 
-        return hours >= washer.getWorkHoursFrom() && hours < washer.getWorkHoursTo();
+        return hours >= washer.workHoursFrom && hours < washer.workHoursTo;
     }
 }

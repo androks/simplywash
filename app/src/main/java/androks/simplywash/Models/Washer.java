@@ -10,40 +10,33 @@ import androks.simplywash.Utils;
  */
 
 public class Washer {
-    private String id;
-    private String userId;
-    private String name;
-    private String phone;
-    private String location;
-    private String description;
-    private String placeId;
-    private String state;
-    private double latitude;
-    private double longitude;
-    private float rating;
-    private int boxes;
-    private int availableBoxes;
-    private int votesCount;
-    private int countOfFavourites;
-    private int workHoursFrom;
-    private int workHoursTo;
-    private boolean restRoom;
-    private boolean wifi;
-    private boolean toilet;
-    private boolean coffee;
-    private boolean shop;
-    private boolean cardPayment;
-    private boolean serviceStation;
+    public String id;
+    public String userId;
+    public String name;
+    public String phone;
+    public String location;
+    public String description;
+    public String placeId;
+    public String state;
+    public double latitude;
+    public double longitude;
+    public float rating;
+    public int boxes;
+    public int availableBoxes;
+    public int votesCount;
+    public int countOfFavourites;
+    public int workHoursFrom;
+    public int workHoursTo;
+    public boolean restRoom;
+    public boolean wifi;
+    public boolean toilet;
+    public boolean coffee;
+    public boolean shop;
+    public boolean cardPayment;
+    public boolean serviceStation;
     public boolean roundTheClock;
 
-    public int increaseCountOfFavourites(){
-        return ++countOfFavourites;
-    }
-
-    public int decreaseCountOfFavourites(){
-        return --countOfFavourites;
-    }
-
+    @Exclude
     public void updateRate(float oldValue, float newValue){
         if(oldValue <= 0.1f)
             rating = ((rating*votesCount)+newValue)/++votesCount;
@@ -55,206 +48,6 @@ public class Washer {
     }
 
     public Washer() {}
-
-    public boolean isRoundTheClock() {
-        return roundTheClock;
-    }
-
-    public void setRoundTheClock(boolean roundTheClock) {
-        this.roundTheClock = roundTheClock;
-    }
-
-    public int getCountOfFavourites() {
-        return countOfFavourites;
-    }
-
-    public void setCountOfFavourites(int countOfFavourites) {
-        this.countOfFavourites = countOfFavourites;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public float getRating() {
-        return rating;
-    }
-
-    public int getBoxes() {
-        return boxes;
-    }
-
-    public int getAvailableBoxes() {
-        return availableBoxes;
-    }
-
-    public int getVotesCount() {
-        return votesCount;
-    }
-
-    public int getWorkHoursFrom() {
-        return workHoursFrom;
-    }
-
-    public int getWorkHoursTo() {
-        return workHoursTo;
-    }
-
-    public boolean isRestRoom() {
-        return restRoom;
-    }
-
-    public boolean isWifi() {
-        return wifi;
-    }
-
-    public boolean isToilet() {
-        return toilet;
-    }
-
-    public boolean isCoffee() {
-        return coffee;
-    }
-
-    public boolean isShop() {
-        return shop;
-    }
-
-    public boolean isCardPayment() {
-        return cardPayment;
-    }
-
-    public boolean isServiceStation() {
-        return serviceStation;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
-
-    public void setBoxes(int boxes) {
-        this.boxes = boxes;
-    }
-
-    public void setAvailableBoxes(int availableBoxes) {
-        this.availableBoxes = availableBoxes;
-    }
-
-    public void setVotesCount(int votesCount) {
-        this.votesCount = votesCount;
-    }
-
-    public void setWorkHoursFrom(int workHoursFrom) {
-        this.workHoursFrom = workHoursFrom;
-    }
-
-    public void setWorkHoursTo(int workHoursTo) {
-        this.workHoursTo = workHoursTo;
-    }
-
-    public void setRestRoom(boolean restRoom) {
-        this.restRoom = restRoom;
-    }
-
-    public void setWifi(boolean wifi) {
-        this.wifi = wifi;
-    }
-
-    public void setToilet(boolean toilet) {
-        this.toilet = toilet;
-    }
-
-    public void setCoffee(boolean coffee) {
-        this.coffee = coffee;
-    }
-
-    public void setShop(boolean shop) {
-        this.shop = shop;
-    }
-
-    public void setCardPayment(boolean cardPayment) {
-        this.cardPayment = cardPayment;
-    }
-
-    public void setServiceStation(boolean serviceStation) {
-        this.serviceStation = serviceStation;
-    }
 
     @Exclude
     public LatLng getLatLng(){

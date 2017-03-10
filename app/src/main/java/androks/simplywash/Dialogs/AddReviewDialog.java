@@ -90,10 +90,10 @@ public class AddReviewDialog extends AppCompatDialogFragment{
 
     private void inflateAndEnableViews() {
         if(mReview != null){
-            oldRating = mReview.getRating();
-            mName.setText(mReview.getName());
-            mReviewText.setText(mReview.getText());
-            mRatingBar.setRating(mReview.getRating());
+            oldRating = mReview.rating;
+            mName.setText(mReview.name);
+            mReviewText.setText(mReview.text);
+            mRatingBar.setRating(mReview.rating);
         }
 
         mName.setEnabled(true);

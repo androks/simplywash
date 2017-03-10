@@ -67,27 +67,27 @@ public class ServicesDialog extends AppCompatDialogFragment {
 
     private void setData() {
         mWC.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isToilet())));
+                .getColor(Utils.getServiceAvailableColor(washer.toilet)));
         mWifi.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isWifi())));
+                .getColor(Utils.getServiceAvailableColor(washer.wifi)));
         mCoffee.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isCoffee())));
+                .getColor(Utils.getServiceAvailableColor(washer.coffee)));
         mGrocery.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isShop())));
+                .getColor(Utils.getServiceAvailableColor(washer.shop)));
         mRestRoom.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isRestRoom())));
+                .getColor(Utils.getServiceAvailableColor(washer.restRoom)));
         mCardPayment.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isCardPayment())));
+                .getColor(Utils.getServiceAvailableColor(washer.cardPayment)));
         mServiceStation.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isServiceStation())));
+                .getColor(Utils.getServiceAvailableColor(washer.serviceStation)));
 
-        mWCSwitch.setChecked(washer.isToilet());
-        mWifiSwitch.setChecked(washer.isWifi());
-        mCardPaymentSwitch.setChecked(washer.isCardPayment());
-        mCoffeeSwitch.setChecked(washer.isCoffee());
-        mGrocerySwitch.setChecked(washer.isShop());
-        mRestRoomSwitch.setChecked(washer.isRestRoom());
-        mServiceStationSwitch.setChecked(washer.isServiceStation());
+        mWCSwitch.setChecked(washer.toilet);
+        mWifiSwitch.setChecked(washer.wifi);
+        mCardPaymentSwitch.setChecked(washer.cardPayment);
+        mCoffeeSwitch.setChecked(washer.coffee);
+        mGrocerySwitch.setChecked(washer.shop);
+        mRestRoomSwitch.setChecked(washer.restRoom);
+        mServiceStationSwitch.setChecked(washer.serviceStation);
     }
 
     @Override

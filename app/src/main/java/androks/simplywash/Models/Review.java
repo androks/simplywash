@@ -9,10 +9,10 @@ import java.util.Locale;
  */
 
 public class Review {
-    private String name;
-    private String text;
-    private String date;
-    private float rating;
+    public String name;
+    public String text;
+    public String date;
+    public float rating;
 
     Review(){}
 
@@ -23,25 +23,5 @@ public class Review {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         date = format.format(calendar.getTime());
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public float getRating() {
-        return rating;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }
