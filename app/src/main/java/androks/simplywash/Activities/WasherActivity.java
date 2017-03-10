@@ -54,6 +54,12 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.favourite_fab)
     FloatingActionButton mFavouritesFab;
+    @BindView(R.id.rates_count)
+    TextView mCountOfRates;
+    @BindView(R.id.rating_bar)
+    RatingBar mRatingBar;
+    @BindView(R.id.rating_text)
+    TextView mRatingText;
 
     /**
      * Start binding washerInfo views
@@ -236,8 +242,16 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mCardPayment.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isCardPayment()));
         mServiceStation.setColorFilter(Utils.getServiceAvailabledColor(mWasher.isServiceStation()));
 
+        setRatings();
+
         mDescription.setText(mWasher.getDescription());
         hideProgressDialog();
+    }
+
+    private void setRatings() {
+        mRatingBar.setRating(mWasher.getRating());
+        mRatingText.setText(String.valueOf(mWasher.getRating()));
+        mCountOfRates.setText(String.valueOf(mWasher.getVotesCount()));
     }
 
 
@@ -247,9 +261,9 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         addReviewDialog.show(getSupportFragmentManager(), "Add review");
     }
 
-    @OnClick(R.id.more_reviews)
+    @OnClick({R.id.more_reviews, R.id.rating_section})
     public void showMoreReviews() {
-
+        
     }
 
     @OnClick(R.id.phone_layout)
@@ -310,6 +324,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             }
         });
         mWasher.updateRate(oldRating, review.getRating());
+        setRatings();
     }
 
     @Override
