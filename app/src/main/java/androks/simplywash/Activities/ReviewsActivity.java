@@ -141,7 +141,7 @@ public class ReviewsActivity extends BaseActivity implements
     }
 
     @Override
-    public void onReviewAdded(Review review, float oldRating) {
+    public void onReviewAdded(final Review review, final float oldRating) {
         showProgress();
 
         if (!review.getText().isEmpty()) {
@@ -156,10 +156,10 @@ public class ReviewsActivity extends BaseActivity implements
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 hideProgressDialog();
                 Toast.makeText(ReviewsActivity.this, "Added", Toast.LENGTH_SHORT).show();
+                mWasher.updateRate(oldRating, review.getRating());
+                setRatings();
             }
         });
-        mWasher.updateRate(oldRating, review.getRating());
-        setRatings();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

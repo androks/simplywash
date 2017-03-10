@@ -310,7 +310,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     @Override
-    public void onReviewAdded(Review review, float oldRating) {
+    public void onReviewAdded(final Review review, final float oldRating) {
         showProgressDialog();
 
         if (!review.getText().isEmpty()) {
@@ -326,10 +326,10 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 hideProgressDialog();
                 Toast.makeText(WasherActivity.this, "Added", Toast.LENGTH_SHORT).show();
                 downloadReviews();
+                mWasher.updateRate(oldRating, review.getRating());
+                setRatings();
             }
         });
-        mWasher.updateRate(oldRating, review.getRating());
-        setRatings();
     }
 
     @Override
