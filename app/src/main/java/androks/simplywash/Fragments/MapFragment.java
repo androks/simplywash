@@ -212,8 +212,6 @@ public class MapFragment extends Fragment implements
         determineListenersForDatabase();
         setListenersForDatabase();
 
-        checkUserFavouriteWashers();
-
         mSlidingLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -222,6 +220,7 @@ public class MapFragment extends Fragment implements
         });
 
         updateFromPreferences();
+        checkUserFavouriteWashers();
         return rootView;
     }
 
@@ -400,6 +399,7 @@ public class MapFragment extends Fragment implements
                     );
                     mFavouritesWashers.clear();
                     mFavouritesWashers.addAll(temp.keySet());
+                    filterWashers();
                 }
             }
 
@@ -475,8 +475,7 @@ public class MapFragment extends Fragment implements
         for (Washer washer : mWashersList.values()) {
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
-                    .position(new LatLng(washer.getLatitude(), washer.getLongitude()))
-                    .visible(washer.getStatusAsEnum() == WasherStatus.Available || FLAG_DISPLAY_ALL_STATES);
+                    .position(new LatLng(washer.getLatitude(), washer.getLongitude()));
             //Utils.setMarkerIcon(marker, washer.getState());
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
@@ -486,7 +485,7 @@ public class MapFragment extends Fragment implements
     private void updateMarker(String id) {
         //Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
         mMarkersList.get(id).setVisible(
-                mWashersList.get(id).getStatusAsEnum() == WasherStatus.Available || FLAG_DISPLAY_ALL_STATES
+                Utils.isWasherFits(mWashersList.get(id), mContext, FLAG_DISPLAY_ALL_STATES, mFavouritesWashers)
         );
     }
 
@@ -560,7 +559,7 @@ public class MapFragment extends Fragment implements
                 break;
             case Constants.REQUEST_FILTER:
                 switch (resultCode){
-                    case Constants.FILTER_CHANGED:
+                    case Constants.FILTER_CHANGED_CODE:
                         filterWashers();
                         break;
                 }

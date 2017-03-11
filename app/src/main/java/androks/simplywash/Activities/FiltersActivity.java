@@ -138,7 +138,7 @@ public class FiltersActivity extends AppCompatActivity {
     @OnClick(R.id.applyBtn)
     public void applyFilters(){
         saveFilterToSharedPref();
-        setResult(Constants.FILTER_CHANGED);
+        setResult(Constants.FILTER_CHANGED_CODE);
         finish();
     }
 }

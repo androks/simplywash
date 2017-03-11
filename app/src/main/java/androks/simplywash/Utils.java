@@ -3,55 +3,20 @@ package androks.simplywash;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 import java.util.List;
 
-import androks.simplywash.Models.Washer;
 import androks.simplywash.Enums.WasherStatus;
+import androks.simplywash.Models.Washer;
 
 /**
  * Created by androks on 2/25/2017.
  */
 
 public class Utils {
-
-    public static void setMarkerIcon(Marker marker, String state){
-        switch (state){
-            case Constants.AVAILABLE:
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_green));
-                break;
-
-            case Constants.OFFLINE:
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_gray));
-                break;
-
-            case Constants.BUSY:
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red));
-                break;
-        }
-    }
-
-    public static void setMarkerIcon(MarkerOptions marker, String state){
-        switch (state){
-            case Constants.AVAILABLE:
-                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_green));
-                break;
-
-            case Constants.OFFLINE:
-               // marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_gray));
-                break;
-
-            case Constants.BUSY:
-                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red));
-                break;
-        }
-    }
 
     public static DatabaseReference getWasher(){
         return FirebaseDatabase.getInstance().getReference().child("washers");
