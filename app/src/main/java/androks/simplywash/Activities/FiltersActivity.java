@@ -26,7 +26,6 @@ public class FiltersActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     @BindView(R.id.onlyFavouritesSwitch) Switch mOnlyFavourites;
-    @BindView(R.id.findNearestSwitch) Switch mFindNearest;
     @BindView(R.id.priceCategorySpinner) Spinner mPriceCategory;
     @BindView(R.id.rate) RatingBar mRatingBar;
 
@@ -87,8 +86,6 @@ public class FiltersActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.FILTERS_PREFERENCES, MODE_PRIVATE);
         mOnlyFavourites.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_ONLY_FAVOURITES, false));
-        mFindNearest.setChecked(
-                sharedPreferences.getBoolean(Constants.FILTER_FIND_NEAREST, false));
         mRestRoomSwitch.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_REST_ROOM, false));
         mWifiSwitch.setChecked(
@@ -120,7 +117,6 @@ public class FiltersActivity extends AppCompatActivity {
         edit.putBoolean(Constants.FILTER_CARD_PAYMENT, mCardPaymentSwitch.isChecked());
         edit.putBoolean(Constants.FILTER_SERVICE_STATION, mServiceStationSwitch.isChecked());
         edit.putBoolean(Constants.FILTER_ONLY_FAVOURITES, mOnlyFavourites.isChecked());
-        edit.putBoolean(Constants.FILTER_FIND_NEAREST, mFindNearest.isChecked());
         edit.putFloat(Constants.FILTER_MINIMUM_RATING, mRatingBar.getRating());
         edit.putInt(Constants.FILTER_PRICE_CATEGORY, mPriceCategory.getSelectedItemPosition());
         edit.apply();
@@ -128,7 +124,6 @@ public class FiltersActivity extends AppCompatActivity {
 
     private void resetFilters() {
         mOnlyFavourites.setChecked(false);
-        mFindNearest.setChecked(false);
         mRestRoomSwitch.setChecked(false);
         mWifiSwitch.setChecked(false);
         mWCSwitch.setChecked(false);

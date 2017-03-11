@@ -303,13 +303,6 @@
                 android:layout_height="1dp"
                 android:alpha="0.15"
                 android:background="@android:color/black" />
-
-            <Switch
-                android:id="@+id/findNearestSwitch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Automatically find nearest washer"
-                android:padding="16dp"/>
         </LinearLayout>
     </ScrollView>
 
