@@ -66,6 +66,24 @@
     <string name="tell_us_what_you_think">Tell us what you think</string>
     <string name="edit">Edit</string>
     <string name="title_activity_price">Price list</string>
+    <string name="title_activity_filters">FiltersActivity</string>
+    <string name="apply">Apply</string>
+    <string name="only_favourites">Only favourites</string>
+    <string name="services">Services</string>
+    <string name="reset">Reset</string>
 
-
+    <string-array name="priceCategoriesStrings">
+        <item>Any price</item>
+        <item>To 50</item>
+        <item>To 60</item>
+        <item>To 80</item>
+        <item>To 100</item>
+    </string-array>
+    <integer-array name="priceCategoriesInt">
+        <item>1000</item>
+        <item>50</item>
+        <item>60</item>
+        <item>80</item>
+        <item>100</item>
+    </integer-array>
 </resources>

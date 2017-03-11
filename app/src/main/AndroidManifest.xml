@@ -77,6 +77,10 @@
         <activity
             android:name=".Activities.PriceActivity"
             android:label="@string/title_activity_price"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.FiltersActivity"
+            android:label="@string/title_activity_filters"
             android:theme="@style/AppTheme"></activity>
     </application>
 

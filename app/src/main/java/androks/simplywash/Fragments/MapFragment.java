@@ -22,6 +22,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -64,6 +67,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import androks.simplywash.Activities.FiltersActivity;
 import androks.simplywash.Activities.OrderActivity;
 import androks.simplywash.Activities.WasherActivity;
 import androks.simplywash.Constants;
@@ -193,6 +197,7 @@ public class MapFragment extends Fragment implements
         showProgress();
         mContext = getActivity();
         mResources = mContext.getResources();
+        setHasOptionsMenu(true);
 
         setUpMap();
 
@@ -254,13 +259,35 @@ public class MapFragment extends Fragment implements
         super.onStop();
     }
 
-
-
     @Override
     public void onDetach() {
         unbinder.unbind();
         deleteListenersForDatabase();
         super.onDetach();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Do something that differs the Activity's menu here
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.filter:
+                startActivityForResult(
+                        new Intent(getActivity(), FiltersActivity.class),
+                        Constants.REQUEST_FILTER
+                );
+                return true;
+
+            default:
+                break;
+        }
+
+        return false;
     }
 
     private void savePreferences() {
@@ -500,10 +527,6 @@ public class MapFragment extends Fragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case Constants.SIGN_IN:
-                //TODO:Build route
-                //checkLocationSettings();
-                break;
             case Constants.REQUEST_CHECK_LOCATION_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
@@ -514,7 +537,34 @@ public class MapFragment extends Fragment implements
                         break;
                 }
                 break;
+            case Constants.REQUEST_FILTER:
+                switch (resultCode){
+                    case Constants.FILTER_CHANGED:
+                        filterWashers();
+                        break;
+                }
         }
+    }
+
+    private void filterWashers() {
+        SharedPreferences sharedPreferences = getActivity()
+                .getSharedPreferences(Constants.FILTERS_PREFERENCES, Context.MODE_PRIVATE);
+
+        boolean FindNearest = sharedPreferences.getBoolean(Constants.FILTER_FIND_NEAREST, false);
+        boolean restRoomSwitch = sharedPreferences.getBoolean(Constants.FILTER_REST_ROOM, false);
+        boolean wifiSwitch = sharedPreferences.getBoolean(Constants.FILTER_WIFI, false);
+        boolean wCSwitch = sharedPreferences.getBoolean(Constants.FILTER_TOILET, false);
+        boolean coffeeSwitch = sharedPreferences.getBoolean(Constants.FILTER_COFFEE, false);
+        boolean grocerySwitch = sharedPreferences.getBoolean(Constants.FILTER_SHOP, false);
+        float rating = sharedPreferences.getFloat(Constants.FILTER_MINIMUM_RATING, 0.0f);
+        int priceCategory = sharedPreferences.getInt(Constants.FILTER_PRICE_CATEGORY, 0);
+        boolean cardPaymentSwitch =
+                sharedPreferences.getBoolean(Constants.FILTER_CARD_PAYMENT, false);
+        boolean serviceStationSwitch =
+                sharedPreferences.getBoolean(Constants.FILTER_SERVICE_STATION, false);
+        boolean onlyFavourites =
+                sharedPreferences.getBoolean(Constants.FILTER_ONLY_FAVOURITES, false);
+
     }
 
     /**

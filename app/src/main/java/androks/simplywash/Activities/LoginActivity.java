@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         authCallback = new AuthCallback() {
             @Override
             public void success(DigitsSession session, String phoneNumber) {
-                SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERNCES, MODE_PRIVATE);
+                SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
                 SharedPreferences.Editor edit = sp.edit();
                 edit.putString(Constants.AUTH_UUID_PREF, phoneNumber);
                 edit.apply();
