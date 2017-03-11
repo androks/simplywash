@@ -86,9 +86,9 @@ public class ReviewsActivity extends BaseActivity implements
     }
 
     private void setRatings() {
-        mRatingBar.setRating(mWasher.rating);
-        mRatingText.setText(String.valueOf(mWasher.rating));
-        mCountOfRates.setText(String.valueOf(mWasher.votesCount));
+        mRatingBar.setRating(mWasher.getRating());
+        mRatingText.setText(String.valueOf(mWasher.getRating()));
+        mCountOfRates.setText(String.valueOf(mWasher.getVotesCount()));
         hideProgress();
     }
 
@@ -166,9 +166,9 @@ public class ReviewsActivity extends BaseActivity implements
                 }
 
                 if(oldRating <= 0.1f)
-                    washer.rating = ((washer.rating * washer.votesCount) + review.rating) / ++washer.votesCount;
+                    washer.setRating(((washer.getRating() * washer.getVotesCount()) + review.rating) / washer.increaseCountOfFavourites());
                 else
-                    washer.rating = ((washer.rating * washer.votesCount - oldRating) + review.rating) / washer.votesCount;
+                    washer.setRating(((washer.getRating() * washer.getVotesCount() - oldRating) + review.rating) / washer.getVotesCount());
 
                 mWasher = washer;
                 // Set value and report transaction success

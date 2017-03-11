@@ -77,6 +77,7 @@ import androks.simplywash.Dialogs.ServicesDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
 import androks.simplywash.Models.Washer;
+import androks.simplywash.Models.WasherStatus;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
 import butterknife.BindColor;
@@ -305,7 +306,7 @@ public class MapFragment extends Fragment implements
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if(mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN &&
                 mShowingWasher != null){
-            edit.putString(Constants.LAST_OPENED_WASHER_PREF, mShowingWasher.id);
+            edit.putString(Constants.LAST_OPENED_WASHER_PREF, mShowingWasher.getId());
         }
         edit.putBoolean(Constants.WASHER_STATES_PREF, FLAG_DISPLAY_ALL_STATES);
         edit.apply();
@@ -314,7 +315,7 @@ public class MapFragment extends Fragment implements
     @OnClick(R.id.moreBtn)
     public void showWasherDetails() {
         Intent intent = new Intent(getActivity(), WasherActivity.class);
-        intent.putExtra("id", mShowingWasher.id);
+        intent.putExtra("id", mShowingWasher.getId());
         startActivity(intent);
     }
 
@@ -340,12 +341,12 @@ public class MapFragment extends Fragment implements
             Toast.makeText(mContext, "Need access to location", Toast.LENGTH_SHORT).show();
             checkLocationSettings();
         }
-        orderToWasher(mTheNearestFreeWasher.id);
+        orderToWasher(mTheNearestFreeWasher.getId());
     }
 
     @OnClick(R.id.order_to_showing_wash)
     public void orderToShowingWasher(){
-        orderToWasher(mShowingWasher.id);
+        orderToWasher(mShowingWasher.getId());
     }
 
     public void orderToWasher(String id){
@@ -449,7 +450,7 @@ public class MapFragment extends Fragment implements
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                mWashersList.get(dataSnapshot.getKey()).state = dataSnapshot.getValue(String.class);
+                mWashersList.get(dataSnapshot.getKey()).setState(dataSnapshot.getValue(String.class));
                 updateMarker(dataSnapshot.getKey());
             }
 
@@ -473,11 +474,11 @@ public class MapFragment extends Fragment implements
     private void setMarkers() {
         for (Washer washer : mWashersList.values()) {
             MarkerOptions marker = new MarkerOptions()
-                    .title(washer.id)
-                    .position(new LatLng(washer.latitude, washer.longitude))
-                    .visible(washer.state.equals(Constants.AVAILABLE) || FLAG_DISPLAY_ALL_STATES);
+                    .title(washer.getId())
+                    .position(new LatLng(washer.getLatitude(), washer.getLongitude()))
+                    .visible(washer.getStatusAsEnum() == WasherStatus.Available || FLAG_DISPLAY_ALL_STATES);
             //Utils.setMarkerIcon(marker, washer.getState());
-            mMarkersList.put(washer.id, mMap.addMarker(marker));
+            mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
         hideProgress();
     }
@@ -485,7 +486,7 @@ public class MapFragment extends Fragment implements
     private void updateMarker(String id) {
         //Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
         mMarkersList.get(id).setVisible(
-                mWashersList.get(id).state.equals(Constants.AVAILABLE) || FLAG_DISPLAY_ALL_STATES
+                mWashersList.get(id).getStatusAsEnum() == WasherStatus.Available || FLAG_DISPLAY_ALL_STATES
         );
     }
 
@@ -568,7 +569,7 @@ public class MapFragment extends Fragment implements
 
     private void filterWashers() {
         for(Washer washer: mWashersList.values()) {
-            mMarkersList.get(washer.id).setVisible(
+            mMarkersList.get(washer.getId()).setVisible(
                     Utils.isWasherFits(washer, mContext, FLAG_DISPLAY_ALL_STATES, mFavouritesWashers)
             );
         }
@@ -596,7 +597,7 @@ public class MapFragment extends Fragment implements
 
             if(FLAG_ORDER_THE_NEAREST_WASHER){
                 FLAG_ORDER_THE_NEAREST_WASHER = false;
-                orderToWasher(mTheNearestFreeWasher.id);
+                orderToWasher(mTheNearestFreeWasher.getId());
             }
             setMyLocationUtilsEnabled(true);
         }
@@ -697,32 +698,32 @@ public class MapFragment extends Fragment implements
     }
 
     private void inflateWasherDetails() {
-        mName.setText(mShowingWasher.name);
-        mRatingBar.setRating(mShowingWasher.rating);
+        mName.setText(mShowingWasher.getName());
+        mRatingBar.setRating(mShowingWasher.getRating());
         mRatingText.setText(String.format(
                 Locale.getDefault(),
                 " %.1f (%d votes)",
-                mShowingWasher.rating,
-                mShowingWasher.votesCount));
-        mLocation.setText(mShowingWasher.location);
-        mPhone.setText(mShowingWasher.phone);
+                mShowingWasher.getRating(),
+                mShowingWasher.getVotesCount()));
+        mLocation.setText(mShowingWasher.getLocation());
+        mPhone.setText(mShowingWasher.getPhone());
         mOpeningHours.setText(Utils.workHoursToString(mShowingWasher));
-        mBoxesStatus.setText(mShowingWasher.availableBoxes + " of " + mShowingWasher.boxes);
+        mBoxesStatus.setText(mShowingWasher.getAvailableBoxes() + " of " + mShowingWasher.getBoxes());
 
         mWC.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.toilet)));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isToilet())));
         mWifi.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.wifi)));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWifi())));
         mCoffee.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.coffee)));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isCoffee())));
         mGrocery.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.shop)));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isShop())));
         mRestRoom.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.restRoom)));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isRestRoom())));
         mCardPayment.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.cardPayment)));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isCardPayment())));
         mServiceStation.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.serviceStation)));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isServiceStation())));
     }
 
     @Override
@@ -783,14 +784,15 @@ public class MapFragment extends Fragment implements
         Double bestMatch = (double) -1;
         int i = 0;
         for (Washer washer : mWashersList.values()) {
-            if (mMarkersList.get(washer.id).isVisible() && washer.state.equals(Constants.AVAILABLE)) {
+            if (mMarkersList.get(washer.getId()).isVisible()
+                    && washer.getStatusAsEnum() == WasherStatus.Available) {
                 distances[i] = SphericalUtil.computeDistanceBetween(
                         mCurrentLocation,
                         washer.getLatLng()
                 );
                 if (bestMatch.equals((double) -1) || bestMatch > distances[i]) {
                     bestMatch = distances[i];
-                    washerId = washer.id;
+                    washerId = washer.getId();
                 }
             }
             i++;

@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import androks.simplywash.Models.Washer;
+import androks.simplywash.Models.WasherStatus;
 
 /**
  * Created by androks on 2/25/2017.
@@ -89,7 +90,7 @@ public class Utils {
     }
 
     public static String workHoursToString(Washer washer){
-        return (washer.workHoursFrom + ":00" + " - " + washer.workHoursTo + ":00");
+        return (washer.getWorkHoursFrom() + ":00" + " - " + washer.getWorkHoursTo() + ":00");
     }
 
     public static int getServiceAvailableColor(boolean available){
@@ -97,12 +98,12 @@ public class Utils {
     }
 
     public static boolean isWasherOpenAtTheTime(Washer washer){
-        if(washer.roundTheClock)
+        if(washer.isRoundTheClock())
             return true;
         Calendar now = Calendar.getInstance();
         int hours = now.get(Calendar.HOUR_OF_DAY);
 
-        return hours >= washer.workHoursFrom && hours < washer.workHoursTo;
+        return hours >= washer.getWorkHoursFrom() && hours < washer.getWorkHoursTo();
     }
 
     public static boolean isWasherFits(Washer washer,
@@ -128,27 +129,27 @@ public class Utils {
         boolean onlyFavourites =
                 sharedPreferences.getBoolean(Constants.FILTER_ONLY_FAVOURITES, false);
 
-        if(restRoom && !washer.restRoom)
+        if(restRoom && !washer.isRestRoom())
             return false;
-        if(wifi && !washer.wifi)
+        if(wifi && !washer.isWifi())
             return false;
-        if(wc && !washer.toilet)
+        if(wc && !washer.isToilet())
             return false;
-        if(coffee && !washer.coffee)
+        if(coffee && !washer.isCoffee())
             return false;
-        if(cardPayment && !washer.cardPayment)
+        if(cardPayment && !washer.isCardPayment())
             return false;
-        if(serviceStation && !washer.serviceStation)
+        if(serviceStation && !washer.isServiceStation())
             return false;
-        if(grocery && !washer.shop)
+        if(grocery && !washer.isShop())
             return false;
-        if(rating != 0.0f && rating < washer.rating)
+        if(rating != 0.0f && rating < washer.getRating())
             return false;
-        if(onlyFavourites && !favouriteWashers.contains(washer.id))
+        if(onlyFavourites && !favouriteWashers.contains(washer.getId()))
             return false;
-        if(priceCategoriesInt[priceCategory] < washer.defaultPrice)
+        if(priceCategoriesInt[priceCategory] < washer.getDefaultPrice())
             return false;
-        if(!displayAllStates && !washer.state.equals(Constants.AVAILABLE) )
+        if(!displayAllStates && !(washer.getStatusAsEnum() == WasherStatus.Available))
             return false;
 
         return true;

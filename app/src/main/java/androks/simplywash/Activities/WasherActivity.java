@@ -211,13 +211,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     private void inflateView() {
-        collapsingToolbarLayout.setTitle(mWasher.name);
+        collapsingToolbarLayout.setTitle(mWasher.getName());
 
-        mLocation.setText(mWasher.location);
-        mPhone.setText(mWasher.phone);
+        mLocation.setText(mWasher.getLocation());
+        mPhone.setText(mWasher.getPhone());
         mOpeningHours.setText(Utils.workHoursToString(mWasher));
-        mBoxesStatus.setText(mWasher.availableBoxes + " of " + mWasher.boxes);
-        mCountOfFavourites.setText(String.valueOf(mWasher.countOfFavourites));
+        mBoxesStatus.setText(mWasher.getAvailableBoxes() + " of " + mWasher.getBoxes());
+        mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
 
         if (Utils.isWasherOpenAtTheTime(mWasher)) {
             mIsWasherOpen.setText("Open");
@@ -228,30 +228,30 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         }
 
         mWC.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.toilet)));
+                .getColor(Utils.getServiceAvailableColor(mWasher.isToilet())));
         mWifi.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.wifi)));
+                .getColor(Utils.getServiceAvailableColor(mWasher.isWifi())));
         mCoffee.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.coffee)));
+                .getColor(Utils.getServiceAvailableColor(mWasher.isCoffee())));
         mGrocery.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.shop)));
+                .getColor(Utils.getServiceAvailableColor(mWasher.isShop())));
         mRestRoom.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.restRoom)));
+                .getColor(Utils.getServiceAvailableColor(mWasher.isRestRoom())));
         mCardPayment.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.cardPayment)));
+                .getColor(Utils.getServiceAvailableColor(mWasher.isCardPayment())));
         mServiceStation.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.serviceStation)));
+                .getColor(Utils.getServiceAvailableColor(mWasher.isServiceStation())));
 
         setRatings();
 
-        mDescription.setText(mWasher.description);
+        mDescription.setText(mWasher.getDescription());
         hideProgressDialog();
     }
 
     private void setRatings() {
-        mRatingBar.setRating(mWasher.rating);
-        mRatingText.setText(String.valueOf(mWasher.rating));
-        mCountOfRates.setText(String.valueOf(mWasher.votesCount));
+        mRatingBar.setRating(mWasher.getRating());
+        mRatingText.setText(String.valueOf(mWasher.getRating()));
+        mCountOfRates.setText(String.valueOf(mWasher.getVotesCount()));
     }
 
 
@@ -277,7 +277,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.phone_layout)
     public void callToWasher() {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.phone));
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.getPhone()));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -293,7 +293,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.location_layout)
     public void showWasherOnGoogleMap() {
-        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.latitude + "," + mWasher.longitude + "?q=" + mWasher.latitude + "," + mWasher.longitude);
+        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLatitude() + "," + mWasher.getLongitude() + "?q=" + mWasher.getLatitude() + "," + mWasher.getLongitude());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(getPackageManager()) != null)
@@ -363,7 +363,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                         WasherActivity.this,
                         FLAG_IS_FAVOURITE ?"Add to favourite":"Removed from favourite",
                         Toast.LENGTH_SHORT).show();
-                mCountOfFavourites.setText(String.valueOf(mWasher.countOfFavourites));
+                mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
             }
         });
     }
@@ -395,11 +395,10 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                     return Transaction.success(mutableData);
                 }
 
-                if(oldRating <= 0.1f) {
-                    washer.rating = ((washer.rating * washer.votesCount) + review.rating) / ++washer.votesCount;
-                }
+                if(oldRating <= 0.1f)
+                    washer.setRating(((washer.getRating() * washer.getVotesCount()) + review.rating) / washer.increaseCountOfFavourites());
                 else
-                    washer.rating = ((washer.rating * washer.votesCount - oldRating) + review.rating) / washer.votesCount;
+                    washer.setRating(((washer.getRating() * washer.getVotesCount() - oldRating) + review.rating) / washer.getVotesCount());
 
                 mWasher = washer;
                 // Set value and report transaction success
