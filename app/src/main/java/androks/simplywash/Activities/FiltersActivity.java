@@ -14,11 +14,14 @@ import android.widget.Switch;
 
 import androks.simplywash.Constants;
 import androks.simplywash.R;
+import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class FiltersActivity extends AppCompatActivity {
+
+    @BindArray(R.array.priceCategoriesInt) int[] priceCategoriesInt;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
 
@@ -56,6 +59,7 @@ public class FiltersActivity extends AppCompatActivity {
         });
         if(getSupportActionBar() != null){
             getSupportActionBar().setTitle(R.string.title_activity_filters);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         }
     }
@@ -102,7 +106,7 @@ public class FiltersActivity extends AppCompatActivity {
         mRatingBar.setRating(
                 sharedPreferences.getFloat(Constants.FILTER_MINIMUM_RATING, 0.0f));
         mPriceCategory.setSelection(
-                sharedPreferences.getInt(Constants.FILTER_PRICE_CATEGORY, 0));
+                sharedPreferences.getInt(Constants.FILTER_PRICE_CATEGORY, priceCategoriesInt.length-1));
     }
 
     private void saveFilterToSharedPref() {

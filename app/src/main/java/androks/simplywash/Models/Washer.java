@@ -25,6 +25,7 @@ public class Washer {
     public int countOfFavourites;
     public int workHoursFrom;
     public int workHoursTo;
+    public int defaultPrice;
     public boolean restRoom;
     public boolean wifi;
     public boolean toilet;

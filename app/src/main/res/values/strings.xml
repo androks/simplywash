@@ -73,17 +73,17 @@
     <string name="reset">Reset</string>
 
     <string-array name="priceCategoriesStrings">
-        <item>Any price</item>
         <item>To 50</item>
         <item>To 60</item>
         <item>To 80</item>
         <item>To 100</item>
+        <item>Any price</item>
     </string-array>
     <integer-array name="priceCategoriesInt">
-        <item>1000</item>
         <item>50</item>
         <item>60</item>
         <item>80</item>
         <item>100</item>
+        <item>1000</item>
     </integer-array>
 </resources>

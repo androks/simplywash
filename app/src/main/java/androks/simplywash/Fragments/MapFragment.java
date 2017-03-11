@@ -52,6 +52,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -103,12 +105,13 @@ public class MapFragment extends Fragment implements
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-    /** End constant values  **/
+    /* End constant values  **/
 
 
     /**
      * Binding view with ButterKnife
      **/
+
     @BindView(R.id.fab_state_marker) View mChangeStateFab;
 
     @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
@@ -169,17 +172,18 @@ public class MapFragment extends Fragment implements
 
     private static FragmentActivity mContext;
     private static Resources mResources;
+    private static FirebaseUser mUser;
 
     //Polyline list using as buffer to build directions
     private List<Polyline> mPolylinePaths = new ArrayList<>();
     private Washer mShowingWasher;
-    private Washer mCurrentWasher;
     private Washer mTheNearestFreeWasher;
     public LatLng mCurrentLocation;
 
     //Relation between markers on map and list of washers
     private HashMap<String, Washer> mWashersList = new HashMap<>();
     private HashMap<String, Marker> mMarkersList = new HashMap<>();
+    private List<String> mFavouritesWashers = new ArrayList<>();
 
     private boolean FLAG_DISPLAY_ALL_STATES = false;
     private boolean FLAG_FIND_MY_CURRENT_LOCATION;
@@ -195,14 +199,20 @@ public class MapFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         showProgress();
+
         mContext = getActivity();
         mResources = mContext.getResources();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+
         setHasOptionsMenu(true);
 
         setUpMap();
 
         determineListenersForDatabase();
         setListenersForDatabase();
+
+        checkUserFavouriteWashers();
+
         mSlidingLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -311,17 +321,7 @@ public class MapFragment extends Fragment implements
     @OnClick(R.id.fab_state_marker)
     public void changeWashersStateFlag(FloatingActionButton fab) {
         FLAG_DISPLAY_ALL_STATES = !FLAG_DISPLAY_ALL_STATES;
-        for (Washer washer : mWashersList.values())
-            if (FLAG_DISPLAY_ALL_STATES && (
-                    washer.state.equals(Constants.BUSY) ||
-                            washer.state.equals(Constants.OFFLINE))
-                    )
-                mMarkersList.get(washer.id).setVisible(true);
-            else if (!FLAG_DISPLAY_ALL_STATES && (
-                    washer.state.equals(Constants.BUSY) ||
-                            washer.state.equals(Constants.OFFLINE))
-                    )
-                mMarkersList.get(washer.id).setVisible(false);
+        filterWashers();
 
         fab.setImageResource(FLAG_DISPLAY_ALL_STATES ?
                 R.mipmap.ic_markers_all : R.mipmap.ic_marker_free);
@@ -387,6 +387,26 @@ public class MapFragment extends Fragment implements
 
     private void hideProgress() {
         mProgressBar.setVisibility(View.GONE);
+    }
+
+    private void checkUserFavouriteWashers(){
+        Utils.getFavourites(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren()){
+                    HashMap<String, Boolean> temp = dataSnapshot.getValue(
+                            new GenericTypeIndicator<HashMap<String, Boolean>>() {}
+                    );
+                    mFavouritesWashers.clear();
+                    mFavouritesWashers.addAll(temp.keySet());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void setListenersForDatabase() {
@@ -547,24 +567,11 @@ public class MapFragment extends Fragment implements
     }
 
     private void filterWashers() {
-        SharedPreferences sharedPreferences = getActivity()
-                .getSharedPreferences(Constants.FILTERS_PREFERENCES, Context.MODE_PRIVATE);
-
-        boolean FindNearest = sharedPreferences.getBoolean(Constants.FILTER_FIND_NEAREST, false);
-        boolean restRoomSwitch = sharedPreferences.getBoolean(Constants.FILTER_REST_ROOM, false);
-        boolean wifiSwitch = sharedPreferences.getBoolean(Constants.FILTER_WIFI, false);
-        boolean wCSwitch = sharedPreferences.getBoolean(Constants.FILTER_TOILET, false);
-        boolean coffeeSwitch = sharedPreferences.getBoolean(Constants.FILTER_COFFEE, false);
-        boolean grocerySwitch = sharedPreferences.getBoolean(Constants.FILTER_SHOP, false);
-        float rating = sharedPreferences.getFloat(Constants.FILTER_MINIMUM_RATING, 0.0f);
-        int priceCategory = sharedPreferences.getInt(Constants.FILTER_PRICE_CATEGORY, 0);
-        boolean cardPaymentSwitch =
-                sharedPreferences.getBoolean(Constants.FILTER_CARD_PAYMENT, false);
-        boolean serviceStationSwitch =
-                sharedPreferences.getBoolean(Constants.FILTER_SERVICE_STATION, false);
-        boolean onlyFavourites =
-                sharedPreferences.getBoolean(Constants.FILTER_ONLY_FAVOURITES, false);
-
+        for(Washer washer: mWashersList.values()) {
+            mMarkersList.get(washer.id).setVisible(
+                    Utils.isWasherFits(washer, mContext, FLAG_DISPLAY_ALL_STATES, mFavouritesWashers)
+            );
+        }
     }
 
     /**

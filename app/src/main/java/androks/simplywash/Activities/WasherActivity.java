@@ -54,51 +54,31 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     int red;
 
     // Binding general views
-    @BindView(R.id.animated_toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.favourite_fab)
-    FloatingActionButton mFavouritesFab;
-    @BindView(R.id.rates_count)
-    TextView mCountOfRates;
-    @BindView(R.id.rating_bar)
-    RatingBar mRatingBar;
-    @BindView(R.id.rating_text)
-    TextView mRatingText;
+    @BindView(R.id.animated_toolbar) Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.favourite_fab) FloatingActionButton mFavouritesFab;
+    @BindView(R.id.rates_count) TextView mCountOfRates;
+    @BindView(R.id.rating_bar) RatingBar mRatingBar;
+    @BindView(R.id.rating_text) TextView mRatingText;
 
     /**
      * Start binding washerInfo views
      */
-    @BindView(R.id.location)
-    TextView mLocation;
-    @BindView(R.id.phone)
-    TextView mPhone;
-    @BindView(R.id.opening_hours)
-    TextView mOpeningHours;
-    @BindView(R.id.boxes_status)
-    TextView mBoxesStatus;
-    @BindView(R.id.favourites_count)
-    TextView mCountOfFavourites;
-    @BindView(R.id.description)
-    TextView mDescription;
-    @BindView(R.id.is_washer_open)
-    TextView mIsWasherOpen;
+    @BindView(R.id.location) TextView mLocation;
+    @BindView(R.id.phone) TextView mPhone;
+    @BindView(R.id.opening_hours) TextView mOpeningHours;
+    @BindView(R.id.boxes_status) TextView mBoxesStatus;
+    @BindView(R.id.favourites_count) TextView mCountOfFavourites;
+    @BindView(R.id.description) TextView mDescription;
+    @BindView(R.id.is_washer_open) TextView mIsWasherOpen;
 
-    @BindView(R.id.wifi)
-    ImageView mWifi;
-    @BindView(R.id.coffee)
-    ImageView mCoffee;
-    @BindView(R.id.restRoom)
-    ImageView mRestRoom;
-    @BindView(R.id.grocery)
-    ImageView mGrocery;
-    @BindView(R.id.wc)
-    ImageView mWC;
-    @BindView(R.id.serviceStation)
-    ImageView mServiceStation;
-    @BindView(R.id.cardPayment)
-    ImageView mCardPayment;
+    @BindView(R.id.wifi) ImageView mWifi;
+    @BindView(R.id.coffee) ImageView mCoffee;
+    @BindView(R.id.restRoom) ImageView mRestRoom;
+    @BindView(R.id.grocery) ImageView mGrocery;
+    @BindView(R.id.wc) ImageView mWC;
+    @BindView(R.id.serviceStation) ImageView mServiceStation;
+    @BindView(R.id.cardPayment) ImageView mCardPayment;
     /**
      * End binding washerInfo views
      */
