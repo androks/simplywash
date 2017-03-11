@@ -288,6 +288,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         startActivity(intent);
     }
 
+    @OnClick(R.id.prices)
+    public void seePrices(){
+        Intent intent = new Intent(WasherActivity.this, PriceActivity.class);
+        intent.putExtra(Constants.WASHER_ID, mWasherId);
+        startActivity(intent);
+    }
+
     @OnClick(R.id.phone_layout)
     public void callToWasher() {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.phone));

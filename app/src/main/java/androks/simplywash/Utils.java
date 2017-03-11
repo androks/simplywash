@@ -77,7 +77,7 @@ public class Utils {
     }
 
     public static DatabaseReference getPricesFor(String washerId){
-        return  FirebaseDatabase.getInstance().getReference().child("prices").child(washerId);
+        return  FirebaseDatabase.getInstance().getReference().child("priceList").child(washerId);
     }
 
     public static DatabaseReference getFavourites(String userId){
