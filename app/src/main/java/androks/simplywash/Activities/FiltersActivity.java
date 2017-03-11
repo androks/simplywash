@@ -132,7 +132,7 @@ public class FiltersActivity extends AppCompatActivity {
         mCardPaymentSwitch.setChecked(false);
         mServiceStationSwitch.setChecked(false);
         mRatingBar.setRating(0.0f);
-        mPriceCategory.setSelection(0);
+        mPriceCategory.setSelection(priceCategoriesInt.length-1);
     }
 
     @OnClick(R.id.applyBtn)

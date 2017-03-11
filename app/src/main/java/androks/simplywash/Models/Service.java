@@ -4,13 +4,13 @@ package androks.simplywash.Models;
  * Created by androks on 3/10/2017.
  */
 
-public class Price {
+public class Service {
     public String name;
     public String price;
 
-    Price(){}
+    Service(){}
 
-    public Price(String name, String price) {
+    public Service(String name, String price) {
         this.name = name;
         this.price = price;
     }

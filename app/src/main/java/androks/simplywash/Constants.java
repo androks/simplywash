@@ -35,4 +35,6 @@ public class Constants {
     public static final String FILTER_FIND_NEAREST = "FILTER_SERVICE_STATION";
     public static final int FILTER_CHANGED = 214;
     public static final int REQUEST_FILTER = 254;
+
+    public static final int REQUEST_ORDER = 239;
 }

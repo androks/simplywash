@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import androks.simplywash.Constants;
-import androks.simplywash.Models.Price;
+import androks.simplywash.Models.Service;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
 import butterknife.BindView;
@@ -41,8 +41,8 @@ public class PriceActivity extends AppCompatActivity {
     Spinner carTypesSpinner;
 
     private String washerId;
-    private Map<String, Map<String, Price>> priceList;
-    private List<Price> showingPrices = new ArrayList<>();
+    private Map<String, Map<String, Service>> priceList;
+    private List<Service> showingPrices = new ArrayList<>();
 
     private PriceListRecyclerAdapter adapter;
 
@@ -65,7 +65,7 @@ public class PriceActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
                     priceList = dataSnapshot.getValue(
-                            new GenericTypeIndicator<Map<String, Map<String, Price>>>() {}
+                            new GenericTypeIndicator<Map<String, Map<String, Service>>>() {}
                     );
                     setUpSpinner();
                     setUpRecyclerView();
@@ -121,7 +121,7 @@ public class PriceActivity extends AppCompatActivity {
             }
         });
         if(getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Price list");
+            getSupportActionBar().setTitle("Service list");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -138,9 +138,9 @@ public class PriceActivity extends AppCompatActivity {
 
     public static class PriceListRecyclerAdapter extends RecyclerView.Adapter<PriceListRecyclerAdapter.ViewHolder> {
 
-        private List<Price> mValues;
+        private List<Service> mValues;
 
-        public PriceListRecyclerAdapter(List<Price> currencies) {
+        public PriceListRecyclerAdapter(List<Service> currencies) {
             mValues = currencies;
         }
 
@@ -160,7 +160,7 @@ public class PriceActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(PriceListRecyclerAdapter.ViewHolder holder, int position) {
-            Price price = mValues.get(position);
+            Service price = mValues.get(position);
             holder.name.setText(price.name);
             holder.price.setText(price.price);
         }

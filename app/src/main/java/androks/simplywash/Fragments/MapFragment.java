@@ -327,7 +327,7 @@ public class MapFragment extends Fragment implements
                 R.mipmap.ic_markers_all : R.mipmap.ic_marker_free);
     }
 
-    @OnClick(R.id.fab_get_direction)
+    @OnClick(R.id.fab_prder_to_nearest)
     public void orderToBestMatchedWasher() {
         if (mWashersList.isEmpty() || mMarkersList.isEmpty()) {
             Toast.makeText(mContext, "Washers are downloading", Toast.LENGTH_SHORT).show();
@@ -340,7 +340,7 @@ public class MapFragment extends Fragment implements
             Toast.makeText(mContext, "Need access to location", Toast.LENGTH_SHORT).show();
             checkLocationSettings();
         }
-        Intent order = new Intent(getActivity(), OrderActivity.class);
+        orderToWasher(mTheNearestFreeWasher.id);
     }
 
     @OnClick(R.id.order_to_showing_wash)
@@ -351,7 +351,7 @@ public class MapFragment extends Fragment implements
     public void orderToWasher(String id){
         Intent order = new Intent(getActivity(), OrderActivity.class);
         order.putExtra(Constants.WASHER_ID, id);
-        startActivity(order);
+        startActivityForResult(order, Constants.REQUEST_ORDER);
     }
 
     @OnClick(R.id.fab_location_settings)
@@ -647,7 +647,7 @@ public class MapFragment extends Fragment implements
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setBuildingsEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         LatLng kiev = new LatLng(50.4448235, 30.5497172);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(kiev, 10));
@@ -783,7 +783,7 @@ public class MapFragment extends Fragment implements
         Double bestMatch = (double) -1;
         int i = 0;
         for (Washer washer : mWashersList.values()) {
-            if (washer.state.equals(Constants.AVAILABLE)) {
+            if (mMarkersList.get(washer.id).isVisible() && washer.state.equals(Constants.AVAILABLE)) {
                 distances[i] = SphericalUtil.computeDistanceBetween(
                         mCurrentLocation,
                         washer.getLatLng()
