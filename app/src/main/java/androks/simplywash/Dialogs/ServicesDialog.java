@@ -67,7 +67,7 @@ public class ServicesDialog extends AppCompatDialogFragment {
 
     private void setData() {
         mWC.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isToilet())));
+                .getColor(Utils.getServiceAvailableColor(washer.isWc())));
         mWifi.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(washer.isWifi())));
         mCoffee.setColorFilter(getResources()
@@ -81,7 +81,7 @@ public class ServicesDialog extends AppCompatDialogFragment {
         mServiceStation.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(washer.isServiceStation())));
 
-        mWCSwitch.setChecked(washer.isToilet());
+        mWCSwitch.setChecked(washer.isWc());
         mWifiSwitch.setChecked(washer.isWifi());
         mCardPaymentSwitch.setChecked(washer.isCardPayment());
         mCoffeeSwitch.setChecked(washer.isCoffee());

@@ -3,6 +3,9 @@ package androks.simplywash.Models;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
+import androks.simplywash.Enums.WasherStatus;
+import androks.simplywash.Enums.WasherType;
+
 /**
  * Created by androks on 11/17/2016.
  */
@@ -29,7 +32,7 @@ public class Washer {
     private int defaultPrice;
     private boolean restRoom;
     private boolean wifi;
-    private boolean toilet;
+    private boolean wc;
     private boolean coffee;
     private boolean shop;
     private boolean cardPayment;
@@ -169,8 +172,8 @@ public class Washer {
         return wifi;
     }
 
-    public boolean isToilet() {
-        return toilet;
+    public boolean isWc() {
+        return wc;
     }
 
     public boolean isCoffee() {
@@ -269,8 +272,8 @@ public class Washer {
         this.wifi = wifi;
     }
 
-    public void setToilet(boolean toilet) {
-        this.toilet = toilet;
+    public void setWc(boolean wc) {
+        this.wc = wc;
     }
 
     public void setCoffee(boolean coffee) {

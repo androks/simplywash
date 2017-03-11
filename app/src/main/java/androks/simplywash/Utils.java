@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import androks.simplywash.Models.Washer;
-import androks.simplywash.Models.WasherStatus;
+import androks.simplywash.Enums.WasherStatus;
 
 /**
  * Created by androks on 2/25/2017.
@@ -133,7 +133,7 @@ public class Utils {
             return false;
         if(wifi && !washer.isWifi())
             return false;
-        if(wc && !washer.isToilet())
+        if(wc && !washer.isWc())
             return false;
         if(coffee && !washer.isCoffee())
             return false;

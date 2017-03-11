@@ -228,7 +228,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         }
 
         mWC.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isToilet())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.isWc())));
         mWifi.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(mWasher.isWifi())));
         mCoffee.setColorFilter(getResources()

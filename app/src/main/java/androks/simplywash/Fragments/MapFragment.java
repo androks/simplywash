@@ -77,7 +77,7 @@ import androks.simplywash.Dialogs.ServicesDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
 import androks.simplywash.Models.Washer;
-import androks.simplywash.Models.WasherStatus;
+import androks.simplywash.Enums.WasherStatus;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
 import butterknife.BindColor;
@@ -711,7 +711,7 @@ public class MapFragment extends Fragment implements
         mBoxesStatus.setText(mShowingWasher.getAvailableBoxes() + " of " + mShowingWasher.getBoxes());
 
         mWC.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isToilet())));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWc())));
         mWifi.setColorFilter(mResources
                 .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWifi())));
         mCoffee.setColorFilter(mResources
