@@ -86,4 +86,8 @@
         <item>100</item>
         <item>1000</item>
     </integer-array>
+    <string name="title_activity_order">OrderActivity</string>
+    <string name="when">When</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
 </resources>

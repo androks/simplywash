@@ -68,6 +68,7 @@
 
         <activity
             android:name=".Activities.OrderActivity"
+            android:label="@string/title_activity_order"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.ReviewsActivity"
@@ -82,7 +83,7 @@
             android:name=".Activities.FiltersActivity"
             android:label="@string/title_activity_filters"
             android:parentActivityName=".Activities.MainActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

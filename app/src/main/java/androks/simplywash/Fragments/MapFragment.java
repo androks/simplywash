@@ -609,7 +609,7 @@ public class MapFragment extends Fragment implements
         FLAG_DIS_DUR_CALCULATE = false;
         FLAG_FIND_MY_CURRENT_LOCATION = false;
         mMyLocationFab.setColorFilter(colorDark);
-        setMyLocationUtilsEnabled(false);
+        //setMyLocationUtilsEnabled(false);
     }
 
     /**
