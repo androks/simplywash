@@ -31,14 +31,10 @@ import butterknife.ButterKnife;
 
 public class PriceActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.progressBar)
-    View progressBar;
-    @BindView(R.id.recyclerLV)
-    RecyclerView recyclerView;
-    @BindView(R.id.carTypesSpinner)
-    Spinner carTypesSpinner;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.progressBar) View progressBar;
+    @BindView(R.id.recyclerLV) RecyclerView recyclerView;
+    @BindView(R.id.carTypesSpinner) Spinner carTypesSpinner;
 
     private String washerId;
     private Map<String, Map<String, Service>> priceList;

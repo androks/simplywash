@@ -9,6 +9,7 @@ public class Constants {
     public static final String ORDER_DATE_FORMAT = "kk:mm dd/MM/yyyy";
 
     public static final String WASHER_ID = "WASHER_ID";
+    public static final String COUNT_OF_BOXES = "COUNT_OF_BOXES";
 
     public static final String AUTH_PREFERENCES = "AUTH_PREFERENCES";
     public static final String AUTH_UUID_PREF = "AUTH_UUID_PREF";

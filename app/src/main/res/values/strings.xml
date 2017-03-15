@@ -90,4 +90,10 @@
     <string name="when">When</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
+
+    <string-array name="days">
+        <item>Today</item>
+        <item>Tomorrow</item>
+        <item>After tomorrow</item>
+    </string-array>
 </resources>

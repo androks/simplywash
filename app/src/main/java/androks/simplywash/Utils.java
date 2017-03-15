@@ -22,6 +22,10 @@ public class Utils {
         return FirebaseDatabase.getInstance().getReference().child("washers");
     }
 
+    public static DatabaseReference getScheduleFor(String washerId){
+        return FirebaseDatabase.getInstance().getReference().child("schedule").child(washerId);
+    }
+
     public static DatabaseReference getWasher(String id){
         return FirebaseDatabase.getInstance().getReference().child("washers").child(id);
     }
@@ -118,5 +122,12 @@ public class Utils {
             return false;
 
         return true;
+    }
+
+    public static int castMinuteToFormat(int minute){
+        minute = (minute + 14)/15 * 15;
+        if(minute == 60)
+            minute = 0;
+        return minute;
     }
 }
