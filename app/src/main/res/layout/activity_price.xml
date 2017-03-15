@@ -25,12 +25,6 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
-                android:text="Select car" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

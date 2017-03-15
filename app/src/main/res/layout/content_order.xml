@@ -12,50 +12,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:paddingEnd="16dp"
-            android:paddingRight="16dp"
-            android:text="@string/when"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:alpha="0.2"
-            android:background="@android:color/black" />
+        android:padding="8dp">
 
         <LinearLayout
+            android:id="@+id/date"
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="4dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 app:srcCompat="@drawable/ic_schedule_black_24dp" />
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
                 android:text="@string/date"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Spinner
-                android:id="@+id/date"
+                android:id="@+id/dateSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                tools:entries="@array/days"/>
+                tools:entries="@array/days" />
         </LinearLayout>
 
         <LinearLayout
@@ -63,84 +47,49 @@
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal"
-            android:padding="4dp">
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 app:srcCompat="@drawable/ic_access_time_black_24dp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
                 android:text="@string/time"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-            <Button
-                android:id="@+id/timeBtn"
-                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            <TextView
+                android:id="@+id/timeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorAccent"
                 tools:text="20:00" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:paddingEnd="16dp"
-            android:paddingRight="16dp"
-            android:text="@string/services"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:alpha="0.2"
-            android:background="@android:color/black" />
+            android:background="@color/colorAccent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
-                android:padding="8dp"
-                app:srcCompat="@drawable/ic_attach_money_black_24dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:padding="16dp"
-                    android:text="0 UAH"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:alpha="0.5"
-                    android:background="@color/colorAccent" />
-            </LinearLayout>
-
-
-        </LinearLayout>
+            android:layout_gravity="end"
+            android:padding="8dp"
+            android:text="0 UAH"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -170,7 +119,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="1dp"
                     android:alpha="0.5"
                     android:background="@color/colorAccent" />
             </LinearLayout>

@@ -193,7 +193,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                                 View reviewView = inflater.inflate(R.layout.item_review, container, false);
                                 reviewView.setId(pos);
                                 ((TextView) reviewView.findViewById(R.id.name)).setText(temp.name);
-                                ((TextView) reviewView.findViewById(R.id.date)).setText(temp.date);
+                                ((TextView) reviewView.findViewById(R.id.dateSpinner)).setText(temp.date);
                                 ((TextView) reviewView.findViewById(R.id.text)).setText(temp.text);
                                 ((RatingBar) reviewView.findViewById(R.id.rate)).setRating(temp.rating);
                                 pos++;

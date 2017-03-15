@@ -209,6 +209,6 @@ public class ReviewsActivity extends BaseActivity implements
         @BindView(R.id.name) TextView name;
         @BindView(R.id.text) TextView text;
         @BindView(R.id.rate) RatingBar rate;
-        @BindView(R.id.date) TextView date;
+        @BindView(R.id.dateSpinner) TextView date;
     }
 }

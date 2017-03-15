@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -37,18 +36,15 @@ import butterknife.OnClick;
 
 public class OrderActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.date)
-    Spinner dateSpinner;
-    @BindView(R.id.carTypesSpinner)
-    Spinner carTypesSpinner;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.dateSpinner) Spinner dateSpinner;
+    @BindView(R.id.carTypesSpinner) Spinner carTypesSpinner;
     @BindView(R.id.price)
     TextView price;
     @BindView(R.id.servicesRecycleView)
     RecyclerView servicesRecycleView;
-    @BindView(R.id.timeBtn)
-    Button timeBtn;
+    @BindView(R.id.timeText)
+    TextView timeText;
 
     private String washerId;
     private Day selectedDay;
@@ -68,6 +64,7 @@ public class OrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         ButterKnife.bind(this);
+        setUpToolbar();
         washerId = getIntent().getExtras().getString(Constants.WASHER_ID);
         downloadBusyTimes();
         downloadPriceList();
@@ -78,8 +75,8 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 washer = dataSnapshot.getValue(Washer.class);
-                setUpToolbar();
                 inflateSpinner();
+                getSupportActionBar().setTitle(washer.getName());
             }
 
             @Override
@@ -101,8 +98,7 @@ public class OrderActivity extends AppCompatActivity {
                 selectedDay = Day.values()[position];
                 fillAvailableTimes();
                 setUpAvailableTimes();
-                timeBtn.performClick();
-                timeBtn.setText(availableTimes.get(0));
+                timeText.setText(availableTimes.get(0));
             }
 
             @Override
@@ -173,9 +169,15 @@ public class OrderActivity extends AppCompatActivity {
 
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(washer.getName());
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void downloadPriceList() {
@@ -231,7 +233,7 @@ public class OrderActivity extends AppCompatActivity {
         servicesRecycleView.setAdapter(adapter);
     }
 
-    @OnClick({R.id.timeBtn, R.id.time})
+    @OnClick(R.id.time)
     public void pickTime() {
         String[] values = new String[availableTimes.size()];
         values = availableTimes.toArray(values);
@@ -241,9 +243,14 @@ public class OrderActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         selectedTime = availableTimes.get(which);
-                        timeBtn.setText(selectedTime);
+                        timeText.setText(selectedTime);
                     }
                 });
         builder.create().show();
+    }
+
+    @OnClick(R.id.date)
+    public void datePick(){
+        dateSpinner.performClick();
     }
 }
