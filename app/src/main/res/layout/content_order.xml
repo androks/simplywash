@@ -87,14 +87,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:padding="8dp"
+            android:padding="4dp"
             android:text="0 UAH"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -115,7 +114,7 @@
                     android:id="@+id/carTypesSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="24dp" />
+                    android:padding="4dp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -140,7 +139,7 @@
                 app:srcCompat="@drawable/ic_local_car_wash_black_24dp" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/servicesRecycleView"
+                android:id="@+id/servicesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>

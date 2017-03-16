@@ -157,8 +157,8 @@ public class PriceActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(PriceListRecyclerAdapter.ViewHolder holder, int position) {
             Service price = mValues.get(position);
-            holder.name.setText(price.name);
-            holder.price.setText(price.price);
+            holder.name.setText(price.getName());
+            holder.price.setText(String.valueOf(price.getPrice()));
         }
 
         public static class ViewHolder extends RecyclerView.ViewHolder {

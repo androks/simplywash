@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import androks.simplywash.Adapters.CheckedPriceListRecyclerAdapter;
 import androks.simplywash.Constants;
 import androks.simplywash.Enums.Day;
 import androks.simplywash.Models.Service;
@@ -34,14 +35,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends AppCompatActivity implements
+        CheckedPriceListRecyclerAdapter.ServiceSelect {
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.dateSpinner) Spinner dateSpinner;
-    @BindView(R.id.carTypesSpinner) Spinner carTypesSpinner;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.dateSpinner)
+    Spinner dateSpinner;
+    @BindView(R.id.carTypesSpinner)
+    Spinner carTypesSpinner;
     @BindView(R.id.price)
     TextView price;
-    @BindView(R.id.servicesRecycleView)
+    @BindView(R.id.servicesRecyclerView)
     RecyclerView servicesRecycleView;
     @BindView(R.id.timeText)
     TextView timeText;
@@ -50,6 +55,7 @@ public class OrderActivity extends AppCompatActivity {
     private Day selectedDay;
     private Washer washer;
     private String selectedTime;
+    private int totalPrice = 0;
 
     private List<String> availableTimes = new ArrayList<>();
     private Map<String, Map<String, ArrayList<String>>> busyTimes;
@@ -57,7 +63,7 @@ public class OrderActivity extends AppCompatActivity {
     private Map<String, Map<String, Service>> priceList;
     private List<Service> showingPrices = new ArrayList<>();
 
-    private PriceActivity.PriceListRecyclerAdapter adapter;
+    private CheckedPriceListRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +175,7 @@ public class OrderActivity extends AppCompatActivity {
 
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -206,7 +212,7 @@ public class OrderActivity extends AppCompatActivity {
         carTypes.addAll(priceList.keySet());
         carTypesSpinner.setAdapter(new ArrayAdapter<>(
                 this,
-                R.layout.spinner_dropdown_toolbar_item,
+                android.R.layout.simple_spinner_dropdown_item,
                 carTypes)
         );
         carTypesSpinner.setSelection(0);
@@ -216,6 +222,7 @@ public class OrderActivity extends AppCompatActivity {
                 showingPrices.clear();
                 showingPrices.addAll(priceList.get(carTypesSpinner.getSelectedItem()).values());
                 adapter.notifyDataSetChanged();
+                price.setText("0 UAH");
             }
 
             @Override
@@ -229,7 +236,7 @@ public class OrderActivity extends AppCompatActivity {
         showingPrices.addAll(priceList.get(carTypesSpinner.getSelectedItem()).values());
         servicesRecycleView.setHasFixedSize(true);
         servicesRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PriceActivity.PriceListRecyclerAdapter(showingPrices);
+        adapter = new CheckedPriceListRecyclerAdapter(showingPrices, this);
         servicesRecycleView.setAdapter(adapter);
     }
 
@@ -250,7 +257,16 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.date)
-    public void datePick(){
+    public void datePick() {
         dateSpinner.performClick();
+    }
+
+    @Override
+    public void onServiceSelected(Service service) {
+        if(service.isSelected())
+            totalPrice += service.getPrice();
+        else
+            totalPrice -= service.getPrice();
+        price.setText(String.valueOf(totalPrice + " UAH"));
     }
 }
