@@ -5,13 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import androks.simplywash.Adapters.PriceListRecyclerAdapter;
 import androks.simplywash.Constants;
 import androks.simplywash.Models.Service;
 import androks.simplywash.R;
@@ -130,48 +128,5 @@ public class PriceActivity extends AppCompatActivity {
     private void hideProgress() {
         carTypesSpinner.setEnabled(true);
         progressBar.setVisibility(View.GONE);
-    }
-
-    public static class PriceListRecyclerAdapter extends RecyclerView.Adapter<PriceListRecyclerAdapter.ViewHolder> {
-
-        private List<Service> mValues;
-
-        public PriceListRecyclerAdapter(List<Service> currencies) {
-            mValues = currencies;
-        }
-
-        // Create new views (invoked by the layout manager)
-        @Override
-        public PriceListRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                      int viewType) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_price, parent, false);
-            return new PriceListRecyclerAdapter.ViewHolder(v);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mValues.size();
-        }
-
-        @Override
-        public void onBindViewHolder(PriceListRecyclerAdapter.ViewHolder holder, int position) {
-            Service price = mValues.get(position);
-            holder.name.setText(price.getName());
-            holder.price.setText(String.valueOf(price.getPrice()));
-        }
-
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-
-            ViewHolder(View v) {
-                super(v);
-                ButterKnife.bind(this, v);
-            }
-
-            @BindView(R.id.name)
-            TextView name;
-            @BindView(R.id.price)
-            TextView price;
-        }
     }
 }
