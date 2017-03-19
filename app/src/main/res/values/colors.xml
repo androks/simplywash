@@ -5,6 +5,7 @@
     <color name="colorAccent">#ff5252</color>
 
     <color name="bg_light">#ffff</color>
+    <color name="bg_light_transparent">#5effffff</color>
 
     <!--Indigo 500-->
     <color name="primary_500">#795548</color>

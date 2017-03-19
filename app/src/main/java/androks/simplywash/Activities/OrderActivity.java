@@ -12,7 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -27,6 +29,7 @@ import java.util.Map;
 import androks.simplywash.Adapters.CheckedPriceListRecyclerAdapter;
 import androks.simplywash.Constants;
 import androks.simplywash.Enums.Day;
+import androks.simplywash.Models.Order;
 import androks.simplywash.Models.Service;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
@@ -55,13 +58,15 @@ public class OrderActivity extends AppCompatActivity implements
     private Day selectedDay;
     private Washer washer;
     private String selectedTime;
+    private String selectedCarType;
     private int totalPrice = 0;
 
     private List<String> availableTimes = new ArrayList<>();
     private Map<String, Map<String, ArrayList<String>>> busyTimes;
 
     private Map<String, Map<String, Service>> priceList;
-    private List<Service> showingPrices = new ArrayList<>();
+    private List<Service> showingServices = new ArrayList<>();
+    private List<Service> selectedServices = new ArrayList<>();
 
     private CheckedPriceListRecyclerAdapter adapter;
 
@@ -104,7 +109,7 @@ public class OrderActivity extends AppCompatActivity implements
                 selectedDay = Day.values()[position];
                 fillAvailableTimes();
                 setUpAvailableTimes();
-                timeText.setText(availableTimes.get(0));
+                timeText.setText("Pick time");
             }
 
             @Override
@@ -219,10 +224,17 @@ public class OrderActivity extends AppCompatActivity implements
         carTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showingPrices.clear();
-                showingPrices.addAll(priceList.get(carTypesSpinner.getSelectedItem()).values());
+                String item;
+                try{
+                    item = (String) carTypesSpinner.getSelectedItem();
+                }catch (Exception ignored){
+                    item = (String) carTypesSpinner.getItemAtPosition(0);
+                };
+                showingServices.clear();
+                showingServices.addAll(priceList.get(item).values());
                 adapter.notifyDataSetChanged();
                 price.setText("0 UAH");
+                selectedCarType = item;
             }
 
             @Override
@@ -233,10 +245,10 @@ public class OrderActivity extends AppCompatActivity implements
     }
 
     private void setUpRecyclerView() {
-        showingPrices.addAll(priceList.get(carTypesSpinner.getSelectedItem()).values());
+        showingServices.addAll(priceList.get(carTypesSpinner.getSelectedItem()).values());
         servicesRecycleView.setHasFixedSize(true);
         servicesRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CheckedPriceListRecyclerAdapter(showingPrices, this);
+        adapter = new CheckedPriceListRecyclerAdapter(showingServices, this);
         servicesRecycleView.setAdapter(adapter);
     }
 
@@ -263,10 +275,65 @@ public class OrderActivity extends AppCompatActivity implements
 
     @Override
     public void onServiceSelected(Service service) {
-        if(service.isSelected())
+        if (service.isSelected()) {
             totalPrice += service.getPrice();
-        else
+            selectedServices.add(service);
+        } else {
             totalPrice -= service.getPrice();
+            selectedServices.remove(service);
+        }
         price.setText(String.valueOf(totalPrice + " UAH"));
+    }
+
+    @OnClick(R.id.applyBtn)
+    public void applyOrder() {
+        if (!validateData())
+            return;
+        String listOfServices = "";
+        for(Service temp: selectedServices)
+            listOfServices+= temp.getName() + ", ";
+        String dataCheck = "Washer: " + washer.getName() + "\nAt address: " + washer.getLocation()
+                + "\nTime: " + selectedTime + "\nDate: " + selectedDay.name()
+                + "\nYour car: " + selectedCarType
+                + "\nList of services: " + listOfServices
+                + "\nTotal price: " + totalPrice;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick time")
+                .setTitle("Check data")
+                .setMessage(dataCheck)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        createOrder();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void createOrder() {
+        Calendar date = Calendar.getInstance();
+        date.add(Calendar.DATE, selectedDay.ordinal());
+        Order.setOrder(new Order(
+                date, Calendar.getInstance(), selectedCarType, selectedServices, totalPrice,
+                FirebaseAuth.getInstance().getCurrentUser().getUid(), washerId
+        ));
+    }
+
+    private boolean validateData() {
+        if (selectedServices.size() < 1) {
+            Toast.makeText(this, "Please, pick services", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (selectedTime == null || selectedTime.isEmpty()) {
+            Toast.makeText(this, "Please, pick time", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 }

@@ -28,7 +28,7 @@ public class Order {
 
     private OrderStatus status;
     private Calendar date;
-    private Calendar orderDate;
+    private Calendar creationDate;
     private String carType;
     private List<Service> services;
     private int price;
@@ -76,17 +76,18 @@ public class Order {
         return sdf.format(date);
     }
 
-
-
+    public static void setOrder(Order order){
+        Order.mInstance = order;
+    }
 
     @Exclude
-    public void setOrderDate(Calendar date){
-        this.orderDate = date;
+    public void setCreationDate(Calendar date){
+        this.creationDate = date;
     }
 
     @Exclude
     public Calendar getOrderDateAsCalendar(){
-        return orderDate;
+        return creationDate;
     }
 
     public void setOrderDate(String date){
@@ -97,12 +98,12 @@ public class Order {
         }catch (ParseException e){
             calendar = Calendar.getInstance();
         }
-        this.orderDate = calendar;
+        this.creationDate = calendar;
     }
 
-    public String getOrderDate(){
+    public String getCreationDate(){
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.ORDER_DATE_FORMAT, Locale.getDefault());
-        return sdf.format(orderDate);
+        return sdf.format(creationDate);
     }
 
     private void setListener(OnOrderApplyListener listener){
@@ -123,7 +124,16 @@ public class Order {
     public Order(){}
 
 
-
+    public Order(Calendar date, Calendar creationDate, String carType, List<Service> services, int price, String userId, String washerId) {
+        this.date = date;
+        this.creationDate = creationDate;
+        this.carType = carType;
+        this.services = services;
+        this.price = price;
+        this.userId = userId;
+        this.washerId = washerId;
+        status = OrderStatus.ACTIVE;
+    }
 
     public String getCarType() {
         return carType;
