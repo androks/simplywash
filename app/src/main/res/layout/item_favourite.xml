@@ -28,6 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|top"
+                android:visibility="gone"
                 android:background="@color/bg_light_transparent"
                 android:orientation="horizontal">
 
@@ -170,7 +171,7 @@
                     tools:text="Busy" />
 
                 <TextView
-                    android:id="@+id/DisDurToGetText"
+                    android:id="@+id/disDurToGetText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="end"

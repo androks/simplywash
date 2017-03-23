@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
@@ -342,7 +343,12 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 if (!FLAG_IS_FAVOURITE) {
                     // Unstar the post and remove self from stars
                     washer.decreaseCountOfFavourites();
-                    Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).removeValue();
+                    Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            Toast.makeText(WasherActivity.this, "Done", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
                     // Star the post and add self to stars
                     washer.increaseCountOfFavourites();
