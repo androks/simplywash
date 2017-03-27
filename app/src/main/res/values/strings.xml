@@ -90,6 +90,10 @@
     <string name="when">When</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
+    <string name="washer">Washer</string>
+    <string name="client_phone">Client phone</string>
+    <string name="total_price">Total price</string>
+    <string name="car_type">Car type</string>
 
     <string-array name="days">
         <item>Today</item>

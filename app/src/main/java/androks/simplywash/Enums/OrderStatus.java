@@ -5,5 +5,5 @@ package androks.simplywash.Enums;
  */
 
 public enum OrderStatus {
-    ACTIVE, REJECTED, OCCURED
+    Active, Rejected, Occured
 }

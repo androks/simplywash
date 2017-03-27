@@ -17,15 +17,6 @@ import androks.simplywash.Enums.OrderStatus;
 
 public class Order {
 
-    public interface OnOrderApplyListener{
-        void onOrderApply(Order order);
-    }
-
-    @Exclude
-    private static Order mInstance;
-    @Exclude
-    private OnOrderApplyListener mListener;
-
     private OrderStatus status;
     private Calendar date;
     private Calendar creationDate;
@@ -33,6 +24,7 @@ public class Order {
     private List<Service> services;
     private int price;
     private String userId;
+    private String userPhone;
     private String washerId;
 
     @Exclude
@@ -76,10 +68,6 @@ public class Order {
         return sdf.format(date);
     }
 
-    public static void setOrder(Order order){
-        Order.mInstance = order;
-    }
-
     @Exclude
     public void setCreationDate(Calendar date){
         this.creationDate = date;
@@ -106,25 +94,10 @@ public class Order {
         return sdf.format(creationDate);
     }
 
-    private void setListener(OnOrderApplyListener listener){
-        mListener = listener;
-    }
-
-    public static Order getInstance() {
-        if(mInstance == null) {
-            mInstance = new Order();
-        }
-        return mInstance;
-    }
-
-    public void createOrder(){
-        mListener.onOrderApply(Order.getInstance());
-    }
-
     public Order(){}
 
 
-    public Order(Calendar date, Calendar creationDate, String carType, List<Service> services, int price, String userId, String washerId) {
+    public Order(Calendar date, Calendar creationDate, String carType, List<Service> services, int price, String userId, String washerId, String userPhone) {
         this.date = date;
         this.creationDate = creationDate;
         this.carType = carType;
@@ -132,7 +105,8 @@ public class Order {
         this.price = price;
         this.userId = userId;
         this.washerId = washerId;
-        status = OrderStatus.ACTIVE;
+        this.userPhone = userPhone;
+        status = OrderStatus.Active;
     }
 
     public String getCarType() {

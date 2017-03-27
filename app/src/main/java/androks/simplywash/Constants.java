@@ -10,6 +10,8 @@ public class Constants {
 
     public static final String WASHER_ID = "WASHER_ID";
     public static final String COUNT_OF_BOXES = "COUNT_OF_BOXES";
+    public static final String CONFIRM_ORDER_MODE = "CONFIRM_ORDER_MODE";
+    public static final String ORDER_ID = "ORDER_ID";
 
     public static final String AUTH_PREFERENCES = "AUTH_PREFERENCES";
     public static final String AUTH_UUID_PREF = "AUTH_UUID_PREF";
@@ -33,4 +35,6 @@ public class Constants {
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 11;
     public static final int REQUEST_ORDER = 239;
     public static final int REQUEST_FILTER = 254;
+
+
 }

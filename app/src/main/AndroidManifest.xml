@@ -84,6 +84,11 @@
             android:label="@string/title_activity_filters"
             android:parentActivityName=".Activities.MainActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.OrderDetailsActivity"
+            android:label="@string/title_activity_order"
+            android:parentActivityName=".Activities.MainActivity"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

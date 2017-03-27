@@ -14,7 +14,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -29,7 +28,6 @@ import java.util.Map;
 import androks.simplywash.Adapters.CheckedPriceListRecyclerAdapter;
 import androks.simplywash.Constants;
 import androks.simplywash.Enums.Day;
-import androks.simplywash.Models.Order;
 import androks.simplywash.Models.Service;
 import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
@@ -319,10 +317,7 @@ public class OrderActivity extends AppCompatActivity implements
     private void createOrder() {
         Calendar date = Calendar.getInstance();
         date.add(Calendar.DATE, selectedDay.ordinal());
-        Order.setOrder(new Order(
-                date, Calendar.getInstance(), selectedCarType, selectedServices, totalPrice,
-                FirebaseAuth.getInstance().getCurrentUser().getUid(), washerId
-        ));
+        //Todo:Write to Db and direct to confirm
     }
 
     private boolean validateData() {
