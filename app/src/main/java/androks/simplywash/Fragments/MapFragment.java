@@ -314,7 +314,7 @@ public class MapFragment extends Fragment implements
     @OnClick(R.id.moreBtn)
     public void showWasherDetails() {
         Intent intent = new Intent(getActivity(), WasherActivity.class);
-        intent.putExtra("id", mShowingWasher.getId());
+        intent.putExtra(Constants.WASHER_ID, mShowingWasher.getId());
         startActivity(intent);
     }
 

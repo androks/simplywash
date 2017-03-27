@@ -96,7 +96,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         ButterKnife.bind(this);
         showProgressDialog();
 
-        mWasherId = getIntent().getStringExtra("id");
+        mWasherId = getIntent().getStringExtra(Constants.WASHER_ID);
         checkForNotNullIntent();
 
         setUpToolbar();
