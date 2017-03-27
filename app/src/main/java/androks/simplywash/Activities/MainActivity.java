@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import androks.simplywash.Constants;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkIfUserLoggedIn(){
         String phone = mSharedPrefs.getString(Constants.AUTH_UUID_PREF, null);
-        if (phone == null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent toLogin = new Intent(this, LoginActivity.class);
             startActivity(toLogin);
             finish();
