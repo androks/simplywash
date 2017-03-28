@@ -9,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Calendar;
 import java.util.List;
 
+import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.Enums.WasherStatus;
 import androks.simplywash.Models.Washer;
 
@@ -64,6 +65,10 @@ public class Utils {
 
     public static String workHoursToString(Washer washer){
         return (washer.getWorkHoursFrom() + ":00" + " - " + washer.getWorkHoursTo() + ":00");
+    }
+
+    public static String distanceDurationToString(Direction direction){
+        return direction.distance.getText() + " " + "(" + direction.duration.getText() + ") ";
     }
 
     public static int getServiceAvailableColor(boolean available){

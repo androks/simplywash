@@ -48,13 +48,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -75,8 +75,8 @@ import androks.simplywash.Constants;
 import androks.simplywash.Dialogs.ServicesDialog;
 import androks.simplywash.DirectionsApi.Data.Direction;
 import androks.simplywash.DirectionsApi.DirectionsManager;
-import androks.simplywash.Models.Washer;
 import androks.simplywash.Enums.WasherStatus;
+import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
 import butterknife.BindColor;
@@ -123,12 +123,9 @@ public class MapFragment extends Fragment implements
     @BindView(R.id.location) TextView mLocation;
     @BindView(R.id.phone) TextView mPhone;
     @BindView(R.id.opening_hours) TextView mOpeningHours;
-    @BindView(R.id.boxes_status) TextView mBoxesStatus;
-    @BindView(R.id.duration) TextView mDuration;
-    @BindView(R.id.duration_in_progress) View mDurationInProgress;
-    @BindView(R.id.distance) TextView mDistance;
-    @BindView(R.id.distance_in_progress) View mDistanceInProgress;
 
+    @BindView(R.id.direction_layout) View mDirectionLayout;
+    @BindView(R.id.direction) TextView mDirectionInfo;
 
     @BindView(R.id.wifi) ImageView mWifi;
     @BindView(R.id.coffee) ImageView mCoffee;
@@ -141,10 +138,9 @@ public class MapFragment extends Fragment implements
     @BindView(R.id.fab_location_settings) FloatingActionButton mMyLocationFab;
 
     @BindColor(R.color.colorAccent) int colorAccent;
-    @BindColor(R.color.colorPrimaryDark) int colorDark;
+    @BindColor(android.R.color.black) int colorDark;
     private Unbinder unbinder;
     /** End bindings  **/
-
 
     /**
      * Google Maps field and values
@@ -155,17 +151,14 @@ public class MapFragment extends Fragment implements
     private LocationSettingsRequest mLocationSettingsRequest;
     /** End Google Maps section**/
 
-
     /**
      * Database section
      **/
     //Reference for downloading all washers
     private DatabaseReference mWashersReference = Utils.getWasher();
 
-    //Reference for downloading Ids of free washers
-    private DatabaseReference mFreeWashersReference = Utils.getStatesOfWashers();
     ValueEventListener mUploadWashers;
-    ChildEventListener mChangeWasherStatusListener;
+
     /**
      * End database section
      **/
@@ -326,33 +319,6 @@ public class MapFragment extends Fragment implements
                 R.mipmap.ic_markers_all : R.mipmap.ic_marker_free);
     }
 
-    @OnClick(R.id.fab_prder_to_nearest)
-    public void orderToBestMatchedWasher() {
-        if (mWashersList.isEmpty() || mMarkersList.isEmpty()) {
-            Toast.makeText(mContext, "Washers are downloading", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(mTheNearestFreeWasher == null){
-            Toast.makeText(mContext, "No free washers available", Toast.LENGTH_SHORT).show();
-        }
-        if(mCurrentLocation == null){
-            Toast.makeText(mContext, "Need access to location", Toast.LENGTH_SHORT).show();
-            checkLocationSettings();
-        }
-        orderToWasher(mTheNearestFreeWasher.getId());
-    }
-
-    @OnClick(R.id.order_to_showing_wash)
-    public void orderToShowingWasher(){
-        orderToWasher(mShowingWasher.getId());
-    }
-
-    public void orderToWasher(String id){
-       // Intent order = new Intent(getActivity(), OrderActivity.class);
-        //order.putExtra(Constants.WASHER_ID, id);
-        //startActivityForResult(order, Constants.REQUEST_ORDER);
-    }
-
     @OnClick(R.id.fab_location_settings)
     public void findCurrentLocation() {
         FLAG_FIND_MY_CURRENT_LOCATION = true;
@@ -411,12 +377,10 @@ public class MapFragment extends Fragment implements
 
     private void setListenersForDatabase() {
         mWashersReference.addListenerForSingleValueEvent(mUploadWashers);
-        mFreeWashersReference.addChildEventListener(mChangeWasherStatusListener);
     }
 
     private void deleteListenersForDatabase() {
         mWashersReference.removeEventListener(mUploadWashers);
-        mFreeWashersReference.removeEventListener(mChangeWasherStatusListener);
     }
 
     private void determineListenersForDatabase() {
@@ -441,51 +405,17 @@ public class MapFragment extends Fragment implements
                 ).show();
             }
         };
-
-        mChangeWasherStatusListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                mWashersList.get(dataSnapshot.getKey()).setState(dataSnapshot.getValue(String.class));
-                updateMarker(dataSnapshot.getKey());
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(mContext, databaseError.toString(), Toast.LENGTH_SHORT).show();
-            }
-        };
     }
 
     private void setMarkers() {
         for (Washer washer : mWashersList.values()) {
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
-                    .position(new LatLng(washer.getLatitude(), washer.getLongitude()));
-            //Utils.setMarkerIcon(marker, washer.getState());
+                    .position(new LatLng(washer.getLatitude(), washer.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_place_default));
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
         hideProgress();
-    }
-
-    private void updateMarker(String id) {
-        //Utils.setMarkerIcon(mMarkersList.get(id), mWashersList.get(id).getState());
-        mMarkersList.get(id).setVisible(
-                Utils.isWasherFits(mWashersList.get(id), mContext, FLAG_DISPLAY_ALL_STATES, mFavouritesWashers)
-        );
     }
 
     public static boolean isLocationEnabled(Context context) {
@@ -580,24 +510,16 @@ public class MapFragment extends Fragment implements
         if (mCurrentLocation != null) {
             if (FLAG_DIS_DUR_CALCULATE
                     && mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN) {
-                showProgressBarsForDisAndDur();
                 calculateDistanceAndTime(mShowingWasher.getLatLng());
             }
             else
-                hideProgressBarsForDisAndDur();
-
+                hideDirectionLayout();
 
             if (FLAG_FIND_MY_CURRENT_LOCATION) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 16));
                 mMyLocationFab.setColorFilter(colorAccent);
                 FLAG_FIND_MY_CURRENT_LOCATION = false;
             }
-
-            if(FLAG_ORDER_THE_NEAREST_WASHER){
-                FLAG_ORDER_THE_NEAREST_WASHER = false;
-                orderToWasher(mTheNearestFreeWasher.getId());
-            }
-            setMyLocationUtilsEnabled(true);
         }
     }
 
@@ -608,7 +530,6 @@ public class MapFragment extends Fragment implements
         FLAG_DIS_DUR_CALCULATE = false;
         FLAG_FIND_MY_CURRENT_LOCATION = false;
         mMyLocationFab.setColorFilter(colorDark);
-        //setMyLocationUtilsEnabled(false);
     }
 
     /**
@@ -664,7 +585,7 @@ public class MapFragment extends Fragment implements
     @Override
     public boolean onMarkerClick(Marker marker) {
         FLAG_DIS_DUR_CALCULATE = true;
-
+        hideDirectionLayout();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
 
         makeRequests();
@@ -681,20 +602,6 @@ public class MapFragment extends Fragment implements
         return true;
     }
 
-    private void showProgressBarsForDisAndDur() {
-        mDistanceInProgress.setVisibility(View.VISIBLE);
-        mDurationInProgress.setVisibility(View.VISIBLE);
-        mDuration.setVisibility(View.GONE);
-        mDistance.setVisibility(View.GONE);
-    }
-
-    private void hideProgressBarsForDisAndDur() {
-        mDistanceInProgress.setVisibility(View.GONE);
-        mDurationInProgress.setVisibility(View.GONE);
-        mDuration.setVisibility(View.VISIBLE);
-        mDistance.setVisibility(View.VISIBLE);
-    }
-
     private void inflateWasherDetails() {
         mName.setText(mShowingWasher.getName());
         mRatingBar.setRating(mShowingWasher.getRating());
@@ -706,7 +613,6 @@ public class MapFragment extends Fragment implements
         mLocation.setText(mShowingWasher.getLocation());
         mPhone.setText(mShowingWasher.getPhone());
         mOpeningHours.setText(Utils.workHoursToString(mShowingWasher));
-        mBoxesStatus.setText(mShowingWasher.getAvailableBoxes() + " of " + mShowingWasher.getBoxes());
 
         mWC.setColorFilter(mResources
                 .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWc())));
@@ -825,6 +731,14 @@ public class MapFragment extends Fragment implements
         );
     }
 
+    private void hideDirectionLayout(){
+        mDirectionLayout.setVisibility(View.GONE);
+    }
+
+    private void showDirectionLayout(){
+        mDirectionLayout.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onDirectionFindStart() {
         mProgressBar.setVisibility(View.VISIBLE);
@@ -838,11 +752,8 @@ public class MapFragment extends Fragment implements
         switch (direction.getTag()) {
             case TAG_CALCULATE_DIS_DUR:
                 if (FLAG_DIS_DUR_CALCULATE) {
-
-                    mDistance.setText(direction.distance.getText());
-                    mDuration.setText(direction.duration.getText());
-
-                    hideProgressBarsForDisAndDur();
+                    showDirectionLayout();
+                    mDirectionInfo.setText(Utils.distanceDurationToString(direction));
                     FLAG_DIS_DUR_CALCULATE = false;
                 }
                 break;
