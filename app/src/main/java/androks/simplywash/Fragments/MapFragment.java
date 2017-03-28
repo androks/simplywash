@@ -130,6 +130,8 @@ public class MapFragment extends Fragment implements
     TextView mPhone;
     @BindView(R.id.opening_hours)
     TextView mOpeningHours;
+    @BindView(R.id.default_price)
+    TextView mDefaultPrice;
 
     @BindView(R.id.duration)
     TextView mDuration;
@@ -180,7 +182,7 @@ public class MapFragment extends Fragment implements
      * End database section
      **/
 
-    private static FragmentActivity mContext;
+    private FragmentActivity mContext;
     private static Resources mResources;
     private static FirebaseUser mUser;
 
@@ -487,7 +489,7 @@ public class MapFragment extends Fragment implements
     }
 
     /**
-     * Location settings request was accepted, so we can handle requests
+     * Location settings request was accepted, so we can send requests
      */
     private void makeRequests() {
         if (mCurrentLocation != null) {
@@ -562,14 +564,7 @@ public class MapFragment extends Fragment implements
         mMap.setMyLocationEnabled(value);
     }
 
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
-
-        if (mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
-                mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN)
-            return true;
-
+    private void showWasher(Marker marker){
         mShowingWasher = mWashersList.get(marker.getTitle());
         mDuration.setText("");
         makeRequests();
@@ -578,6 +573,17 @@ public class MapFragment extends Fragment implements
         inflateWasherDetails();
         //Show bottom sheet as collapsed
         mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
+
+        if (mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
+                mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN)
+            return true;
+
+        showWasher(marker);
         return true;
     }
 
@@ -589,6 +595,7 @@ public class MapFragment extends Fragment implements
         mLocation.setText(mShowingWasher.getLocation());
         mPhone.setText(mShowingWasher.getPhone());
         mOpeningHours.setText(Utils.workHoursToString(mShowingWasher));
+        mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
 
         mWC.setColorFilter(mResources
                 .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWc())));
@@ -721,6 +728,7 @@ public class MapFragment extends Fragment implements
             case TAG_CALCULATE_DIS_DUR:
                 mDuration.setVisibility(View.VISIBLE);
                 mDuration.setText(direction.duration.getText());
+                hideProgress();
                 break;
 
             case TAG_BUILD_ROUTE:
