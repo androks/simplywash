@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="androks.simplywash.Activities.FiltersActivity"
+    tools:context="androks.simplywash.activities.FiltersActivity"
     tools:showIn="@layout/activity_filters">
 
     <ScrollView

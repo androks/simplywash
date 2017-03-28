@@ -9,8 +9,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Calendar;
 import java.util.List;
 
-import androks.simplywash.DirectionsApi.Data.Direction;
-import androks.simplywash.Models.Washer;
+import androks.simplywash.directionsApi.Data.Direction;
+import androks.simplywash.models.Washer;
 
 /**
  * Created by androks on 2/25/2017.
@@ -20,6 +20,10 @@ public class Utils {
 
     public static DatabaseReference getWasher(){
         return FirebaseDatabase.getInstance().getReference().child("washers");
+    }
+
+    public static DatabaseReference getPhotos(String id){
+        return FirebaseDatabase.getInstance().getReference().child("photos").child(id);
     }
 
     public static DatabaseReference getScheduleFor(String washerId){

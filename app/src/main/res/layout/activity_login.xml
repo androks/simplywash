@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:padding="@dimen/activity_padding"
-    tools:context=".Activities.LoginActivity">
+    tools:context=".activities.LoginActivity">
 
     <com.digits.sdk.android.DigitsAuthButton
         android:id="@+id/auth_button"

@@ -28,7 +28,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activities.SplashActivity"
+            android:name=".activities.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +46,7 @@
         -->
 
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
@@ -54,30 +54,30 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".Activities.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".Activities.WasherActivity"
+            android:name=".activities.WasherActivity"
             android:label="@string/title_activity_washer_details"
-            android:parentActivityName=".Activities.MainActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="11efa5e61555132f35cb2dcebd1dcd6161c1a7ee" />
         <activity
-            android:name=".Activities.ReviewsActivity"
+            android:name=".activities.ReviewsActivity"
             android:label="@string/title_activity_reviews"
-            android:parentActivityName=".Activities.WasherActivity"
+            android:parentActivityName=".activities.WasherActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".Activities.PriceActivity"
+            android:name=".activities.PriceActivity"
             android:label="@string/title_activity_price"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".Activities.FiltersActivity"
+            android:name=".activities.FiltersActivity"
             android:label="@string/title_activity_filters"
-            android:parentActivityName=".Activities.MainActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme" />
     </application>
 
