@@ -12,6 +12,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import androks.simplywash.Constants;
+import androks.simplywash.Models.Order;
+import androks.simplywash.Models.Washer;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
 import butterknife.BindView;
@@ -30,6 +32,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     private boolean isInConfirmMode = false;
     private String mOrderId;
+    private Order mOrder;
+    private Washer mWasher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
         Utils.getOrder(mOrderId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                if(dataSnapshot.hasChildren()) {
+                    mOrder = dataSnapshot.getValue(Order.class);
+                    downloadWasher();
+                }
             }
 
             @Override
@@ -56,6 +63,14 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void downloadWasher() {
+
+    }
+
+    private void inflateView() {
+
     }
 
     private void checkIfConfirmMode() {
