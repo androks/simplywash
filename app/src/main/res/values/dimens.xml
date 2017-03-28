@@ -10,4 +10,5 @@
     <dimen name="washer_details_app_bar_height">300dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="activity_margin_half">8dp</dimen>
+    <dimen name="bottom_sheet_height">85dp</dimen>
 </resources>
