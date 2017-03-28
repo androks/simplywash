@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
@@ -112,33 +111,51 @@ public class MapFragment extends Fragment implements
      * Binding view with ButterKnife
      **/
 
-    @BindView(R.id.fab_state_marker) View mChangeStateFab;
+    @BindView(R.id.progress_horizontal)
+    ProgressBar mProgressBar;
+    @BindView(R.id.sliding_layout)
+    SlidingUpPanelLayout mSlidingLayout;
 
-    @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
-    @BindView(R.id.sliding_layout) SlidingUpPanelLayout mSlidingLayout;
+    @BindView(R.id.name)
+    TextView mName;
+    @BindView(R.id.rating_bar)
+    RatingBar mRatingBar;
+    @BindView(R.id.rating_text)
+    TextView mRatingText;
+    @BindView(R.id.count_of_rates)
+    TextView mCountOfRates;
+    @BindView(R.id.location)
+    TextView mLocation;
+    @BindView(R.id.phone)
+    TextView mPhone;
+    @BindView(R.id.opening_hours)
+    TextView mOpeningHours;
 
-    @BindView(R.id.name) TextView mName;
-    @BindView(R.id.rating_bar) RatingBar mRatingBar;
-    @BindView(R.id.rating_text) TextView mRatingText;
-    @BindView(R.id.location) TextView mLocation;
-    @BindView(R.id.phone) TextView mPhone;
-    @BindView(R.id.opening_hours) TextView mOpeningHours;
+    @BindView(R.id.duration)
+    TextView mDuration;
 
-    @BindView(R.id.direction_layout) View mDirectionLayout;
-    @BindView(R.id.direction) TextView mDirectionInfo;
+    @BindView(R.id.wifi)
+    ImageView mWifi;
+    @BindView(R.id.coffee)
+    ImageView mCoffee;
+    @BindView(R.id.restRoom)
+    ImageView mRestRoom;
+    @BindView(R.id.grocery)
+    ImageView mGrocery;
+    @BindView(R.id.wc)
+    ImageView mWC;
+    @BindView(R.id.serviceStation)
+    ImageView mServiceStation;
+    @BindView(R.id.cardPayment)
+    ImageView mCardPayment;
 
-    @BindView(R.id.wifi) ImageView mWifi;
-    @BindView(R.id.coffee) ImageView mCoffee;
-    @BindView(R.id.restRoom) ImageView mRestRoom;
-    @BindView(R.id.grocery) ImageView mGrocery;
-    @BindView(R.id.wc) ImageView mWC;
-    @BindView(R.id.serviceStation) ImageView mServiceStation;
-    @BindView(R.id.cardPayment) ImageView mCardPayment;
+    @BindView(R.id.fab_location_settings)
+    FloatingActionButton mMyLocationFab;
 
-    @BindView(R.id.fab_location_settings) FloatingActionButton mMyLocationFab;
-
-    @BindColor(R.color.colorAccent) int colorAccent;
-    @BindColor(android.R.color.black) int colorDark;
+    @BindColor(R.color.colorAccent)
+    int colorAccent;
+    @BindColor(android.R.color.black)
+    int colorDark;
     private Unbinder unbinder;
     /** End bindings  **/
 
@@ -178,10 +195,7 @@ public class MapFragment extends Fragment implements
     private HashMap<String, Marker> mMarkersList = new HashMap<>();
     private List<String> mFavouritesWashers = new ArrayList<>();
 
-    private boolean FLAG_DISPLAY_ALL_STATES = false;
     private boolean FLAG_FIND_MY_CURRENT_LOCATION;
-    private boolean FLAG_ORDER_THE_NEAREST_WASHER = false;
-    private boolean FLAG_DIS_DUR_CALCULATE = false;
 
     public MapFragment() {
     }
@@ -211,20 +225,8 @@ public class MapFragment extends Fragment implements
             }
         });
 
-        updateFromPreferences();
         checkUserFavouriteWashers();
         return rootView;
-    }
-
-    private void updateFromPreferences() {
-        SharedPreferences sharedPreferences = mContext.getPreferences(Context.MODE_PRIVATE);
-        if(FLAG_DISPLAY_ALL_STATES != sharedPreferences.getBoolean(Constants.WASHER_STATES_PREF, false)){
-            mChangeStateFab.performClick();
-        }
-        String lastWasher = sharedPreferences.getString(Constants.LAST_OPENED_WASHER_PREF, null);
-        if(lastWasher != null && !mMarkersList.isEmpty()){
-            mMarkersList.get(lastWasher).showInfoWindow();
-        }
     }
 
     @Override
@@ -257,7 +259,6 @@ public class MapFragment extends Fragment implements
         if (mGoogleApiClient != null)
             mGoogleApiClient.disconnect();
 
-        savePreferences();
         super.onStop();
     }
 
@@ -292,31 +293,11 @@ public class MapFragment extends Fragment implements
         return false;
     }
 
-    private void savePreferences() {
-        SharedPreferences sharedPreferences = mContext.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = sharedPreferences.edit();
-        if(mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN &&
-                mShowingWasher != null){
-            edit.putString(Constants.LAST_OPENED_WASHER_PREF, mShowingWasher.getId());
-        }
-        edit.putBoolean(Constants.WASHER_STATES_PREF, FLAG_DISPLAY_ALL_STATES);
-        edit.apply();
-    }
-
     @OnClick(R.id.moreBtn)
     public void showWasherDetails() {
         Intent intent = new Intent(getActivity(), WasherActivity.class);
         intent.putExtra(Constants.WASHER_ID, mShowingWasher.getId());
         startActivity(intent);
-    }
-
-    @OnClick(R.id.fab_state_marker)
-    public void changeWashersStateFlag(FloatingActionButton fab) {
-        FLAG_DISPLAY_ALL_STATES = !FLAG_DISPLAY_ALL_STATES;
-        filterWashers();
-
-        fab.setImageResource(FLAG_DISPLAY_ALL_STATES ?
-                R.mipmap.ic_markers_all : R.mipmap.ic_marker_free);
     }
 
     @OnClick(R.id.fab_location_settings)
@@ -326,7 +307,7 @@ public class MapFragment extends Fragment implements
     }
 
     @OnClick(R.id.services)
-    public void showServiceDialog(){
+    public void showServiceDialog() {
         DialogFragment dialog = ServicesDialog.newInstance(mShowingWasher);
         dialog.show(mContext.getSupportFragmentManager(), "ServicesDialog");
     }
@@ -354,13 +335,14 @@ public class MapFragment extends Fragment implements
         mProgressBar.setVisibility(View.GONE);
     }
 
-    private void checkUserFavouriteWashers(){
+    private void checkUserFavouriteWashers() {
         Utils.getFavourites(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChildren()){
+                if (dataSnapshot.hasChildren()) {
                     HashMap<String, Boolean> temp = dataSnapshot.getValue(
-                            new GenericTypeIndicator<HashMap<String, Boolean>>() {}
+                            new GenericTypeIndicator<HashMap<String, Boolean>>() {
+                            }
                     );
                     mFavouritesWashers.clear();
                     mFavouritesWashers.addAll(temp.keySet());
@@ -389,7 +371,8 @@ public class MapFragment extends Fragment implements
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
                     mWashersList.putAll(dataSnapshot.getValue(
-                            new GenericTypeIndicator<Map<String, Washer>>() {}
+                            new GenericTypeIndicator<Map<String, Washer>>() {
+                            }
                     ));
                     setMarkers();
                 }
@@ -487,7 +470,7 @@ public class MapFragment extends Fragment implements
                 }
                 break;
             case Constants.REQUEST_FILTER:
-                switch (resultCode){
+                switch (resultCode) {
                     case Constants.FILTER_CHANGED_CODE:
                         filterWashers();
                         break;
@@ -496,9 +479,9 @@ public class MapFragment extends Fragment implements
     }
 
     private void filterWashers() {
-        for(Washer washer: mWashersList.values()) {
+        for (Washer washer : mWashersList.values()) {
             mMarkersList.get(washer.getId()).setVisible(
-                    Utils.isWasherFits(washer, mContext, FLAG_DISPLAY_ALL_STATES, mFavouritesWashers)
+                    Utils.isWasherFits(washer, mContext, mFavouritesWashers)
             );
         }
     }
@@ -508,12 +491,10 @@ public class MapFragment extends Fragment implements
      */
     private void makeRequests() {
         if (mCurrentLocation != null) {
-            if (FLAG_DIS_DUR_CALCULATE
-                    && mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN) {
+            if (mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN
+                    && mShowingWasher != null) {
                 calculateDistanceAndTime(mShowingWasher.getLatLng());
             }
-            else
-                hideDirectionLayout();
 
             if (FLAG_FIND_MY_CURRENT_LOCATION) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 16));
@@ -527,7 +508,6 @@ public class MapFragment extends Fragment implements
      * Location settings request was denied
      */
     private void setAllFlagsToFalse() {
-        FLAG_DIS_DUR_CALCULATE = false;
         FLAG_FIND_MY_CURRENT_LOCATION = false;
         mMyLocationFab.setColorFilter(colorDark);
     }
@@ -573,7 +553,7 @@ public class MapFragment extends Fragment implements
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(kiev, 10));
     }
 
-    public void setMyLocationUtilsEnabled(boolean value){
+    public void setMyLocationUtilsEnabled(boolean value) {
         if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -584,16 +564,15 @@ public class MapFragment extends Fragment implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        FLAG_DIS_DUR_CALCULATE = true;
-        hideDirectionLayout();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
 
-        makeRequests();
-        if(mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
+        if (mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
                 mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN)
             return true;
 
         mShowingWasher = mWashersList.get(marker.getTitle());
+        mDuration.setText("");
+        makeRequests();
 
         //Inflating bottom sheet view by washer details
         inflateWasherDetails();
@@ -605,11 +584,8 @@ public class MapFragment extends Fragment implements
     private void inflateWasherDetails() {
         mName.setText(mShowingWasher.getName());
         mRatingBar.setRating(mShowingWasher.getRating());
-        mRatingText.setText(String.format(
-                Locale.getDefault(),
-                " %.1f (%d votes)",
-                mShowingWasher.getRating(),
-                mShowingWasher.getVotesCount()));
+        mRatingText.setText(String.format(Locale.getDefault(), "%.1f", mShowingWasher.getRating()));
+        mCountOfRates.setText(String.format(Locale.getDefault(), "(%d)", mShowingWasher.getVotesCount()));
         mLocation.setText(mShowingWasher.getLocation());
         mPhone.setText(mShowingWasher.getPhone());
         mOpeningHours.setText(Utils.workHoursToString(mShowingWasher));
@@ -638,7 +614,7 @@ public class MapFragment extends Fragment implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if(location != null)
+        if (location != null)
             mCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         // Get last known recent location.
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -731,14 +707,6 @@ public class MapFragment extends Fragment implements
         );
     }
 
-    private void hideDirectionLayout(){
-        mDirectionLayout.setVisibility(View.GONE);
-    }
-
-    private void showDirectionLayout(){
-        mDirectionLayout.setVisibility(View.VISIBLE);
-    }
-
     @Override
     public void onDirectionFindStart() {
         mProgressBar.setVisibility(View.VISIBLE);
@@ -751,11 +719,8 @@ public class MapFragment extends Fragment implements
 
         switch (direction.getTag()) {
             case TAG_CALCULATE_DIS_DUR:
-                if (FLAG_DIS_DUR_CALCULATE) {
-                    showDirectionLayout();
-                    mDirectionInfo.setText(Utils.distanceDurationToString(direction));
-                    FLAG_DIS_DUR_CALCULATE = false;
-                }
+                mDuration.setVisibility(View.VISIBLE);
+                mDuration.setText(direction.duration.getText());
                 break;
 
             case TAG_BUILD_ROUTE:

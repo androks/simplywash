@@ -43,18 +43,6 @@
             app:srcCompat="@drawable/ic_search_white_24dp" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_state_marker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/fab_prder_to_nearest"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="16dp"
-            android:src="@mipmap/ic_marker_free"
-            app:backgroundTint="@android:color/background_light" />
-
-        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_location_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

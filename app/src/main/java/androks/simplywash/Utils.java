@@ -10,7 +10,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import androks.simplywash.DirectionsApi.Data.Direction;
-import androks.simplywash.Enums.WasherStatus;
 import androks.simplywash.Models.Washer;
 
 /**
@@ -86,7 +85,6 @@ public class Utils {
 
     public static boolean isWasherFits(Washer washer,
                                 Context context,
-                                boolean displayAllStates,
                                 List<String> favouriteWashers){
 
         SharedPreferences sharedPreferences = context
@@ -126,8 +124,6 @@ public class Utils {
         if(onlyFavourites && !favouriteWashers.contains(washer.getId()))
             return false;
         if(priceCategoriesInt[priceCategory] < washer.getDefaultPrice())
-            return false;
-        if(!displayAllStates && !(washer.getStatusAsEnum() == WasherStatus.Available))
             return false;
 
         return true;
