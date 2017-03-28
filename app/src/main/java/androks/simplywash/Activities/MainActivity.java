@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import androks.simplywash.Constants;
-import androks.simplywash.Fragments.FavoriteFragment;
 import androks.simplywash.Fragments.MapFragment;
 import androks.simplywash.R;
 import butterknife.BindView;
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private int currentFragment = 0;
 
     private Fragment mapFragment;
-    private Fragment favoritesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mapFragment = new MapFragment();
-        favoritesFragment = new FavoriteFragment();
 
         mDrawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(mDrawerToggle);
@@ -134,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 currentFragment = 0;
                 break;
 
-            case R.id.nav_favourites:
+            case R.id.nav_suggest_washer:
                 changeFragment = (currentFragment == 1);
                 currentFragment = 1;
                 break;
@@ -216,9 +213,6 @@ public class MainActivity extends AppCompatActivity {
             case 0:
                 fragment = mapFragment;
                 break;
-            case 1:
-                fragment = favoritesFragment;
-                break;
             default:
                 fragment = mapFragment;
                 break;
@@ -232,8 +226,6 @@ public class MainActivity extends AppCompatActivity {
         switch (currentFragment) {
             case 0:
                 return mapFragment;
-            case 1:
-                return favoritesFragment;
             default:
                 return null;
         }

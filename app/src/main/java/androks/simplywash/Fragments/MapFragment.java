@@ -70,7 +70,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import androks.simplywash.Activities.FiltersActivity;
-import androks.simplywash.Activities.OrderActivity;
 import androks.simplywash.Activities.WasherActivity;
 import androks.simplywash.Constants;
 import androks.simplywash.Dialogs.ServicesDialog;
@@ -349,9 +348,9 @@ public class MapFragment extends Fragment implements
     }
 
     public void orderToWasher(String id){
-        Intent order = new Intent(getActivity(), OrderActivity.class);
-        order.putExtra(Constants.WASHER_ID, id);
-        startActivityForResult(order, Constants.REQUEST_ORDER);
+       // Intent order = new Intent(getActivity(), OrderActivity.class);
+        //order.putExtra(Constants.WASHER_ID, id);
+        //startActivityForResult(order, Constants.REQUEST_ORDER);
     }
 
     @OnClick(R.id.fab_location_settings)

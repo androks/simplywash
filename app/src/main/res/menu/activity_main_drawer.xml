@@ -8,19 +8,10 @@
             android:title="Map" />
 
         <item
-            android:id="@+id/nav_favourites"
-            android:icon="@drawable/ic_favorite_black_24dp"
+            android:id="@+id/nav_suggest_washer"
+            android:icon="@drawable/ic_add_black_24dp"
             android:title="Favorites" />
 
-        <item
-            android:id="@+id/nav_history"
-            android:icon="@drawable/ic_favorite_black_24dp"
-            android:title="History" />
-
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
-            android:title="Settings" />
     </group>
 
 </menu>
