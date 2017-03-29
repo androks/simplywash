@@ -68,6 +68,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import androks.simplywash.activities.BaseActivity;
 import androks.simplywash.activities.FiltersActivity;
 import androks.simplywash.activities.WasherActivity;
 import androks.simplywash.Constants;
@@ -174,7 +175,7 @@ public class MapFragment extends Fragment implements
      * Database section
      **/
     //Reference for downloading all washers
-    private DatabaseReference mWashersReference = Utils.getWasher();
+    private DatabaseReference mWashersReference;
 
     ValueEventListener mUploadWashers;
 
@@ -205,6 +206,7 @@ public class MapFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mWashersReference = Utils.getWasherInCity(((BaseActivity) getActivity()).getCurrentCity());
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         showProgress();

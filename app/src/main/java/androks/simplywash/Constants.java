@@ -10,6 +10,7 @@ public class Constants {
 
     public static final String AUTH_PREFERENCES = "AUTH_PREFERENCES";
     public static final String AUTH_UUID_PREF = "AUTH_UUID_PREF";
+    public static final String CITY_PREF = "CITY_PREF";
 
     public static final String FILTERS_PREFERENCES = "FILTERS_PREFERENCES";
     public static final String FILTER_MINIMUM_RATING = "FILTER_MINIMUM_RATING";

@@ -90,6 +90,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="androks.simplywash.activities.WasherActivity" />
         </activity>
+        <activity
+            android:name=".activities.ChooseCityActivity"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

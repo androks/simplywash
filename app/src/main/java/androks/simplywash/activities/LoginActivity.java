@@ -59,8 +59,9 @@ public class LoginActivity extends AppCompatActivity {
                     phone = phoneNumber;
                     signInToFirebase();
                 }
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, ChooseCityActivity.class);
                 startActivity(intent);
+                finish();
             }
 
             @Override

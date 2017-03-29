@@ -20,12 +20,22 @@ import androks.simplywash.models.Washer;
 
 public class Utils {
 
+
+
     public static DatabaseReference getWasher(){
         return FirebaseDatabase.getInstance().getReference().child("washers");
     }
 
+    public static DatabaseReference getWasherInCity(String city){
+        return FirebaseDatabase.getInstance().getReference().child("washers_info").child(city).child("washers");
+    }
+
     public static DatabaseReference getPhotos(String id){
         return FirebaseDatabase.getInstance().getReference().child("photos").child(id);
+    }
+
+    public static DatabaseReference getListOfCities(){
+        return FirebaseDatabase.getInstance().getReference().child("cities");
     }
 
     public static StorageReference getPhotoStorageRef(String id){

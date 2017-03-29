@@ -1,10 +1,13 @@
 package androks.simplywash.activities;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import androks.simplywash.Constants;
 
 /**
  * Created by androks on 11/17/2016.
@@ -29,7 +32,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public static FirebaseUser getCurrentUser(){
+    public FirebaseUser getCurrentUser(){
         return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    public String getCurrentCity(){
+        SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
+        return sp.getString(Constants.CITY_PREF, null);
     }
 }
