@@ -33,16 +33,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androks.simplywash.Constants;
+import androks.simplywash.R;
+import androks.simplywash.Utils;
 import androks.simplywash.dialogs.AddReviewDialog;
 import androks.simplywash.dialogs.ServicesDialog;
 import androks.simplywash.models.Review;
 import androks.simplywash.models.Washer;
-import androks.simplywash.R;
-import androks.simplywash.Utils;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -117,7 +116,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     private boolean FLAG_IS_FAVOURITE;
 
-    private List<String> mPhotoUrls = new ArrayList<>();
+    private String mPhotoUrls ;
 
     private StorageReference mMainImageRef;
 
@@ -146,13 +145,11 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     private void downloadPhotos() {
-        Utils.getPhotos(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
+        Utils.getPhotos(mWasherId).orderByKey().equalTo("0")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mPhotoUrls = dataSnapshot.getValue(
-                        new GenericTypeIndicator<List<String>>() {
-                        }
-                );
+                mPhotoUrls = dataSnapshot.getValue(new GenericTypeIndicator<List<String>>() {}).get(0);
                 loadPhotos();
             }
 
@@ -170,7 +167,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     private void loadMainPhoto() {
         Glide.with(this)
                 .using(new FirebaseImageLoader())
-                .load(mMainImageRef.child(mPhotoUrls.get(0)))
+                .load(mMainImageRef.child(mPhotoUrls))
                 .into(mMainImage);
     }
 

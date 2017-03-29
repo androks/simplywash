@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Calendar;
 import java.util.List;
@@ -24,6 +26,10 @@ public class Utils {
 
     public static DatabaseReference getPhotos(String id){
         return FirebaseDatabase.getInstance().getReference().child("photos").child(id);
+    }
+
+    public static StorageReference getPhotoStorageRef(String id){
+        return FirebaseStorage.getInstance().getReference().child("washer_images").child(id);
     }
 
     public static DatabaseReference getScheduleFor(String washerId){
