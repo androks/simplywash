@@ -65,6 +65,7 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="11efa5e61555132f35cb2dcebd1dcd6161c1a7ee" />
+
         <activity
             android:name=".activities.ReviewsActivity"
             android:label="@string/title_activity_reviews"
@@ -79,6 +80,16 @@
             android:label="@string/title_activity_filters"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.PhotosActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_photos"
+            android:parentActivityName=".activities.WasherActivity"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="androks.simplywash.activities.WasherActivity" />
+        </activity>
     </application>
 
 </manifest>

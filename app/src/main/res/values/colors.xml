@@ -41,4 +41,6 @@
     <color name="colorFocused">#bbdefb</color>
     <color name="colorServiceAvailable">#f44336</color>
     <color name="colorServiceNotAvailable">#9b9b9b</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

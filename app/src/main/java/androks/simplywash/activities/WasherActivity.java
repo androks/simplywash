@@ -381,6 +381,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         dialogBuilder.show();
     }
 
+    @OnClick(R.id.main_img)
+    public void showAllPhotos(){
+        Intent intent = new Intent(WasherActivity.this, PhotosActivity.class);
+        intent.putExtra(Constants.WASHER_ID, mWasherId);
+        startActivity(intent);
+    }
+
     private void onFavouriteAdded() {
         Utils.getWasher(mWasherId).limitToFirst(1).getRef().runTransaction(new Transaction.Handler() {
             @Override
