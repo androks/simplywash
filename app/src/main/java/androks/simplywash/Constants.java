@@ -6,17 +6,10 @@ package androks.simplywash;
 
 public class Constants {
 
-    public static final String ORDER_DATE_FORMAT = "kk:mm dd/MM/yyyy";
-
     public static final String WASHER_ID = "WASHER_ID";
-    public static final String COUNT_OF_BOXES = "COUNT_OF_BOXES";
-    public static final String CONFIRM_ORDER_MODE = "CONFIRM_ORDER_MODE";
-    public static final String ORDER_ID = "ORDER_ID";
 
     public static final String AUTH_PREFERENCES = "AUTH_PREFERENCES";
     public static final String AUTH_UUID_PREF = "AUTH_UUID_PREF";
-    public static final String WASHER_STATES_PREF = "WASHER_STATES_PREF";
-    public static final String LAST_OPENED_WASHER_PREF = "LAST_OPENED_WASHER_PREF";
 
     public static final String FILTERS_PREFERENCES = "FILTERS_PREFERENCES";
     public static final String FILTER_MINIMUM_RATING = "FILTER_MINIMUM_RATING";
@@ -31,10 +24,9 @@ public class Constants {
     public static final String FILTER_SERVICE_STATION = "FILTER_SERVICE_STATION";
 
     public static final int FILTER_CHANGED_CODE = 214;
+    public static final int RATING_CHANGED_CODE = 88;
 
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 11;
-    public static final int REQUEST_ORDER = 239;
     public static final int REQUEST_FILTER = 254;
-
-
+    public static final int REQUEST_RATING_CHANGED = 453;
 }

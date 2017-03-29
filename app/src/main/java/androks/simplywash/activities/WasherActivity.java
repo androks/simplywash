@@ -160,6 +160,18 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case Constants.REQUEST_RATING_CHANGED:
+                if(resultCode == Constants.RATING_CHANGED_CODE) {
+                    downloadWasherInfo();
+                    downloadReviews();
+                }
+                break;
+        }
+    }
+
     private void loadPhotos() {
         loadMainPhoto();
     }
@@ -264,7 +276,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mLocation.setText(mWasher.getLocation());
         mPhone.setText(mWasher.getPhone());
         mOpeningHours.setText(Utils.workHoursToString(mWasher));
-        mBoxesStatus.setText(mWasher.getAvailableBoxes() + " of " + mWasher.getBoxes());
+        mBoxesStatus.setText(String.valueOf(mWasher.getAvailableBoxes()));
         mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
 
         if (Utils.isWasherOpenAtTheTime(mWasher)) {
@@ -313,7 +325,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     public void showMoreReviews() {
         Intent intent = new Intent(WasherActivity.this, ReviewsActivity.class);
         intent.putExtra(Constants.WASHER_ID, mWasherId);
-        startActivity(intent);
+        startActivityForResult(intent, Constants.REQUEST_RATING_CHANGED);
     }
 
     @OnClick(R.id.prices)
@@ -451,7 +463,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 }
 
                 if (oldRating <= 0.1f)
-                    washer.setRating(((washer.getRating() * washer.getVotesCount()) + review.rating) / washer.increaseCountOfFavourites());
+                    washer.setRating(((washer.getRating() * washer.getVotesCount()) + review.rating) / washer.increaseCountOfVotes());
                 else
                     washer.setRating(((washer.getRating() * washer.getVotesCount() - oldRating) + review.rating) / washer.getVotesCount());
 

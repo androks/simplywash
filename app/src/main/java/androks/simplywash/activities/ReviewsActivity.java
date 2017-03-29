@@ -44,6 +44,8 @@ public class ReviewsActivity extends BaseActivity implements
     @BindView(R.id.progressBar) View progressBar;
     @BindView(R.id.empty_list) View listEmptyList;
 
+    private boolean dataHasChanged = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +128,13 @@ public class ReviewsActivity extends BaseActivity implements
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        if(dataHasChanged)
+            setResult(Constants.RATING_CHANGED_CODE);
+        finish();
+    }
+
     private void showProgress(){
         content.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -148,6 +157,7 @@ public class ReviewsActivity extends BaseActivity implements
     @Override
     public void onReviewAdded(final Review review, final float oldRating) {
         showProgress();
+        dataHasChanged = true;
 
         updateExpandedReviews(review);
 

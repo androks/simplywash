@@ -52,6 +52,11 @@ public class Washer {
     }
 
     @Exclude
+    public int increaseCountOfVotes(){
+        return ++votesCount;
+    }
+
+    @Exclude
     public void updateRate(float oldValue, float newValue){
         if(oldValue <= 0.1f)
             rating = ((rating*votesCount)+newValue)/++votesCount;
