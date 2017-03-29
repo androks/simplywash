@@ -565,6 +565,12 @@ public class MapFragment extends Fragment implements
     }
 
     private void showWasher(Marker marker){
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
+
+        if (mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
+                mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN)
+            return;
+        
         mShowingWasher = mWashersList.get(marker.getTitle());
         mDuration.setText("");
         makeRequests();
@@ -577,12 +583,6 @@ public class MapFragment extends Fragment implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
-
-        if (mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
-                mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN)
-            return true;
-
         showWasher(marker);
         return true;
     }

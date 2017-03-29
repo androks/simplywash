@@ -4,6 +4,7 @@
 
     <item
         android:id="@+id/filter"
+        android:title=""
         android:enabled="true"
         android:icon="@drawable/ic_filter_white_24dp"
         android:visible="true"

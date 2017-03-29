@@ -104,4 +104,6 @@
     <string name="title_activity_photos">PhotosActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="share">Share</string>
+    <string name="log_out">Log out</string>
 </resources>

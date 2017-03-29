@@ -1,6 +1,5 @@
 package androks.simplywash.activities;
 
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,13 +16,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import androks.simplywash.Constants;
-import androks.simplywash.fragments.MapFragment;
 import androks.simplywash.R;
+import androks.simplywash.fragments.MapFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view) NavigationView mNVDrawer;
+    private TextView mCurrentPhone;
 
     private ActionBarDrawerToggle mDrawerToggle;
-    private BroadcastReceiver mInternetReceiver;
     private SharedPreferences mSharedPrefs;
 
     private int currentFragment = 0;
@@ -47,12 +47,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
-        //checkIfUserLoggedIn();
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
-
+        mCurrentPhone = (TextView) mNVDrawer.getHeaderView(0).findViewById(R.id.current_phone);
         setSupportActionBar(toolbar);
+
+        checkUserPhoneNum();
 
         mapFragment = new MapFragment();
 
@@ -63,12 +63,14 @@ public class MainActivity extends AppCompatActivity {
         setCurrentFragment();
     }
 
-    private void checkIfUserLoggedIn(){
-        String phone = mSharedPrefs.getString(Constants.AUTH_UUID_PREF, null);
+    private void checkUserPhoneNum(){
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent toLogin = new Intent(this, LoginActivity.class);
             startActivity(toLogin);
             finish();
+        }else{
+            String phone = mSharedPrefs.getString(Constants.AUTH_UUID_PREF, null);
+            mCurrentPhone.setText(phone);
         }
     }
 
@@ -131,9 +133,8 @@ public class MainActivity extends AppCompatActivity {
                 currentFragment = 0;
                 break;
 
-            case R.id.nav_suggest_washer:
-                changeFragment = (currentFragment == 1);
-                currentFragment = 1;
+            case R.id.share:
+                //TODO:determine share func
                 break;
         }
 

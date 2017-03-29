@@ -8,10 +8,10 @@
             android:title="Map" />
 
         <item
-            android:id="@+id/nav_suggest_washer"
-            android:icon="@drawable/ic_add_black_24dp"
-            android:title="Favorites" />
-
+            android:id="@+id/share"
+            android:title="@string/share"
+            android:enabled="true"
+            android:icon="@drawable/ic_share_black_24dp" />
     </group>
 
 </menu>
