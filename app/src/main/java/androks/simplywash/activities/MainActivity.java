@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +34,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view) NavigationView mNVDrawer;
+    private View mNavHeader;
     private TextView mCurrentPhone;
 
     private ActionBarDrawerToggle mDrawerToggle;
@@ -48,8 +50,10 @@ public class MainActivity extends BaseActivity {
         mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mCurrentPhone = (TextView) mNVDrawer.getHeaderView(0).findViewById(R.id.current_phone);
-        setSupportActionBar(toolbar);
+
+        setUpToolbar();
+
+        setUpHeaderView();
 
         checkUserPhoneNum();
 
@@ -60,6 +64,23 @@ public class MainActivity extends BaseActivity {
         setupDrawerContent(mNVDrawer);
 
         setCurrentFragment();
+    }
+
+    private void setUpToolbar() {
+        setSupportActionBar(toolbar);
+    }
+
+    private void setUpHeaderView() {
+        mNavHeader = mNVDrawer.getHeaderView(0);
+        if (mNavHeader == null)
+            return;
+        mCurrentPhone = (TextView) mNavHeader.findViewById(R.id.current_phone);
+        mNavHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
     }
 
     private void checkUserPhoneNum(){

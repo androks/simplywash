@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_header"
     android:orientation="vertical">
 
     <ImageView

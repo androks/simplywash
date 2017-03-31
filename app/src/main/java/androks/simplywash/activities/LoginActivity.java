@@ -54,10 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 edit.putString(Constants.AUTH_UUID_PREF, phoneNumber);
                 edit.apply();
                 if(FirebaseAuth.getInstance().getCurrentUser() == null){
-                    email = phoneNumber + "@example.com";
-                    pass = phoneNumber + "random";
-                    phone = phoneNumber;
-                    signInToFirebase();
+                    signInToFirebase(phoneNumber);
                 }
                 Intent intent = new Intent(LoginActivity.this, ChooseCityActivity.class);
                 startActivity(intent);
@@ -71,7 +68,10 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
-    private void signInToFirebase(){
+    private void signInToFirebase(String phoneNumber){
+        email = phoneNumber + "@example.com";
+        pass = phoneNumber + "random";
+        phone = phoneNumber;
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override

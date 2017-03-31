@@ -3,8 +3,10 @@ package androks.simplywash.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ public class ChooseCityActivity extends BaseActivity {
 
     @BindView(R.id.citiesRecyclerView) RecyclerView mCitiesRecyclerView;
     @BindView(R.id.progress) View mProgressBar;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,16 @@ public class ChooseCityActivity extends BaseActivity {
         }
         setContentView(R.layout.activity_choose_city);
         ButterKnife.bind(this);
+        setUpToolbar();
         setUpRecyclerView();
+    }
+
+    private void setUpToolbar() {
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setTitle(R.string.title_choose_city_activity);
+        }
     }
 
     private void setUpRecyclerView() {
@@ -38,7 +50,7 @@ public class ChooseCityActivity extends BaseActivity {
         mCitiesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mCitiesRecyclerView.setAdapter(new FirebaseRecyclerAdapter<String, ViewHolder>(
                 String.class,
-                android.R.layout.simple_list_item_1,
+                R.layout.simple_list_item,
                 ViewHolder.class,
                 Utils.getListOfCities()
         ) {
@@ -72,6 +84,6 @@ public class ChooseCityActivity extends BaseActivity {
             ButterKnife.bind(this, v);
         }
 
-        @BindView(android.R.id.text1) TextView name;
+        @BindView(R.id.text) TextView name;
     }
 }
