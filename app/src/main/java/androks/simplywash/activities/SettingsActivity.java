@@ -36,8 +36,13 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.city) Spinner mCitySpinner;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
+    private List<String> mCityList;
+
     private String mCurrentPhone;
     private String mCurrentCity;
+    private String mLastKnownCity;
+
+    private boolean dataHasChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
         mCurrentPhone = sp.getString(Constants.PHONE_PREF, null);
         mCurrentCity = sp.getString(Constants.CITY_PREF, null);
+        mLastKnownCity = mCurrentCity;
         setPhone();
     }
 
@@ -67,10 +73,10 @@ public class SettingsActivity extends AppCompatActivity {
         Utils.getListOfCities().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> cities = dataSnapshot.getValue(
+                mCityList = dataSnapshot.getValue(
                         new GenericTypeIndicator<List<String>>() {}
                 );
-                initializeCitiesSpinner(cities);
+                initializeCitiesSpinner();
             }
 
             @Override
@@ -80,15 +86,16 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    private void initializeCitiesSpinner(final List<String> items) {
+    private void initializeCitiesSpinner() {
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCityList);
         mCitySpinner.setAdapter(adapter);
 
         mCitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                setCurrentCityTo(items.get(position));
+                if(!mCurrentCity.equals(mCityList.get(position)))
+                    setCurrentCityTo(mCityList.get(position));
             }
 
             @Override
@@ -97,8 +104,24 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        if(mCurrentCity != null && items.contains(mCurrentCity))
+        if(mCurrentCity != null && mCityList.contains(mCurrentCity))
             mCitySpinner.setSelection(adapter.getPosition(mCurrentCity));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(checkIfSettingsDataTheSame()) {
+            super.onBackPressed();
+            return;
+        }
+        startActivity(new Intent(SettingsActivity.this, MainActivity.class));
+        finish();
+    }
+
+    private boolean checkIfSettingsDataTheSame() {
+        if(!mCurrentCity.equals(mLastKnownCity))
+            return false;
+        return true;
     }
 
     private void setUpToolbar() {
@@ -153,7 +176,8 @@ public class SettingsActivity extends AppCompatActivity {
     public void setCurrentCityTo(String city) {
         SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
-        edit.putString(Constants.PHONE_PREF, city);
+        edit.putString(Constants.CITY_PREF, city);
         edit.apply();
+        mCurrentCity = city;
     }
 }
