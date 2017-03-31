@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             public void success(DigitsSession session, String phoneNumber) {
                 SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
                 SharedPreferences.Editor edit = sp.edit();
-                edit.putString(Constants.AUTH_UUID_PREF, phoneNumber);
+                edit.putString(Constants.PHONE_PREF, phoneNumber);
                 edit.apply();
                 if(FirebaseAuth.getInstance().getCurrentUser() == null){
                     signInToFirebase(phoneNumber);

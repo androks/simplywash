@@ -9,7 +9,7 @@ public class Constants {
     public static final String WASHER_ID = "WASHER_ID";
 
     public static final String AUTH_PREFERENCES = "AUTH_PREFERENCES";
-    public static final String AUTH_UUID_PREF = "AUTH_UUID_PREF";
+    public static final String PHONE_PREF = "PHONE_PREF";
     public static final String CITY_PREF = "CITY_PREF";
 
     public static final String FILTERS_PREFERENCES = "FILTERS_PREFERENCES";

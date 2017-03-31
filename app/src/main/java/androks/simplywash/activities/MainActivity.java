@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity {
         mNavHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             }
         });
     }
@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity {
             startActivity(toLogin);
             finish();
         }else{
-            String phone = mSharedPrefs.getString(Constants.AUTH_UUID_PREF, null);
+            String phone = mSharedPrefs.getString(Constants.PHONE_PREF, null);
             mCurrentPhone.setText(phone);
         }
     }
