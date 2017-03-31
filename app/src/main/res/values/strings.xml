@@ -109,4 +109,5 @@
     <string name="title_choose_city_activity">Choose your city</string>
     <string name="title_activity_settings">Settings</string>
     <string name="yes">Yes</string>
+    <string name="map">Map</string>
 </resources>

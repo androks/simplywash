@@ -175,6 +175,10 @@ public class MainActivity extends BaseActivity {
             case R.id.share:
                 //TODO:determine share func
                 break;
+
+            case R.id.settings:
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                break;
         }
 
         if(!changeFragment)

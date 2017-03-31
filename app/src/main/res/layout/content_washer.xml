@@ -226,7 +226,7 @@
                 android:id="@+id/serviceStation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_settings_black_24dp" />
+                app:srcCompat="@drawable/ic_repare_black_24dp" />
 
             <ImageView
                 android:id="@+id/cardPayment"
