@@ -32,7 +32,7 @@
             android:indeterminate="true" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_prder_to_nearest"
+            android:id="@+id/fab_find_the_nearest_washer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

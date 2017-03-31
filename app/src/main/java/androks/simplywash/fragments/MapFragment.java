@@ -76,7 +76,6 @@ import androks.simplywash.activities.WasherActivity;
 import androks.simplywash.dialogs.ServicesDialog;
 import androks.simplywash.directionsApi.Data.Direction;
 import androks.simplywash.directionsApi.DirectionsManager;
-import androks.simplywash.enums.WasherStatus;
 import androks.simplywash.models.CameraPosition;
 import androks.simplywash.models.Washer;
 import butterknife.BindColor;
@@ -169,7 +168,9 @@ public class MapFragment extends Fragment implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
-    /** End Google Maps section**/
+    /**
+     * End Google Maps section
+     **/
 
 
     //Reference for downloading all washers
@@ -191,6 +192,7 @@ public class MapFragment extends Fragment implements
     private List<String> mFavouritesWashers = new ArrayList<>();
 
     private boolean FLAG_FIND_MY_CURRENT_LOCATION;
+    private boolean FLAG_FIND_NEAREST_WASHER;
 
     private String mCurrentCity;
     private androks.simplywash.models.CameraPosition mCurrentCityCameraPosition;
@@ -209,7 +211,7 @@ public class MapFragment extends Fragment implements
 
         mContext = getActivity();
         mResources = mContext.getResources();
-        mUser = ((BaseActivity)mContext).getCurrentUser();
+        mUser = ((BaseActivity) mContext).getCurrentUser();
 
         setHasOptionsMenu(true);
 
@@ -229,6 +231,9 @@ public class MapFragment extends Fragment implements
                 mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
+
+        setAllFlagsToFalse();
+
         return rootView;
     }
 
@@ -248,29 +253,29 @@ public class MapFragment extends Fragment implements
     }
 
     private void loadWashers() {
-       mWashersReference.addListenerForSingleValueEvent(new ValueEventListener() {
-           @Override
-           public void onDataChange(DataSnapshot dataSnapshot) {
-               if (dataSnapshot.hasChildren()) {
-                   mWashersList.putAll(dataSnapshot.getValue(
-                           new GenericTypeIndicator<Map<String, Washer>>() {
-                           }
-                   ));
-                   setMarkers();
-                   checkUserFavouriteWashers();
-               }
+        mWashersReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()) {
+                    mWashersList.putAll(dataSnapshot.getValue(
+                            new GenericTypeIndicator<Map<String, Washer>>() {
+                            }
+                    ));
+                    setMarkers();
+                    checkUserFavouriteWashers();
+                }
 
-           }
+            }
 
-           @Override
-           public void onCancelled(DatabaseError databaseError) {
-               Toast.makeText(
-                       mContext,
-                       "Error while download\n Check your internet connection",
-                       Toast.LENGTH_SHORT
-               ).show();
-           }
-       });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(
+                        mContext,
+                        "Error while download\n Check your internet connection",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
     }
 
     @Override
@@ -308,7 +313,8 @@ public class MapFragment extends Fragment implements
 
     @Override
     public void onDetach() {
-        unbinder.unbind();
+        mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        //unbinder.unbind();
         super.onDetach();
     }
 
@@ -334,6 +340,19 @@ public class MapFragment extends Fragment implements
         }
 
         return false;
+    }
+
+    @OnClick(R.id.fab_find_the_nearest_washer)
+    public void navigateToTheNearestWasher() {
+        if (mTheNearestFreeWasher != null) {
+            showWasher(mMarkersList.get(mTheNearestFreeWasher.getId()));
+            FLAG_FIND_NEAREST_WASHER = false;
+            Toast.makeText(mContext, "The nearest washer was find", Toast.LENGTH_SHORT).show();
+        } else {
+            FLAG_FIND_NEAREST_WASHER = true;
+            checkLocationSettings();
+        }
+
     }
 
     @OnClick(R.id.moreBtn)
@@ -393,6 +412,7 @@ public class MapFragment extends Fragment implements
     }
 
     private void setMarkers() {
+        mMap.clear();
         for (Washer washer : mWashersList.values()) {
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
@@ -503,6 +523,9 @@ public class MapFragment extends Fragment implements
                 mMyLocationFab.setColorFilter(colorAccent);
                 FLAG_FIND_MY_CURRENT_LOCATION = false;
             }
+            if (FLAG_FIND_NEAREST_WASHER) {
+                navigateToTheNearestWasher();
+            }
         }
     }
 
@@ -511,6 +534,7 @@ public class MapFragment extends Fragment implements
      */
     private void setAllFlagsToFalse() {
         FLAG_FIND_MY_CURRENT_LOCATION = false;
+        FLAG_FIND_NEAREST_WASHER = false;
         mMyLocationFab.setColorFilter(colorDark);
     }
 
@@ -573,13 +597,13 @@ public class MapFragment extends Fragment implements
         mMap.setMyLocationEnabled(value);
     }
 
-    private void showWasher(Marker marker){
+    private void showWasher(Marker marker) {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 14));
 
         if (mWashersList.get(marker.getTitle()).equals(mShowingWasher) &&
                 mSlidingLayout.getPanelState() != SlidingUpPanelLayout.PanelState.HIDDEN)
             return;
-        
+
         mShowingWasher = mWashersList.get(marker.getTitle());
         mDuration.setText("");
         makeRequests();
@@ -680,17 +704,15 @@ public class MapFragment extends Fragment implements
         Double bestMatch = (double) -1;
         int i = 0;
         for (Washer washer : mWashersList.values()) {
-            if (mMarkersList.get(washer.getId()).isVisible()
-                    && washer.getStatusAsEnum() == WasherStatus.Available) {
-                distances[i] = SphericalUtil.computeDistanceBetween(
-                        mCurrentLocation,
-                        washer.getLatLng()
-                );
-                if (bestMatch.equals((double) -1) || bestMatch > distances[i]) {
-                    bestMatch = distances[i];
-                    washerId = washer.getId();
-                }
+            distances[i] = SphericalUtil.computeDistanceBetween(
+                    mCurrentLocation,
+                    washer.getLatLng()
+            );
+            if (bestMatch.equals((double) -1) || bestMatch > distances[i]) {
+                bestMatch = distances[i];
+                washerId = washer.getId();
             }
+
             i++;
         }
         mTheNearestFreeWasher = mWashersList.get(washerId);
@@ -725,11 +747,12 @@ public class MapFragment extends Fragment implements
 
     @Override
     public void onDirectionFindStart() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        showProgress();
     }
 
     @Override
     public void onDirectionReady(Direction direction) {
+        hideProgress();
         if (direction == null)
             return;
 
@@ -737,7 +760,6 @@ public class MapFragment extends Fragment implements
             case TAG_CALCULATE_DIS_DUR:
                 mDuration.setVisibility(View.VISIBLE);
                 mDuration.setText(direction.duration.getText());
-                hideProgress();
                 break;
 
             case TAG_BUILD_ROUTE:

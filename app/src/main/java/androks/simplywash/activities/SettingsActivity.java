@@ -134,7 +134,6 @@ public class SettingsActivity extends AppCompatActivity {
         if(actionBar != null){
             getSupportActionBar().setTitle(R.string.title_activity_settings);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         }
     }
 
