@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="150dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_header"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
     android:orientation="vertical">
 
     <ImageView
@@ -12,14 +13,34 @@
         android:background="@drawable/nav_header_bg"
         android:scaleType="centerInside" />
 
-    <TextView
-        android:id="@+id/current_phone"
-        style="@style/TextAppearance.AppCompat.Subhead"
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="24dp"
+        app:srcCompat="@drawable/ic_settings_white_24dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="16dp"
-        tools:text="Your Name Here"
-        android:textColor="@android:color/white" />
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/current_phone"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            tools:text="Your Name Here" />
+
+        <TextView
+            android:id="@+id/current_city"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            tools:text="Kiev" />
+    </LinearLayout>
 </FrameLayout>

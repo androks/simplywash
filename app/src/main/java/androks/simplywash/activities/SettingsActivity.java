@@ -42,8 +42,6 @@ public class SettingsActivity extends AppCompatActivity {
     private String mCurrentCity;
     private String mLastKnownCity;
 
-    private boolean dataHasChanged = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
