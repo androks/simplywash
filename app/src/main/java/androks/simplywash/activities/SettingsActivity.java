@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.digits.sdk.android.Digits;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -144,6 +145,7 @@ public class SettingsActivity extends AppCompatActivity {
         edit.putString(Constants.PHONE_PREF, null);
         edit.putString(Constants.CITY_PREF, null);
         edit.apply();
+        Digits.logout();
         startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
         finish();
     }
