@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -32,32 +33,36 @@ public class MainActivity extends BaseActivity {
     public static final String CURRENT_FRAGMENT = "CURRENT_FRAGMENT";
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.nav_view) NavigationView mNVDrawer;
-    private View mNavHeader;
-    private TextView mCurrentPhone;
+    private TextView mPhoneTextView;
+    private TextView mCityTextView;
 
     private ActionBarDrawerToggle mDrawerToggle;
+
     private SharedPreferences mSharedPrefs;
 
-    private int currentFragment = 0;
+    private int mCurrentFragment = 0;
 
     private Fragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
+
+        checkIfUserLoggedIn();
 
         setUpToolbar();
 
         setUpHeaderView();
 
-        checkUserPhoneNum();
+        getSharedPrefData();
 
-        mapFragment = new MapFragment();
+        initializeFragments();
 
         mDrawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(mDrawerToggle);
@@ -66,15 +71,32 @@ public class MainActivity extends BaseActivity {
         setCurrentFragment();
     }
 
+    private void getSharedPrefData() {
+        String mCurrentPhone = mSharedPrefs.getString(Constants.PHONE_PREF, null);
+        String mCurrentCity = mSharedPrefs.getString(Constants.CITY_PREF, null);
+        if(mCurrentPhone != null)
+            mPhoneTextView.setText(mCurrentPhone);
+        if(mCurrentCity != null)
+            mCityTextView.setText(mCurrentCity);
+    }
+
+    private void initializeFragments() {
+        mapFragment = new MapFragment();
+    }
+
     private void setUpToolbar() {
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null)
+            actionBar.setTitle(R.string.title_activity_main);
     }
 
     private void setUpHeaderView() {
-        mNavHeader = mNVDrawer.getHeaderView(0);
+        View mNavHeader = mNVDrawer.getHeaderView(0);
         if (mNavHeader == null)
             return;
-        mCurrentPhone = (TextView) mNavHeader.findViewById(R.id.current_phone);
+        mPhoneTextView = (TextView) mNavHeader.findViewById(R.id.current_phone);
+        mCityTextView = (TextView) mNavHeader.findViewById(R.id.current_city);
         mNavHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,27 +105,24 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void checkUserPhoneNum(){
+    private void checkIfUserLoggedIn(){
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent toLogin = new Intent(this, LoginActivity.class);
             startActivity(toLogin);
             finish();
-        }else{
-            String phone = mSharedPrefs.getString(Constants.PHONE_PREF, null);
-            mCurrentPhone.setText(phone);
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(CURRENT_FRAGMENT, currentFragment);
+        outState.putInt(CURRENT_FRAGMENT, mCurrentFragment);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if(savedInstanceState != null){
-            currentFragment = savedInstanceState.getInt(CURRENT_FRAGMENT);
+            mCurrentFragment = savedInstanceState.getInt(CURRENT_FRAGMENT);
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
@@ -123,12 +142,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
+        // NOTE: Make sure you pass in a valid mToolbar reference.  ActionBarDrawToggle() does not require it
         // and will not render the hamburger icon without it.
         return new ActionBarDrawerToggle(
                 this,
                 mDrawer,
-                toolbar,
+                mToolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
@@ -149,8 +168,8 @@ public class MainActivity extends BaseActivity {
         boolean changeFragment = false;
         switch(menuItem.getItemId()) {
             case R.id.nav_map:
-                changeFragment = (currentFragment == 0);
-                currentFragment = 0;
+                changeFragment = (mCurrentFragment == 0);
+                mCurrentFragment = 0;
                 break;
 
             case R.id.share:
@@ -173,7 +192,7 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
-        }else if(currentFragment == 0) {
+        }else if(mCurrentFragment == 0) {
             SlidingUpPanelLayout slidingUpPanelLayout =
                     (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
             if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)
@@ -211,8 +230,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(getCurrentFragment() != null)
-            getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+        if(getmCurrentFragment() != null)
+            getmCurrentFragment().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -230,7 +249,7 @@ public class MainActivity extends BaseActivity {
     private void setCurrentFragment(){
         Fragment fragment;
 
-        switch (currentFragment) {
+        switch (mCurrentFragment) {
             case 0:
                 fragment = mapFragment;
                 break;
@@ -243,8 +262,8 @@ public class MainActivity extends BaseActivity {
         fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
     }
 
-    private Fragment getCurrentFragment(){
-        switch (currentFragment) {
+    private Fragment getmCurrentFragment(){
+        switch (mCurrentFragment) {
             case 0:
                 return mapFragment;
             default:
