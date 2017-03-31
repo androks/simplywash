@@ -52,7 +52,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -68,17 +67,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import androks.simplywash.Constants;
+import androks.simplywash.R;
+import androks.simplywash.Utils;
 import androks.simplywash.activities.BaseActivity;
 import androks.simplywash.activities.FiltersActivity;
 import androks.simplywash.activities.WasherActivity;
-import androks.simplywash.Constants;
 import androks.simplywash.dialogs.ServicesDialog;
 import androks.simplywash.directionsApi.Data.Direction;
 import androks.simplywash.directionsApi.DirectionsManager;
 import androks.simplywash.enums.WasherStatus;
+import androks.simplywash.models.CameraPosition;
 import androks.simplywash.models.Washer;
-import androks.simplywash.R;
-import androks.simplywash.Utils;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -171,17 +171,9 @@ public class MapFragment extends Fragment implements
     private LocationSettingsRequest mLocationSettingsRequest;
     /** End Google Maps section**/
 
-    /**
-     * Database section
-     **/
+
     //Reference for downloading all washers
     private DatabaseReference mWashersReference;
-
-    ValueEventListener mUploadWashers;
-
-    /**
-     * End database section
-     **/
 
     private FragmentActivity mContext;
     private static Resources mResources;
@@ -200,27 +192,36 @@ public class MapFragment extends Fragment implements
 
     private boolean FLAG_FIND_MY_CURRENT_LOCATION;
 
+    private String mCurrentCity;
+    private androks.simplywash.models.CameraPosition mCurrentCityCameraPosition;
+
     public MapFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mWashersReference = Utils.getWasherInCity(((BaseActivity) getActivity()).getCurrentCity());
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        mCurrentCity = ((BaseActivity) getActivity()).getCurrentCity();
+        mWashersReference = Utils.getWasherInCity(mCurrentCity);
         showProgress();
 
         mContext = getActivity();
         mResources = mContext.getResources();
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        mUser = ((BaseActivity)mContext).getCurrentUser();
 
         setHasOptionsMenu(true);
 
-        setUpMap();
+        loadMap();
 
-        determineListenersForDatabase();
-        setListenersForDatabase();
+        // Kick off the process of building the GoogleApiClient, LocationRequest, and
+        // LocationSettingsRequest objects.
+        buildGoogleApiClient();
+
+        createLocationRequest();
+
+        buildLocationSettingsRequest();
 
         mSlidingLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,9 +229,48 @@ public class MapFragment extends Fragment implements
                 mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
-
-        checkUserFavouriteWashers();
         return rootView;
+    }
+
+    private void loadMap() {
+        Utils.getCityLocation(mCurrentCity).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mCurrentCityCameraPosition = dataSnapshot.getValue(CameraPosition.class);
+                setUpMap();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadWashers() {
+       mWashersReference.addListenerForSingleValueEvent(new ValueEventListener() {
+           @Override
+           public void onDataChange(DataSnapshot dataSnapshot) {
+               if (dataSnapshot.hasChildren()) {
+                   mWashersList.putAll(dataSnapshot.getValue(
+                           new GenericTypeIndicator<Map<String, Washer>>() {
+                           }
+                   ));
+                   setMarkers();
+                   checkUserFavouriteWashers();
+               }
+
+           }
+
+           @Override
+           public void onCancelled(DatabaseError databaseError) {
+               Toast.makeText(
+                       mContext,
+                       "Error while download\n Check your internet connection",
+                       Toast.LENGTH_SHORT
+               ).show();
+           }
+       });
     }
 
     @Override
@@ -269,7 +309,6 @@ public class MapFragment extends Fragment implements
     @Override
     public void onDetach() {
         unbinder.unbind();
-        deleteListenersForDatabase();
         super.onDetach();
     }
 
@@ -320,14 +359,6 @@ public class MapFragment extends Fragment implements
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         ((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
-        // Kick off the process of building the GoogleApiClient, LocationRequest, and
-        // LocationSettingsRequest objects.
-        buildGoogleApiClient();
-
-        createLocationRequest();
-
-        buildLocationSettingsRequest();
-
         mMyLocationFab.performClick();
     }
 
@@ -359,39 +390,6 @@ public class MapFragment extends Fragment implements
 
             }
         });
-    }
-
-    private void setListenersForDatabase() {
-        mWashersReference.addListenerForSingleValueEvent(mUploadWashers);
-    }
-
-    private void deleteListenersForDatabase() {
-        mWashersReference.removeEventListener(mUploadWashers);
-    }
-
-    private void determineListenersForDatabase() {
-        mUploadWashers = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
-                    mWashersList.putAll(dataSnapshot.getValue(
-                            new GenericTypeIndicator<Map<String, Washer>>() {
-                            }
-                    ));
-                    setMarkers();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(
-                        mContext,
-                        "Error while download\n Check your internet connection",
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
-        };
     }
 
     private void setMarkers() {
@@ -553,8 +551,17 @@ public class MapFragment extends Fragment implements
         mMap.setBuildingsEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        LatLng kiev = new LatLng(50.4448235, 30.5497172);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(kiev, 10));
+        loadWashers();
+        animateCameraToCurrentCityPosition();
+    }
+
+    private void animateCameraToCurrentCityPosition() {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(mCurrentCityCameraPosition.getLatitude(),
+                        mCurrentCityCameraPosition.getLongitude()
+                ),
+                mCurrentCityCameraPosition.getZoom()
+        ));
     }
 
     public void setMyLocationUtilsEnabled(boolean value) {

@@ -20,7 +20,9 @@ import androks.simplywash.models.Washer;
 
 public class Utils {
 
-
+    public static DatabaseReference getCityLocation(String city){
+        return FirebaseDatabase.getInstance().getReference().child("cityLocation").child(city);
+    }
 
     public static DatabaseReference getWasher(){
         return FirebaseDatabase.getInstance().getReference().child("washers");
