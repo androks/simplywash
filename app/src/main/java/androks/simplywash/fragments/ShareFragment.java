@@ -7,9 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -40,12 +41,12 @@ public class ShareFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_share, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-
+        setHasOptionsMenu(true);
         return rootView;
     }
 
     @OnClick({R.id.vk, R.id.fb, R.id.twitter})
-    public void shareVk(Button button){
+    public void shareVk(ImageView button){
         String packageName;
         switch (button.getId()){
             case R.id.vk:
@@ -101,5 +102,10 @@ public class ShareFragment extends Fragment {
         }
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUrl));
         startActivity(intent);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
     }
 }

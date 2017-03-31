@@ -25,6 +25,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import androks.simplywash.Constants;
 import androks.simplywash.R;
 import androks.simplywash.fragments.MapFragment;
+import androks.simplywash.fragments.ShareFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,6 +36,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.nav_view) NavigationView mNVDrawer;
+
     private TextView mPhoneTextView;
     private TextView mCityTextView;
 
@@ -45,6 +47,7 @@ public class MainActivity extends BaseActivity {
     private int mCurrentFragment = 0;
 
     private Fragment mapFragment;
+    private Fragment shareFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class MainActivity extends BaseActivity {
 
     private void initializeFragments() {
         mapFragment = new MapFragment();
+        shareFragment = new ShareFragment();
     }
 
     private void setUpToolbar() {
@@ -173,11 +177,8 @@ public class MainActivity extends BaseActivity {
                 break;
 
             case R.id.share:
-                //TODO:determine share func
-                break;
-
-            case R.id.settings:
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                changeFragment = (mCurrentFragment == 1);
+                mCurrentFragment = 1;
                 break;
         }
 
@@ -257,6 +258,9 @@ public class MainActivity extends BaseActivity {
             case 0:
                 fragment = mapFragment;
                 break;
+            case 1:
+                fragment = shareFragment;
+                break;
             default:
                 fragment = mapFragment;
                 break;
@@ -270,6 +274,8 @@ public class MainActivity extends BaseActivity {
         switch (mCurrentFragment) {
             case 0:
                 return mapFragment;
+            case 1:
+                return shareFragment;
             default:
                 return null;
         }
