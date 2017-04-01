@@ -11,6 +11,7 @@ import androks.simplywash.enums.WasherType;
  */
 
 public class Washer {
+    private Schedule schedule;
     private WasherStatus state;
     private WasherType type;
     private String id;
@@ -25,10 +26,8 @@ public class Washer {
     private float rating;
     private int boxes;
     private int availableBoxes;
-    private int votesCount;
-    private int countOfFavourites;
-    private int workHoursFrom;
-    private int workHoursTo;
+    private int votes;
+    private int favorites;
     private int defaultPrice;
     private boolean restRoom;
     private boolean wifi;
@@ -41,27 +40,27 @@ public class Washer {
 
     @Exclude
     public int decreaseCountOfFavourites(){
-        if(countOfFavourites > 0)
-            countOfFavourites--;
-        return countOfFavourites;
+        if(favorites > 0)
+            favorites--;
+        return favorites;
     }
 
     @Exclude
     public int increaseCountOfFavourites(){
-        return ++countOfFavourites;
+        return ++favorites;
     }
 
     @Exclude
     public int increaseCountOfVotes(){
-        return ++votesCount;
+        return ++votes;
     }
 
     @Exclude
     public void updateRate(float oldValue, float newValue){
         if(oldValue <= 0.1f)
-            rating = ((rating*votesCount)+newValue)/++votesCount;
+            rating = ((rating* votes)+newValue)/++votes;
         else
-            rating = ((rating*votesCount-oldValue) + newValue)/votesCount;
+            rating = ((rating* votes -oldValue) + newValue)/ votes;
 
         rating = (float) Math.floor(rating) + 0.5f;
     }
@@ -149,20 +148,12 @@ public class Washer {
         return availableBoxes;
     }
 
-    public int getVotesCount() {
-        return votesCount;
+    public int getVotes() {
+        return votes;
     }
 
-    public int getCountOfFavourites() {
-        return countOfFavourites;
-    }
-
-    public int getWorkHoursFrom() {
-        return workHoursFrom;
-    }
-
-    public int getWorkHoursTo() {
-        return workHoursTo;
+    public int getFavorites() {
+        return favorites;
     }
 
     public int getDefaultPrice() {
@@ -249,20 +240,12 @@ public class Washer {
         this.availableBoxes = availableBoxes;
     }
 
-    public void setVotesCount(int votesCount) {
-        this.votesCount = votesCount;
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 
-    public void setCountOfFavourites(int countOfFavourites) {
-        this.countOfFavourites = countOfFavourites;
-    }
-
-    public void setWorkHoursFrom(int workHoursFrom) {
-        this.workHoursFrom = workHoursFrom;
-    }
-
-    public void setWorkHoursTo(int workHoursTo) {
-        this.workHoursTo = workHoursTo;
+    public void setFavorites(int favorites) {
+        this.favorites = favorites;
     }
 
     public void setDefaultPrice(int defaultPrice) {
@@ -299,5 +282,13 @@ public class Washer {
 
     public void setRoundTheClock(boolean roundTheClock) {
         this.roundTheClock = roundTheClock;
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 }

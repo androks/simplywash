@@ -285,9 +285,9 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
         mLocation.setText(mWasher.getLocation());
         mPhone.setText(mWasher.getPhone());
-        mOpeningHours.setText(Utils.workHoursToString(mWasher));
+        mOpeningHours.setText(mWasher.getSchedule().getScheduleForToday());
         mBoxesStatus.setText(String.valueOf(mWasher.getAvailableBoxes()));
-        mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
+        mCountOfFavourites.setText(String.valueOf(mWasher.getFavorites()));
 
         if (Utils.isWasherOpenAtTheTime(mWasher)) {
             mIsWasherOpen.setText("Open");
@@ -321,7 +321,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     private void setRatings() {
         mRatingBar.setRating(mWasher.getRating());
         mRatingText.setText(String.valueOf(mWasher.getRating()));
-        mCountOfRates.setText(String.valueOf(mWasher.getVotesCount()));
+        mCountOfRates.setText(String.valueOf(mWasher.getVotes()));
     }
 
 
@@ -434,7 +434,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                         WasherActivity.this,
                         FLAG_IS_FAVOURITE ? "Add to favourite" : "Removed from favourite",
                         Toast.LENGTH_SHORT).show();
-                mCountOfFavourites.setText(String.valueOf(mWasher.getCountOfFavourites()));
+                mCountOfFavourites.setText(String.valueOf(mWasher.getFavorites()));
             }
         });
     }
@@ -468,9 +468,9 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 }
 
                 if (oldRating <= 0.1f)
-                    washer.setRating(((washer.getRating() * washer.getVotesCount()) + review.rating) / washer.increaseCountOfVotes());
+                    washer.setRating(((washer.getRating() * washer.getVotes()) + review.rating) / washer.increaseCountOfVotes());
                 else
-                    washer.setRating(((washer.getRating() * washer.getVotesCount() - oldRating) + review.rating) / washer.getVotesCount());
+                    washer.setRating(((washer.getRating() * washer.getVotes() - oldRating) + review.rating) / washer.getVotes());
 
                 mWasher = washer;
                 // Set value and report transaction success

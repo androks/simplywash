@@ -89,10 +89,6 @@ public class Utils {
         return FirebaseDatabase.getInstance().getReference().child("orders").child(id);
     }
 
-    public static String workHoursToString(Washer washer){
-        return (washer.getWorkHoursFrom() + ":00" + " - " + washer.getWorkHoursTo() + ":00");
-    }
-
     public static String distanceDurationToString(Direction direction){
         return direction.distance.getText() + " " + "(" + direction.duration.getText() + ") ";
     }
@@ -106,8 +102,22 @@ public class Utils {
             return true;
         Calendar now = Calendar.getInstance();
         int hours = now.get(Calendar.HOUR_OF_DAY);
+        String workingHours = washer.getSchedule().getScheduleForToday();
+        String[] temp = workingHours.split("-");
+        if(temp.length <= 0)
+            return false;
+        int workHoursFrom = getHourFromString(temp[0]);
+        int workHoursTo = getHourFromString(temp[1]);
 
-        return hours >= washer.getWorkHoursFrom() && hours < washer.getWorkHoursTo();
+        return hours >= workHoursFrom && hours < workHoursTo;
+    }
+
+    private static int getHourFromString(String time){
+        try{
+            return Integer.valueOf(time.split(":")[0]);
+        }catch (NumberFormatException e){
+            return 0;
+        }
     }
 
     public static boolean isWasherFits(Washer washer,

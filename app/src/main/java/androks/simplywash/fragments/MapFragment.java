@@ -653,10 +653,10 @@ public class MapFragment extends Fragment implements
         mName.setText(mShowingWasher.getName());
         mRatingBar.setRating(mShowingWasher.getRating());
         mRatingText.setText(String.format(Locale.getDefault(), "%.1f", mShowingWasher.getRating()));
-        mCountOfRates.setText(String.format(Locale.getDefault(), "(%d)", mShowingWasher.getVotesCount()));
+        mCountOfRates.setText(String.format(Locale.getDefault(), "(%d)", mShowingWasher.getVotes()));
         mLocation.setText(mShowingWasher.getLocation());
         mPhone.setText(mShowingWasher.getPhone());
-        mOpeningHours.setText(Utils.workHoursToString(mShowingWasher));
+        mOpeningHours.setText(mShowingWasher.getSchedule().getScheduleForToday());
         mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
 
         mWC.setColorFilter(mResources

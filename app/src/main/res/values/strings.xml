@@ -68,7 +68,7 @@
     <string name="title_activity_price">Price list</string>
     <string name="title_activity_filters">FiltersActivity</string>
     <string name="apply">Apply</string>
-    <string name="only_favourites">Only favourites</string>
+    <string name="only_favourites">Only favorites</string>
     <string name="services">Services</string>
     <string name="reset">Reset</string>
 
