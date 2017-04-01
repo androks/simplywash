@@ -12,7 +12,7 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-import androks.simplywash.Constants;
+import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
 import butterknife.BindArray;
 import butterknife.BindView;

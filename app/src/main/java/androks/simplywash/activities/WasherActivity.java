@@ -35,9 +35,10 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-import androks.simplywash.Constants;
+import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
-import androks.simplywash.Utils;
+import androks.simplywash.utils.DepthPageTransformer;
+import androks.simplywash.utils.Utils;
 import androks.simplywash.adapters.PhotosPagerAdapter;
 import androks.simplywash.dialogs.AddReviewDialog;
 import androks.simplywash.dialogs.ServicesDialog;
@@ -166,6 +167,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mPhotosViewPager.setAdapter(
                 new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences)
         );
+        mPhotosViewPager.setPageTransformer(true, new DepthPageTransformer());
         mImagesIndicator.setViewPager(mPhotosViewPager);
     }
 

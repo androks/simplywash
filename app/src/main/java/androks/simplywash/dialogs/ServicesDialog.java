@@ -11,7 +11,7 @@ import android.widget.Switch;
 
 import androks.simplywash.models.Washer;
 import androks.simplywash.R;
-import androks.simplywash.Utils;
+import androks.simplywash.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

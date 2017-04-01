@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import androks.simplywash.Constants;
+import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
 import androks.simplywash.fragments.MapFragment;
 import androks.simplywash.fragments.ShareFragment;

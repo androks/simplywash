@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import androks.simplywash.Constants;
+import androks.simplywash.utils.Constants;
 
 /**
  * Created by androks on 11/17/2016.

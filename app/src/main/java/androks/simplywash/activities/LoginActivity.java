@@ -17,7 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-import androks.simplywash.Constants;
+import androks.simplywash.utils.Constants;
 import androks.simplywash.models.User;
 import androks.simplywash.R;
 import butterknife.BindView;

@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import androks.simplywash.adapters.PriceListRecyclerAdapter;
-import androks.simplywash.Constants;
+import androks.simplywash.utils.Constants;
 import androks.simplywash.models.Service;
 import androks.simplywash.R;
-import androks.simplywash.Utils;
+import androks.simplywash.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

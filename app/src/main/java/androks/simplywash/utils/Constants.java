@@ -1,4 +1,4 @@
-package androks.simplywash;
+package androks.simplywash.utils;
 
 /**
  * Created by androks on 3/3/2017.

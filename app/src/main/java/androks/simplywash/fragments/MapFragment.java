@@ -67,9 +67,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import androks.simplywash.Constants;
+import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
-import androks.simplywash.Utils;
+import androks.simplywash.utils.Utils;
 import androks.simplywash.activities.BaseActivity;
 import androks.simplywash.activities.FiltersActivity;
 import androks.simplywash.activities.WasherActivity;

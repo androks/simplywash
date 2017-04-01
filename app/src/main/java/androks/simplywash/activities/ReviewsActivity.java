@@ -17,12 +17,12 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
-import androks.simplywash.Constants;
+import androks.simplywash.utils.Constants;
 import androks.simplywash.dialogs.AddReviewDialog;
 import androks.simplywash.models.Review;
 import androks.simplywash.models.Washer;
 import androks.simplywash.R;
-import androks.simplywash.Utils;
+import androks.simplywash.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

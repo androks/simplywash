@@ -1,4 +1,4 @@
-package androks.simplywash;
+package androks.simplywash.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,6 +11,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.Calendar;
 import java.util.List;
 
+import androks.simplywash.R;
 import androks.simplywash.directionsApi.Data.Direction;
 import androks.simplywash.models.Washer;
 
