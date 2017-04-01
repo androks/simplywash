@@ -30,4 +30,5 @@ public class Constants {
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 11;
     public static final int REQUEST_FILTER = 254;
     public static final int REQUEST_RATING_CHANGED = 453;
+    public static final String CURRENT_FRAGMENT = "CURRENT_FRAGMENT";
 }

@@ -4,10 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -31,11 +31,21 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
 
-    public static final String CURRENT_FRAGMENT = "CURRENT_FRAGMENT";
+    // tags used to attach the fragments
+    private static final String TAG_MAP = "map";
+    private static final String TAG_SHARE = "share";
+    public static String CURRENT_TAG = TAG_MAP;
+
+    // index to identify current nav menu item
+    public static int navItemIndex = 0;
+
+    private Fragment mCurrentFragment;
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.nav_view) NavigationView mNVDrawer;
+
+    private Handler mHandler;
 
     private TextView mPhoneTextView;
     private TextView mCityTextView;
@@ -43,11 +53,6 @@ public class MainActivity extends BaseActivity {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private SharedPreferences mSharedPrefs;
-
-    private int mCurrentFragment = 0;
-
-    private Fragment mapFragment;
-    private Fragment shareFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,17 +66,143 @@ public class MainActivity extends BaseActivity {
 
         setUpToolbar();
 
+        mHandler = new Handler();
+
+        // load nav menu header data
+        loadNavHeader();
+
+        // initializing navigation menu
+        setUpNavigationView();
+
+        if (savedInstanceState == null) {
+            navItemIndex = 0;
+            CURRENT_TAG = TAG_MAP;
+            loadHomeFragment();
+        }
+    }
+
+    private void loadNavHeader() {
         setUpHeaderView();
-
         getSharedPrefData();
+    }
 
-        initializeFragments();
+    private void setUpNavigationView() {
+        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
+        mNVDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
-        mDrawerToggle = setupDrawerToggle();
-        mDrawer.addDrawerListener(mDrawerToggle);
-        setupDrawerContent(mNVDrawer);
+            // This method will trigger on item Click of navigation menu
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
 
-        setCurrentFragment();
+                //Check to see which item was being clicked and perform appropriate action
+                switch (menuItem.getItemId()) {
+                    //Replacing the main content with ContentFragment Which is our Inbox View;
+                    case R.id.nav_map:
+                        navItemIndex = 0;
+                        CURRENT_TAG = TAG_MAP;
+                        break;
+                    case R.id.share:
+                        navItemIndex = 1;
+                        CURRENT_TAG = TAG_SHARE;
+                        break;
+                    default:
+                        navItemIndex = 0;
+                }
+
+                //Checking if the item is in checked state or not, if not make it in checked state
+                if (menuItem.isChecked()) {
+                    menuItem.setChecked(false);
+                } else {
+                    menuItem.setChecked(true);
+                }
+                menuItem.setChecked(true);
+
+                loadHomeFragment();
+
+                return true;
+            }
+        });
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawer,
+                mToolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        //Setting the actionbarToggle to drawer layout
+        mDrawer.setDrawerListener(actionBarDrawerToggle);
+
+        //calling sync state is necessary or else your hamburger icon wont show up
+        actionBarDrawerToggle.syncState();
+    }
+
+    private void selectNavMenu() {
+        mNVDrawer.getMenu().getItem(navItemIndex).setChecked(true);
+    }
+
+    /***
+     * Returns respected fragment that user
+     * selected from navigation menu
+     */
+    private void loadHomeFragment() {
+        // selecting appropriate nav menu item
+        selectNavMenu();
+
+        // if user select the current navigation menu again, don't do anything
+        // just close the navigation drawer
+        if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
+            mDrawer.closeDrawers();
+            return;
+        }
+
+        // Sometimes, when fragment has huge data, screen seems hanging
+        // when switching between navigation menus
+        // So using runnable, the fragment is loaded with cross fade effect
+        // This effect can be seen in GMail app
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // update the main content by replacing fragments
+                mCurrentFragment = getHomeFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.content_main, mCurrentFragment, CURRENT_TAG);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        };
+
+        mHandler.post(mPendingRunnable);
+
+        //Closing drawer on item click
+        mDrawer.closeDrawers();
+
+        // refresh toolbar menu
+        invalidateOptionsMenu();
+    }
+
+    private Fragment getHomeFragment() {
+        switch (navItemIndex) {
+            case 0:
+                return new MapFragment();
+            case 1:
+                return new ShareFragment();
+            default:
+                return new MapFragment();
+        }
     }
 
     private void getSharedPrefData() {
@@ -81,11 +212,6 @@ public class MainActivity extends BaseActivity {
             mPhoneTextView.setText(mCurrentPhone);
         if(mCurrentCity != null)
             mCityTextView.setText(mCurrentCity);
-    }
-
-    private void initializeFragments() {
-        mapFragment = new MapFragment();
-        shareFragment = new ShareFragment();
     }
 
     private void setUpToolbar() {
@@ -119,23 +245,16 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(CURRENT_FRAGMENT, mCurrentFragment);
+        outState.putInt(Constants.CURRENT_FRAGMENT, navItemIndex);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if(savedInstanceState != null){
-            mCurrentFragment = savedInstanceState.getInt(CURRENT_FRAGMENT);
+            navItemIndex = savedInstanceState.getInt(Constants.CURRENT_FRAGMENT);
         }
         super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
     }
 
     @Override
@@ -145,71 +264,11 @@ public class MainActivity extends BaseActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid mToolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(
-                this,
-                mDrawer,
-                mToolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-        ){
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
-    }
-
-    public void selectDrawerItem(MenuItem menuItem) {
-        boolean changeFragment = false;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_map:
-                changeFragment = (mCurrentFragment == 0);
-                mCurrentFragment = 0;
-                break;
-
-            case R.id.share:
-                changeFragment = (mCurrentFragment == 1);
-                mCurrentFragment = 1;
-                break;
-        }
-
-        if(!changeFragment)
-            setCurrentFragment();
-
-        // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }
-
     @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
-        }else if(mCurrentFragment == 0) {
+        }else if(navItemIndex == 0) {
             SlidingUpPanelLayout slidingUpPanelLayout =
                     (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
             if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)
@@ -240,15 +299,10 @@ public class MainActivity extends BaseActivity {
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(getmCurrentFragment() != null)
-            getmCurrentFragment().onActivityResult(requestCode, resultCode, data);
+        if(mCurrentFragment != null)
+            mCurrentFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -256,40 +310,5 @@ public class MainActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.map_menu, menu);
         return true;
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    private void setCurrentFragment(){
-        Fragment fragment;
-
-        switch (mCurrentFragment) {
-            case 0:
-                fragment = mapFragment;
-                break;
-            case 1:
-                fragment = shareFragment;
-                break;
-            default:
-                fragment = mapFragment;
-                break;
-        }
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_main, fragment).commit();
-    }
-
-    private Fragment getmCurrentFragment(){
-        switch (mCurrentFragment) {
-            case 0:
-                return mapFragment;
-            case 1:
-                return shareFragment;
-            default:
-                return null;
-        }
     }
 }
