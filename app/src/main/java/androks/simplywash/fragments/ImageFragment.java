@@ -1,6 +1,7 @@
 package androks.simplywash.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,9 +16,12 @@ import com.bumptech.glide.request.target.Target;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 
+import androks.simplywash.Constants;
 import androks.simplywash.R;
+import androks.simplywash.activities.PhotosActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -32,6 +36,7 @@ public class ImageFragment extends Fragment {
     private Unbinder unbinder;
 
     private StorageReference photoReference;
+    private int id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +67,20 @@ public class ImageFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.image)
+    public void viewAllImages(){
+        if(id >= 0 && !(getActivity() instanceof PhotosActivity)){
+            Intent intent = new Intent(getActivity(), PhotosActivity.class);
+            intent.putExtra(Constants.WASHER_ID, photoReference.getParent().getName());
+            intent.putExtra(Constants.PHOTO_INDEX, id);
+            startActivity(intent);
+        }
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public void setImageReference(StorageReference ref){

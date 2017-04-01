@@ -7,12 +7,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
+        android:minHeight="300dp"
         android:layout_gravity="center"
         android:scaleType="centerCrop" />
 
     <ProgressBar
         android:id="@+id/progress"
-        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />

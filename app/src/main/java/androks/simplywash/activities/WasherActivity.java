@@ -11,6 +11,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
@@ -22,22 +23,21 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androks.simplywash.Constants;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
+import androks.simplywash.adapters.PhotosPagerAdapter;
 import androks.simplywash.dialogs.AddReviewDialog;
 import androks.simplywash.dialogs.ServicesDialog;
 import androks.simplywash.models.Review;
@@ -71,8 +71,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     @BindView(R.id.rating_text)
     TextView mRatingText;
 
-    @BindView(R.id.main_img)
-    ImageView mMainImage;
+    @BindView(R.id.image_slideshow)
+    ViewPager mPhotosViewPager;
 
     /**
      * Start binding washerInfo views
@@ -112,13 +112,10 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     private String mWasherId;
     private Washer mWasher;
-    private int mutedColor = R.attr.colorPrimary;
 
     private boolean FLAG_IS_FAVOURITE;
 
-    private String mPhotoUrls ;
-
-    private StorageReference mMainImageRef;
+    private List<StorageReference> mPhotoReferences = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +125,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         showProgressDialog();
 
         mWasherId = getIntent().getStringExtra(Constants.WASHER_ID);
-        mMainImageRef
-                = FirebaseStorage.getInstance().getReference().child("washer_images").child(mWasherId);
 
         checkForNotNullIntent();
 
@@ -137,20 +132,24 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
         initializeFavouriteFab();
 
-        downloadPhotos();
+        downloadPhotoReferences();
 
         downloadWasherInfo();
 
         downloadReviews();
     }
 
-    private void downloadPhotos() {
-        Utils.getPhotos(mWasherId).orderByKey().equalTo("0")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+    private void downloadPhotoReferences() {
+        Utils.getPhotos(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mPhotoUrls = dataSnapshot.getValue(new GenericTypeIndicator<List<String>>() {}).get(0);
-                loadPhotos();
+                List<String> mUrls = dataSnapshot.getValue(
+                        new GenericTypeIndicator<List<String>>() {}
+                );
+                for(String url: mUrls){
+                    mPhotoReferences.add(Utils.getPhotoStorageRef(mWasherId).child(url));
+                }
+                setUpViewPager();
             }
 
             @Override
@@ -158,6 +157,12 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
             }
         });
+    }
+
+    private void setUpViewPager() {
+        mPhotosViewPager.setAdapter(
+                new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences)
+        );
     }
 
     @Override
@@ -170,17 +175,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 }
                 break;
         }
-    }
-
-    private void loadPhotos() {
-        loadMainPhoto();
-    }
-
-    private void loadMainPhoto() {
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(mMainImageRef.child(mPhotoUrls))
-                .into(mMainImage);
     }
 
     private void initializeFavouriteFab() {
@@ -390,13 +384,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         dialogBuilder.show();
     }
 
-    @OnClick(R.id.main_img)
-    public void showAllPhotos(){
-        Intent intent = new Intent(WasherActivity.this, PhotosActivity.class);
-        intent.putExtra(Constants.WASHER_ID, mWasherId);
-        startActivity(intent);
-    }
-
     private void onFavouriteAdded() {
         Utils.getWasher(mWasherId).limitToFirst(1).getRef().runTransaction(new Transaction.Handler() {
             @Override
@@ -434,7 +421,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             }
         });
     }
-
 
     @OnClick(R.id.services)
     public void showServicesDialog() {

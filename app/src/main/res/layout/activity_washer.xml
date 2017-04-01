@@ -24,46 +24,52 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-            <ImageView
-                android:id="@+id/main_img"
+            <FrameLayout
+                android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:minHeight="300dp"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
+                android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_vertical"
-                android:layout_marginBottom="18dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginLeft="55dp"
-                android:layout_marginRight="64dp"
-                android:layout_marginStart="55dp"
-                android:orientation="horizontal"
-                app:layout_collapseMode="parallax">
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/image_slideshow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:keepScreenOn="true"
+                    app:layout_collapseMode="parallax"
+                    app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_favorite_white_24dp" />
-
-                <TextView
-                    android:id="@+id/favourites_count"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    tools:text="51" />
+                    android:layout_gravity="bottom|center_vertical"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginLeft="55dp"
+                    android:layout_marginRight="64dp"
+                    android:layout_marginStart="55dp"
+                    android:orientation="horizontal"
+                    app:layout_collapseMode="parallax">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/people_like_it" />
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/ic_favorite_white_24dp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/favourites_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        tools:text="51" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/people_like_it" />
+
+                </LinearLayout>
+            </FrameLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/animated_toolbar"

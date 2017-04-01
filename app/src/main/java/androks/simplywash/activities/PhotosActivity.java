@@ -1,8 +1,6 @@
 package androks.simplywash.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -22,7 +20,7 @@ import java.util.List;
 import androks.simplywash.Constants;
 import androks.simplywash.R;
 import androks.simplywash.Utils;
-import androks.simplywash.fragments.ImageFragment;
+import androks.simplywash.adapters.PhotosPagerAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,6 +37,7 @@ public class PhotosActivity extends AppCompatActivity {
      */
 
     private String mWasherId;
+    private int startId;
     private List<StorageReference> mPhotoReferences = new ArrayList<>();
 
     @Override
@@ -49,6 +48,7 @@ public class PhotosActivity extends AppCompatActivity {
         setUpToolbar();
 
         mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID);
+        startId = getIntent().getExtras().getInt(Constants.PHOTO_INDEX);
 
         downloadPhotoReferences();
     }
@@ -76,6 +76,7 @@ public class PhotosActivity extends AppCompatActivity {
     private void setUpViewPager() {
         mPhotosViewPager.setAdapter(new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences));
         mPhotosViewPager.setPageTransformer(true, new DepthPageTransformer());
+        mPhotosViewPager.setCurrentItem(startId);
     }
 
     private void setUpToolbar() {
@@ -94,31 +95,6 @@ public class PhotosActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
-    private class PhotosPagerAdapter extends FragmentStatePagerAdapter {
-        private List<StorageReference> mReferences;
-
-        public PhotosPagerAdapter(FragmentManager fm, List<StorageReference> references) {
-            super(fm);
-            mReferences = references;
-        }
-
-        @Override
-        public ImageFragment getItem(int position) {
-            ImageFragment fragment = new ImageFragment();
-            fragment.setImageReference(mReferences.get(position));
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            return mReferences.size();
-        }
     }
 
     public class DepthPageTransformer implements ViewPager.PageTransformer {
