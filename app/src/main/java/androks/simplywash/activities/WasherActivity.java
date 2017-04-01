@@ -54,73 +54,37 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     private static final int NUM_OF_REVIEWS = 3;
 
-    //Binding colors
-    @BindColor(R.color.green)
-    int green;
-    @BindColor(R.color.red)
-    int red;
-
-    // Binding general views
-    @BindView(R.id.animated_toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.favourite_fab)
-    FloatingActionButton mFavouritesFab;
-    @BindView(R.id.rates_count)
-    TextView mCountOfRates;
-    @BindView(R.id.rating_bar)
-    RatingBar mRatingBar;
-    @BindView(R.id.rating_text)
-    TextView mRatingText;
-
-    @BindView(R.id.image_slideshow)
-    ViewPager mPhotosViewPager;
-    @BindView(R.id.images_indicator)
-    CirclePageIndicator mImagesIndicator;
-
-    /**
-     * Start binding washerInfo views
-     */
-    @BindView(R.id.location)
-    TextView mLocation;
-    @BindView(R.id.phone)
-    TextView mPhone;
-    @BindView(R.id.schedule)
-    TextView mSchedule;
-    @BindView(R.id.boxes)
-    TextView mBoxes;
-    @BindView(R.id.favourites_count)
-    TextView mCountOfFavourites;
-    @BindView(R.id.description)
-    TextView mDescription;
-    @BindView(R.id.is_washer_open)
-    TextView mIsWasherOpen;
-
-    @BindView(R.id.wifi)
-    ImageView mWifi;
-    @BindView(R.id.coffee)
-    ImageView mCoffee;
-    @BindView(R.id.restRoom)
-    ImageView mRestRoom;
-    @BindView(R.id.grocery)
-    ImageView mGrocery;
-    @BindView(R.id.wc)
-    ImageView mWC;
-    @BindView(R.id.serviceStation)
-    ImageView mServiceStation;
-    @BindView(R.id.cardPayment)
-    ImageView mCardPayment;
-    /**
-     * End binding washerInfo views
-     */
+    @BindColor(R.color.green) int green;
+    @BindColor(R.color.red) int red;
+    @BindView(R.id.animated_toolbar) Toolbar mToolbar;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.favourite_fab) FloatingActionButton mFavouritesFab;
+    @BindView(R.id.rates_count) TextView mCountOfRates;
+    @BindView(R.id.rating_bar) RatingBar mRatingBar;
+    @BindView(R.id.rating_text) TextView mRatingText;
+    @BindView(R.id.image_slideshow) ViewPager mPhotosViewPager;
+    @BindView(R.id.images_indicator) CirclePageIndicator mImagesIndicator;
+    @BindView(R.id.location) TextView mLocation;
+    @BindView(R.id.phone) TextView mPhone;
+    @BindView(R.id.schedule) TextView mSchedule;
+    @BindView(R.id.boxes) TextView mBoxes;
+    @BindView(R.id.favourites_count) TextView mCountOfFavourites;
+    @BindView(R.id.description) TextView mDescription;
+    @BindView(R.id.is_washer_open) TextView mIsWasherOpen;
+    @BindView(R.id.wifi) ImageView mWifi;
+    @BindView(R.id.coffee) ImageView mCoffee;
+    @BindView(R.id.restRoom) ImageView mRestRoom;
+    @BindView(R.id.grocery) ImageView mGrocery;
+    @BindView(R.id.wc) ImageView mWC;
+    @BindView(R.id.serviceStation) ImageView mServiceStation;
+    @BindView(R.id.cardPayment) ImageView mCardPayment;
 
     private String mWasherId;
     private Washer mWasher;
 
-    private boolean FLAG_IS_FAVOURITE;
+    private boolean mFlagIsFavorite;
 
-    private boolean ratingHasChanged = false;
+    private boolean mRatingHasChanged = false;
 
     private List<StorageReference> mPhotoReferences = new ArrayList<>();
 
@@ -137,7 +101,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
         setUpToolbar();
 
-        initializeFavouriteFab();
+        checkIfFavourite();
 
         downloadPhotoReferences();
 
@@ -156,7 +120,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 for(String url: mUrls){
                     mPhotoReferences.add(Utils.getPhotoStorageRef(mWasherId).child(url));
                 }
-                setUpViewPager();
+                setUpPhotoViewPager();
             }
 
             @Override
@@ -168,12 +132,12 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @Override
     public void onBackPressed() {
-        if(ratingHasChanged)
+        if(mRatingHasChanged)
             setResult(Constants.RATING_CHANGED_CODE);
         super.onBackPressed();
     }
 
-    private void setUpViewPager() {
+    private void setUpPhotoViewPager() {
         mPhotosViewPager.setAdapter(
                 new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences)
         );
@@ -186,7 +150,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         switch (requestCode){
             case Constants.REQUEST_RATING_CHANGED:
                 if(resultCode == Constants.RATING_CHANGED_CODE) {
-                    ratingHasChanged = true;
+                    mRatingHasChanged = true;
                     downloadWasherInfo();
                     downloadReviews();
                 }
@@ -194,17 +158,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         }
     }
 
-    private void initializeFavouriteFab() {
+    private void checkIfFavourite() {
         Utils.getFavourites(getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        FLAG_IS_FAVOURITE = dataSnapshot.hasChild(mWasherId);
-                        mFavouritesFab.setImageResource(FLAG_IS_FAVOURITE ?
-                                R.drawable.ic_favorite_white_24dp :
-                                R.drawable.ic_favorite_border_white_24dp
-                        );
-                        mFavouritesFab.setVisibility(View.VISIBLE);
+                        mFlagIsFavorite = dataSnapshot.hasChild(mWasherId);
+                        initialFavoriteFab();
                     }
 
                     @Override
@@ -212,6 +172,14 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
                     }
                 });
+    }
+
+    private void initialFavoriteFab(){
+        mFavouritesFab.setImageResource(mFlagIsFavorite ?
+                R.drawable.ic_favorite_white_24dp :
+                R.drawable.ic_favorite_border_white_24dp
+        );
+        mFavouritesFab.setVisibility(View.VISIBLE);
     }
 
     private void downloadWasherInfo() {
@@ -230,8 +198,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
@@ -282,7 +250,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     }
 
     private void inflateView() {
-        collapsingToolbarLayout.setTitle(mWasher.getName());
+        mCollapsingToolbarLayout.setTitle(mWasher.getName());
 
         mLocation.setText(mWasher.getLocation());
         mPhone.setText(mWasher.getPhone());
@@ -290,15 +258,15 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mCountOfFavourites.setText(String.valueOf(mWasher.getFavorites()));
 
         if(mWasher.isRoundTheClock())
-            mSchedule.setText("Round the clock");
+            mSchedule.setText(R.string.round_the_clock);
         else
             mSchedule.setText(mWasher.getSchedule().getScheduleForToday());
 
         if (Utils.isWasherOpenAtTheTime(mWasher)) {
-            mIsWasherOpen.setText("Open");
+            mIsWasherOpen.setText(R.string.open);
             mIsWasherOpen.setTextColor(green);
         } else {
-            mIsWasherOpen.setText("Closed");
+            mIsWasherOpen.setText(R.string.closed);
             mIsWasherOpen.setTextColor(red);
         }
 
@@ -392,24 +360,24 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                         dialog.dismiss();
                     }
                 })
-                .setPositiveButton(FLAG_IS_FAVOURITE ?
+                .setPositiveButton(mFlagIsFavorite ?
                                 R.string.remove :
                                 R.string.add,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                FLAG_IS_FAVOURITE = !FLAG_IS_FAVOURITE;
-                                mFavouritesFab.setImageResource(FLAG_IS_FAVOURITE ?
+                                mFlagIsFavorite = !mFlagIsFavorite;
+                                mFavouritesFab.setImageResource(mFlagIsFavorite ?
                                         R.drawable.ic_favorite_white_24dp :
                                         R.drawable.ic_favorite_border_white_24dp
                                 );
                                 onFavouriteAdded();
                             }
                         })
-                .setMessage(FLAG_IS_FAVOURITE ?
-                        "Do you really wanna remove this washer to favourites?" :
-                        "Do you really wanna add this washer to favourites?")
-                .setTitle("Favourites");
+                .setMessage(mFlagIsFavorite ?
+                        R.string.request_remove_favorite :
+                        R.string.request_add_favorite)
+                .setTitle(R.string.confirmation);
         dialogBuilder.show();
     }
 
@@ -422,7 +390,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                     return Transaction.success(mutableData);
                 }
 
-                if (!FLAG_IS_FAVOURITE) {
+                if (!mFlagIsFavorite) {
                     // Unstar the post and remove self from stars
                     washer.decreaseCountOfFavourites();
                     Utils.getFavourites(getCurrentUser().getUid()).child(mWasherId).removeValue();
@@ -445,7 +413,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 Utils.getWasherInCity(getCurrentCity(), mWasher.getId()).setValue(mWasher);
                 Toast.makeText(
                         WasherActivity.this,
-                        FLAG_IS_FAVOURITE ? "Add to favourite" : "Removed from favourite",
+                        mFlagIsFavorite ? R.string.added_favorite : R.string.removed_favorite,
                         Toast.LENGTH_SHORT).show();
                 mCountOfFavourites.setText(String.valueOf(mWasher.getFavorites()));
             }
@@ -460,7 +428,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @Override
     public void onReviewAdded(final Review review, final float oldRating) {
-        ratingHasChanged = true;
+        mRatingHasChanged = true;
 
         showProgressDialog();
 
@@ -481,9 +449,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 }
 
                 if (oldRating <= 0.1f)
-                    washer.setRating(((washer.getRating() * washer.getVotes()) + review.rating) / washer.increaseCountOfVotes());
+                    washer.setRating(((washer.getRating() * washer.getVotes()) + review.rating)
+                            / washer.increaseCountOfVotes());
                 else
-                    washer.setRating(((washer.getRating() * washer.getVotes() - oldRating) + review.rating) / washer.getVotes());
+                    washer.setRating(
+                            ((washer.getRating() * washer.getVotes() - oldRating) + review.rating)
+                                    / washer.getVotes()
+                    );
 
                 mWasher = washer;
                 // Set value and report transaction success
@@ -498,7 +470,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
                 Utils.getWasherInCity(getCurrentCity(), mWasher.getId()).setValue(mWasher);
                 Toast.makeText(
                         WasherActivity.this,
-                        "Thanks for review",
+                        R.string.thanks_for_review,
                         Toast.LENGTH_SHORT).show();
                 downloadReviews();
                 setRatings();
@@ -510,7 +482,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     private void updateExpandedReviews(Review review) {
         if (!review.text.isEmpty()) {
             if (review.name.isEmpty())
-                review.name = "Anonym";
+                review.name = getResources().getString(R.string.anonym);
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).setValue(review);
         } else
             Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).removeValue();

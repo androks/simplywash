@@ -142,7 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setCancelable(true)
                 .setTitle(R.string.log_out)
-                .setMessage("Do you really wanna log out?")
+                .setMessage(R.string.request_logout)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

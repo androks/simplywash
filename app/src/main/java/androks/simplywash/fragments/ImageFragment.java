@@ -30,23 +30,23 @@ import butterknife.Unbinder;
 
 public class ImageFragment extends Fragment {
 
-    @BindView(R.id.image) ImageView image;
-    @BindView(R.id.progress) View progressBar;
+    @BindView(R.id.image) ImageView mImage;
+    @BindView(R.id.progress) View mProgressBar;
 
-    private Unbinder unbinder;
+    private Unbinder mUnbinder;
 
-    private StorageReference photoReference;
-    private int id;
+    private StorageReference mPhotoReference;
+    private int mId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.item_image, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
+        mUnbinder = ButterKnife.bind(this, rootView);
         Glide.with(this)
                 .using(new FirebaseImageLoader())
-                .load(photoReference)
+                .load(mPhotoReference)
                 .listener(new RequestListener<StorageReference, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, StorageReference model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -55,35 +55,35 @@ public class ImageFragment extends Fragment {
 
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, StorageReference model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        progressBar.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                         return false;
                     }
                 })
-                .into(image);
+                .into(mImage);
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     @OnClick(R.id.image)
     public void viewAllImages(){
-        if(id >= 0 && !(getActivity() instanceof PhotosActivity)){
+        if(mId >= 0 && !(getActivity() instanceof PhotosActivity)){
             Intent intent = new Intent(getActivity(), PhotosActivity.class);
-            intent.putExtra(Constants.WASHER_ID, photoReference.getParent().getName());
-            intent.putExtra(Constants.PHOTO_INDEX, id);
+            intent.putExtra(Constants.WASHER_ID, mPhotoReference.getParent().getName());
+            intent.putExtra(Constants.PHOTO_INDEX, mId);
             startActivity(intent);
         }
     }
 
     public void setId(int id){
-        this.id = id;
+        this.mId = id;
     }
 
     public void setImageReference(StorageReference ref){
-        photoReference = ref;
+        mPhotoReference = ref;
     }
 }

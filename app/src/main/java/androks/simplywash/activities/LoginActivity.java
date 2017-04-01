@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.digits.sdk.android.AuthCallback;
@@ -17,21 +16,21 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-import androks.simplywash.utils.Constants;
-import androks.simplywash.models.User;
 import androks.simplywash.R;
+import androks.simplywash.models.User;
+import androks.simplywash.utils.Constants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
+
+    @BindView(R.id.auth_button) DigitsAuthButton mAuthButton;
 
     private AuthCallback authCallback;
 
     private String email;
     private String pass;
     private String phone;
-
-    @BindView(R.id.auth_button) DigitsAuthButton mAuthButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +39,10 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         implementAuthCallback();
+        initializeAuthButton();
+    }
+
+    private void initializeAuthButton() {
         mAuthButton.setCallback(authCallback);
         mAuthButton.setAuthTheme(R.style.DigitsTheme);
         mAuthButton.performClick();
@@ -97,15 +100,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void writeUserToDatabase() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if(getCurrentUser() != null) {
+            String uid = getCurrentUser().getUid();
             FirebaseDatabase.getInstance().getReference().child("users").child(uid)
                     .setValue(new User(phone)).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Toast.makeText(
                             LoginActivity.this,
-                            "Login successful with \n" + phone,
+                            R.string.login_successful,
                             Toast.LENGTH_SHORT).show();
                 }
             });

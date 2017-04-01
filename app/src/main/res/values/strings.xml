@@ -112,4 +112,21 @@
     <string name="map">Map</string>
     <string name="share_app_request">Please share our application</string>
     <string name="only_open">Only open</string>
+    <string name="login_successful">Login successful</string>
+    <string name="title_activity_share">Share</string>
+    <string name="thanks_for_review">Thanks for review</string>
+    <string name="anonym">Anonym</string>
+    <string name="request_logout">Do you really want to log out?</string>
+    <string name="round_the_clock">Round the clock</string>
+    <string name="open">Open</string>
+    <string name="closed">Closed</string>
+    <string name="request_remove_favorite">Do you really wanna remove this washer from favourites?</string>
+    <string name="request_add_favorite">Do you really wanna add this washer to favourites?</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="added_favorite">Added to ffavorites</string>
+    <string name="removed_favorite">Removed from favourites</string>
+    <string name="nearest_was_found">The nearest washer was find</string>
+    <string name="no_washers_found">No washers found</string>
+    <string name="disconected">Disconnected. Please re-connect.</string>
+    <string name="network_lost" >Network lost. Please re-connect.</string>
 </resources>

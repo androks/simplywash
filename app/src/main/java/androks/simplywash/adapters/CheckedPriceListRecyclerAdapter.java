@@ -53,7 +53,7 @@ public class CheckedPriceListRecyclerAdapter extends
         final Service service = mValues.get(position);
         setItemSelected(holder, false);
         holder.name.setText(service.getName());
-        holder.price.setText(String.valueOf(service.getPrice() + " UAH"));
+        holder.price.setText(String.valueOf(service.getPrice()));
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

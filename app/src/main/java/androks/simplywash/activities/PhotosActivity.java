@@ -39,7 +39,7 @@ public class PhotosActivity extends AppCompatActivity {
      */
 
     private String mWasherId;
-    private int startId;
+    private int mStartId;
     private List<StorageReference> mPhotoReferences = new ArrayList<>();
 
     @Override
@@ -50,7 +50,7 @@ public class PhotosActivity extends AppCompatActivity {
         setUpToolbar();
 
         mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID);
-        startId = getIntent().getExtras().getInt(Constants.PHOTO_INDEX);
+        mStartId = getIntent().getExtras().getInt(Constants.PHOTO_INDEX);
 
         downloadPhotoReferences();
     }
@@ -59,10 +59,10 @@ public class PhotosActivity extends AppCompatActivity {
         Utils.getPhotos(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> mUrls = dataSnapshot.getValue(
+                List<String> urls = dataSnapshot.getValue(
                         new GenericTypeIndicator<List<String>>() {}
                 );
-                for(String url: mUrls){
+                for(String url: urls){
                     mPhotoReferences.add(Utils.getPhotoStorageRef(mWasherId).child(url));
                 }
                 setUpViewPager();
@@ -78,7 +78,7 @@ public class PhotosActivity extends AppCompatActivity {
     private void setUpViewPager() {
         mPhotosViewPager.setAdapter(new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences));
         mPhotosViewPager.setPageTransformer(true, new DepthPageTransformer());
-        mPhotosViewPager.setCurrentItem(startId);
+        mPhotosViewPager.setCurrentItem(mStartId);
         mPhotosIndicator.setViewPager(mPhotosViewPager);
     }
 

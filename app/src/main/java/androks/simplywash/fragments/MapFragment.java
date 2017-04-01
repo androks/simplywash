@@ -52,7 +52,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -68,18 +67,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import androks.simplywash.dialogs.ScheduleDialog;
-import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
-import androks.simplywash.utils.Utils;
 import androks.simplywash.activities.BaseActivity;
 import androks.simplywash.activities.FiltersActivity;
 import androks.simplywash.activities.WasherActivity;
+import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.dialogs.ServicesDialog;
 import androks.simplywash.directionsApi.Data.Direction;
 import androks.simplywash.directionsApi.DirectionsManager;
 import androks.simplywash.models.CameraPosition;
 import androks.simplywash.models.Washer;
+import androks.simplywash.utils.Constants;
+import androks.simplywash.utils.Utils;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -114,61 +113,32 @@ public class MapFragment extends Fragment implements
      **/
 
     //Binding colors
-    @BindColor(R.color.green)
-    int green;
-    @BindColor(R.color.red)
-    int red;
+    @BindColor(R.color.green) int green;
+    @BindColor(R.color.red) int red;
+    @BindColor(R.color.colorAccent) int colorAccent;
+    @BindColor(android.R.color.black) int colorDark;
+    @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
+    @BindView(R.id.sliding_layout) SlidingUpPanelLayout mSlidingLayout;
+    @BindView(R.id.name) TextView mName;
+    @BindView(R.id.rating_bar) RatingBar mRatingBar;
+    @BindView(R.id.rating_text) TextView mRatingText;
+    @BindView(R.id.count_of_rates) TextView mCountOfRates;
+    @BindView(R.id.location) TextView mLocation;
+    @BindView(R.id.phone) TextView mPhone;
+    @BindView(R.id.schedule) TextView mSchedule;
+    @BindView(R.id.default_price) TextView mDefaultPrice;
+    @BindView(R.id.is_washer_open) TextView mIsWasherOpen;
+    @BindView(R.id.duration) TextView mDuration;
+    @BindView(R.id.wifi) ImageView mWifi;
+    @BindView(R.id.coffee) ImageView mCoffee;
+    @BindView(R.id.restRoom) ImageView mRestRoom;
+    @BindView(R.id.grocery) ImageView mGrocery;
+    @BindView(R.id.wc) ImageView mWC;
+    @BindView(R.id.serviceStation) ImageView mServiceStation;
+    @BindView(R.id.cardPayment) ImageView mCardPayment;
+    @BindView(R.id.fab_location_settings) FloatingActionButton mMyLocationFab;
 
-    @BindView(R.id.progress_horizontal)
-    ProgressBar mProgressBar;
-    @BindView(R.id.sliding_layout)
-    SlidingUpPanelLayout mSlidingLayout;
-
-    @BindView(R.id.name)
-    TextView mName;
-    @BindView(R.id.rating_bar)
-    RatingBar mRatingBar;
-    @BindView(R.id.rating_text)
-    TextView mRatingText;
-    @BindView(R.id.count_of_rates)
-    TextView mCountOfRates;
-    @BindView(R.id.location)
-    TextView mLocation;
-    @BindView(R.id.phone)
-    TextView mPhone;
-    @BindView(R.id.schedule)
-    TextView mSchedule;
-    @BindView(R.id.default_price)
-    TextView mDefaultPrice;
-    @BindView(R.id.is_washer_open)
-    TextView mIsWasherOpen;
-
-    @BindView(R.id.duration)
-    TextView mDuration;
-
-    @BindView(R.id.wifi)
-    ImageView mWifi;
-    @BindView(R.id.coffee)
-    ImageView mCoffee;
-    @BindView(R.id.restRoom)
-    ImageView mRestRoom;
-    @BindView(R.id.grocery)
-    ImageView mGrocery;
-    @BindView(R.id.wc)
-    ImageView mWC;
-    @BindView(R.id.serviceStation)
-    ImageView mServiceStation;
-    @BindView(R.id.cardPayment)
-    ImageView mCardPayment;
-
-    @BindView(R.id.fab_location_settings)
-    FloatingActionButton mMyLocationFab;
-
-    @BindColor(R.color.colorAccent)
-    int colorAccent;
-    @BindColor(android.R.color.black)
-    int colorDark;
-    private Unbinder unbinder;
+    private Unbinder mUnbinder;
     /** End bindings  **/
 
     /**
@@ -190,8 +160,6 @@ public class MapFragment extends Fragment implements
     private static Resources mResources;
     private static FirebaseUser mUser;
 
-    //Polyline list using as buffer to build directions
-    private List<Polyline> mPolylinePaths = new ArrayList<>();
     private Washer mShowingWasher;
     private Washer mTheNearestFreeWasher;
     public LatLng mCurrentLocation;
@@ -214,7 +182,7 @@ public class MapFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
+        mUnbinder = ButterKnife.bind(this, rootView);
         mCurrentCity = ((BaseActivity) getActivity()).getCurrentCity();
         mWashersReference = Utils.getWashersInCity(mCurrentCity);
         showProgress();
@@ -296,13 +264,7 @@ public class MapFragment extends Fragment implements
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(
-                        mContext,
-                        "Error while download\n Check your internet connection",
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
@@ -342,18 +304,13 @@ public class MapFragment extends Fragment implements
     @Override
     public void onDetach() {
         mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-        //unbinder.unbind();
+        mUnbinder.unbind();
         super.onDetach();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Do something that differs the Activity's menu here
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    public MapFragment newInstance(){
-        return new MapFragment();
     }
 
     @Override
@@ -376,15 +333,18 @@ public class MapFragment extends Fragment implements
 
     @OnClick(R.id.fab_find_the_nearest_washer)
     public void navigateToTheNearestWasher() {
+        if(mWashersList == null || mWashersList.isEmpty()) {
+            Toast.makeText(mContext, R.string.no_washers_found, Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (mTheNearestFreeWasher != null) {
             showWasher(mMarkersList.get(mTheNearestFreeWasher.getId()));
             FLAG_FIND_NEAREST_WASHER = false;
-            Toast.makeText(mContext, "The nearest washer was find", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.nearest_was_found, Toast.LENGTH_SHORT).show();
         } else {
             FLAG_FIND_NEAREST_WASHER = true;
             checkLocationSettings();
         }
-
     }
 
     @OnClick(R.id.moreBtn)
@@ -679,15 +639,15 @@ public class MapFragment extends Fragment implements
         mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
 
         if(mShowingWasher.isRoundTheClock())
-            mSchedule.setText("Round the clock");
+            mSchedule.setText(R.string.round_the_clock);
         else
             mSchedule.setText(mShowingWasher.getSchedule().getScheduleForToday());
 
         if (Utils.isWasherOpenAtTheTime(mShowingWasher)) {
-            mIsWasherOpen.setText("Open");
+            mIsWasherOpen.setText(R.string.open);
             mIsWasherOpen.setTextColor(green);
         } else {
-            mIsWasherOpen.setText("Closed");
+            mIsWasherOpen.setText(R.string.closed);
             mIsWasherOpen.setTextColor(red);
         }
 
@@ -727,9 +687,9 @@ public class MapFragment extends Fragment implements
     @Override
     public void onConnectionSuspended(int i) {
         if (i == CAUSE_SERVICE_DISCONNECTED) {
-            Toast.makeText(mContext, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.disconected, Toast.LENGTH_SHORT).show();
         } else if (i == CAUSE_NETWORK_LOST) {
-            Toast.makeText(mContext, "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.network_lost, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -61,16 +61,20 @@ public class ChooseCityActivity extends BaseActivity {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
-                        SharedPreferences.Editor edit = sp.edit();
-                        edit.putString(Constants.CITY_PREF, model);
-                        edit.apply();
+                        selectCity(model);
                         startActivity(new Intent(ChooseCityActivity.this, MainActivity.class));
                         finish();
                     }
                 });
             }
         });
+    }
+
+    private void selectCity(String city) {
+        SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putString(Constants.CITY_PREF, city);
+        edit.apply();
     }
 
     private void hideProgress(){

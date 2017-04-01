@@ -12,15 +12,15 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import androks.simplywash.utils.Constants;
-import androks.simplywash.models.Review;
 import androks.simplywash.R;
+import androks.simplywash.activities.BaseActivity;
+import androks.simplywash.models.Review;
+import androks.simplywash.utils.Constants;
 import androks.simplywash.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +66,7 @@ public class AddReviewDialog extends AppCompatDialogFragment{
         Bundle bundle = getArguments();
         mReviewReference = Utils.getUserReview(
                 bundle.getString(Constants.WASHER_ID),
-                FirebaseAuth.getInstance().getCurrentUser().getUid()
+                ((BaseActivity)getActivity()).getCurrentUser().getUid()
         );
         uploadReview();
     }

@@ -29,16 +29,17 @@ import butterknife.ButterKnife;
 
 public class PriceActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.progressBar) View progressBar;
-    @BindView(R.id.recyclerLV) RecyclerView recyclerView;
-    @BindView(R.id.carTypesSpinner) Spinner carTypesSpinner;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.progressBar) View mProgressBar;
+    @BindView(R.id.recyclerLV) RecyclerView mRecyclerView;
+    @BindView(R.id.carTypesSpinner) Spinner mCarTypesSpinner;
 
-    private String washerId;
-    private Map<String, Map<String, Service>> priceList;
-    private List<Service> showingPrices = new ArrayList<>();
+    private String mWasherId;
+    private Map<String, Map<String, Service>> mPriceList;
+    private List<Service> mShowingPrices = new ArrayList<>();
+    List<String> mCarTypes = new ArrayList<>();
 
-    private PriceListRecyclerAdapter adapter;
+    private PriceListRecyclerAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,22 +48,24 @@ public class PriceActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         showProgress();
 
-        washerId = getIntent().getExtras().getString(Constants.WASHER_ID);
+        mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID);
 
         setUpToolbar();
         downloadPriceList();
     }
 
     private void downloadPriceList() {
-        Utils.getPricesFor(washerId).addListenerForSingleValueEvent(new ValueEventListener() {
+        Utils.getPricesFor(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
-                    priceList = dataSnapshot.getValue(
+                    mPriceList = dataSnapshot.getValue(
                             new GenericTypeIndicator<Map<String, Map<String, Service>>>() {}
                     );
+                    initializeStartValues();
                     setUpSpinner();
                     setUpRecyclerView();
+                    hideProgress();
                 }
             }
 
@@ -73,21 +76,26 @@ public class PriceActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeStartValues() {
+        mCarTypes.addAll(mPriceList.keySet());
+        mShowingPrices.addAll(mPriceList.get(mCarTypes.get(0)).values());
+    }
+
     private void setUpSpinner() {
-        List<String> carTypes = new ArrayList<>();
-        carTypes.addAll(priceList.keySet());
-        carTypesSpinner.setAdapter(new ArrayAdapter<>(
+        mCarTypesSpinner.setAdapter(new ArrayAdapter<>(
                 this,
                 R.layout.spinner_dropdown_toolbar_item,
-                carTypes)
+                mCarTypes)
         );
-        carTypesSpinner.setSelection(0);
-        carTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mCarTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showingPrices.clear();
-                showingPrices.addAll(priceList.get(carTypesSpinner.getSelectedItem()).values());
-                adapter.notifyDataSetChanged();
+                mShowingPrices.clear();
+                String carType = (String) mCarTypesSpinner.getSelectedItem();
+                if(carType != null) {
+                    mShowingPrices.addAll(mPriceList.get(carType).values());
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -98,35 +106,33 @@ public class PriceActivity extends AppCompatActivity {
     }
 
     private void setUpRecyclerView() {
-        showingPrices.addAll(priceList.get(carTypesSpinner.getSelectedItem()).values());
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PriceListRecyclerAdapter(showingPrices);
-        recyclerView.setAdapter(adapter);
-        hideProgress();
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new PriceListRecyclerAdapter(mShowingPrices);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
         if(getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Service list");
+            getSupportActionBar().setTitle(R.string.title_activity_price);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
     private void showProgress() {
-        carTypesSpinner.setEnabled(false);
-        progressBar.setVisibility(View.VISIBLE);
+        mCarTypesSpinner.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress() {
-        carTypesSpinner.setEnabled(true);
-        progressBar.setVisibility(View.GONE);
+        mCarTypesSpinner.setEnabled(true);
+        mProgressBar.setVisibility(View.GONE);
     }
 }

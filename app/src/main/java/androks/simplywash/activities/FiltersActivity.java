@@ -2,7 +2,6 @@ package androks.simplywash.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,23 +11,20 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
+import androks.simplywash.utils.Constants;
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class FiltersActivity extends AppCompatActivity {
+public class FiltersActivity extends BaseActivity {
 
     @BindArray(R.array.priceCategoriesInt) int[] priceCategoriesInt;
-
     @BindView(R.id.toolbar) Toolbar toolbar;
-
     @BindView(R.id.onlyFavouritesSwitch) Switch mOnlyFavourites;
     @BindView(R.id.priceCategorySpinner) Spinner mPriceCategory;
     @BindView(R.id.rate) RatingBar mRatingBar;
-
     @BindView(R.id.wifi_switch) Switch mWifiSwitch;
     @BindView(R.id.coffee_switch) Switch mCoffeeSwitch;
     @BindView(R.id.restRoom_switch) Switch mRestRoomSwitch;

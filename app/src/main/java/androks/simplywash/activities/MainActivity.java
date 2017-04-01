@@ -31,6 +31,12 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
 
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.nav_view) NavigationView mNVDrawer;
+    private TextView mPhoneTextView;
+    private TextView mCityTextView;
+
     // tags used to attach the fragments
     private static final String TAG_MAP = "map";
     private static final String TAG_SHARE = "share";
@@ -41,16 +47,9 @@ public class MainActivity extends BaseActivity {
 
     private Fragment mCurrentFragment;
 
-    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.nav_view) NavigationView mNVDrawer;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     private Handler mHandler;
-
-    private TextView mPhoneTextView;
-    private TextView mCityTextView;
-
-    private ActionBarDrawerToggle mDrawerToggle;
 
     private SharedPreferences mSharedPrefs;
 
@@ -96,7 +95,7 @@ public class MainActivity extends BaseActivity {
 
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
-                    //Replacing the main content with ContentFragment Which is our Inbox View;
+                    //Replacing the main mContent with ContentFragment Which is our Inbox View;
                     case R.id.nav_map:
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_MAP;
@@ -175,12 +174,13 @@ public class MainActivity extends BaseActivity {
         Runnable mPendingRunnable = new Runnable() {
             @Override
             public void run() {
-                // update the main content by replacing fragments
+                // update the main mContent by replacing fragments
                 mCurrentFragment = getHomeFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out);
                 fragmentTransaction.replace(R.id.content_main, mCurrentFragment, CURRENT_TAG);
+                setToolbarTitle();
                 fragmentTransaction.commitAllowingStateLoss();
             }
         };
@@ -190,8 +190,20 @@ public class MainActivity extends BaseActivity {
         //Closing drawer on item click
         mDrawer.closeDrawers();
 
-        // refresh toolbar menu
+        // refresh mToolbar menu
         invalidateOptionsMenu();
+    }
+
+    private void setToolbarTitle() {
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar == null)
+            return;
+        switch (navItemIndex){
+            case 0:
+                actionBar.setTitle(R.string.title_activity_washers_map);
+            case 1:
+                actionBar.setTitle(R.string.title_activity_share);
+        }
     }
 
     private Fragment getHomeFragment() {
@@ -269,17 +281,21 @@ public class MainActivity extends BaseActivity {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
         }else if(navItemIndex == 0) {
-            SlidingUpPanelLayout slidingUpPanelLayout =
-                    (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-            if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)
-                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)
-                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-            else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
-                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            else
-                super.onBackPressed();
+            toggleSlidingUpPanel();
         } else
+            super.onBackPressed();
+    }
+
+    private void toggleSlidingUpPanel() {
+        SlidingUpPanelLayout slidingUpPanelLayout =
+                (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED)
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        else
             super.onBackPressed();
     }
 
@@ -296,7 +312,6 @@ public class MainActivity extends BaseActivity {
 
         return false;
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
