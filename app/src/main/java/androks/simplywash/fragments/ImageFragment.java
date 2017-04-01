@@ -24,10 +24,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-/**
- * Created by androks on 3/29/2017.
- */
-
 public class ImageFragment extends Fragment {
 
     @BindView(R.id.image) ImageView mImage;
@@ -71,7 +67,10 @@ public class ImageFragment extends Fragment {
 
     @OnClick(R.id.image)
     public void viewAllImages(){
-        if(mId >= 0 && !(getActivity() instanceof PhotosActivity)){
+        if(mId >= 0
+                && !(getActivity() instanceof PhotosActivity)
+                && mPhotoReference != null
+                && mPhotoReference.getParent() != null){
             Intent intent = new Intent(getActivity(), PhotosActivity.class);
             intent.putExtra(Constants.WASHER_ID, mPhotoReference.getParent().getName());
             intent.putExtra(Constants.PHOTO_INDEX, mId);

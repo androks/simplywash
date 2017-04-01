@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -84,7 +84,7 @@
             android:background="#F7F7F7"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="24dp">
+            android:padding="18dp">
 
             <ImageView
                 android:id="@+id/wifi"
@@ -165,8 +165,8 @@
                 android:id="@+id/schedule"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_access_time_black_24dp"
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_access_time_black_24dp"
@@ -174,10 +174,10 @@
                 tools:text="12:00 - 23:00" />
 
             <TextView
-                android:padding="8dp"
                 android:id="@+id/is_washer_open"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
                 tools:text="Open" />
 
         </LinearLayout>
@@ -197,13 +197,13 @@
                 android:drawablePadding="@dimen/textView_image_padding"
                 android:drawableStart="@drawable/ic_attach_money_black_24dp"
                 android:gravity="center_vertical"
-                tools:text="120 UAH"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                tools:text="120 UAH" />
 
             <TextView
-                android:padding="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="4dp"
                 android:text="@string/standart_wash" />
         </LinearLayout>
 
@@ -216,4 +216,4 @@
             android:padding="18dp"
             android:text="@string/more" />
     </LinearLayout>
-</FrameLayout>
+</LinearLayout>

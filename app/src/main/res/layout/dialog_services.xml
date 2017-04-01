@@ -1,213 +1,217 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="8dp">
 
-        <TextView
-            style="@style/Base.TextAppearance.AppCompat.Headline"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/services" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Headline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginBottom="20dp"
+                android:text="@string/services" />
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/coffee"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:labelFor="@+id/coffee_switch"
-                        app:srcCompat="@drawable/ic_service_coffee_black_24dp" />
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="8dp">
 
-                    <Switch
-                        android:id="@+id/coffee_switch"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="false"
-                        android:padding="8dp"
-                        android:text="@string/coffee" />
+                        <ImageView
+                            android:id="@+id/coffee"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/coffee_switch"
+                            app:srcCompat="@drawable/ic_service_coffee_black_24dp" />
+
+                        <Switch
+                            android:id="@+id/coffee_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:padding="8dp"
+                            android:text="@string/coffee" />
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="8dp">
+
+                        <ImageView
+                            android:id="@+id/cardPayment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/cardPayment_switch"
+                            app:srcCompat="@drawable/ic_credit_card_black_24dp" />
+
+                        <Switch
+                            android:id="@+id/cardPayment_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:padding="8dp"
+                            android:text="@string/card_payment" />
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="8dp">
+
+                        <ImageView
+                            android:id="@+id/wifi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/wifi"
+                            android:labelFor="@+id/wifi_switch"
+                            app:srcCompat="@drawable/ic_action_wifi" />
+
+                        <Switch
+                            android:id="@+id/wifi_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:padding="8dp"
+                            android:text="@string/wifi" />
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="8dp">
+
+                        <ImageView
+                            android:id="@+id/grocery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/shop_switch"
+                            app:srcCompat="@drawable/ic_local_grocery_store_black_24dp" />
+
+                        <Switch
+                            android:id="@+id/grocery_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:padding="8dp"
+                            android:text="@string/shop" />
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="8dp">
+
+                        <ImageView
+                            android:id="@+id/serviceStation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/service_station_switch"
+                            app:srcCompat="@drawable/ic_repare_black_24dp" />
+
+                        <Switch
+                            android:id="@+id/serviceStation_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:padding="8dp"
+                            android:text="@string/service_station" />
+                    </LinearLayout>
+
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="8dp">
+
+                        <ImageView
+                            android:id="@+id/wc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/toilet_switch"
+                            app:srcCompat="@drawable/ic_wc_black_24dp" />
+
+                        <Switch
+                            android:id="@+id/wc_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:padding="8dp"
+                            android:text="@string/wc" />
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="8dp">
+
+                        <ImageView
+                            android:id="@+id/restRoom"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/rest_room_switch"
+                            app:srcCompat="@drawable/ic_rest_black_24dp" />
+
+                        <Switch
+                            android:id="@+id/restRoom_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:padding="8dp"
+                            android:text="@string/rest_room" />
+                    </LinearLayout>
                 </LinearLayout>
+            </ScrollView>
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
+        </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/cardPayment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:labelFor="@+id/cardPayment_switch"
-                        app:srcCompat="@drawable/ic_credit_card_black_24dp" />
-
-                    <Switch
-                        android:id="@+id/cardPayment_switch"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="false"
-                        android:padding="8dp"
-                        android:text="@string/card_payment" />
-                </LinearLayout>
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <ImageView
-                        android:id="@+id/wifi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:labelFor="@+id/wifi_switch"
-                        app:srcCompat="@drawable/ic_action_wifi"
-                        android:contentDescription="@string/wifi" />
-
-                    <Switch
-                        android:id="@+id/wifi_switch"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="false"
-                        android:padding="8dp"
-                        android:text="@string/wifi" />
-                </LinearLayout>
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <ImageView
-                        android:id="@+id/grocery"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:labelFor="@+id/shop_switch"
-                        app:srcCompat="@drawable/ic_local_grocery_store_black_24dp" />
-
-                    <Switch
-                        android:id="@+id/grocery_switch"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="false"
-                        android:padding="8dp"
-                        android:text="@string/shop" />
-                </LinearLayout>
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <ImageView
-                        android:id="@+id/serviceStation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:labelFor="@+id/service_station_switch"
-                        app:srcCompat="@drawable/ic_repare_black_24dp" />
-
-                    <Switch
-                        android:id="@+id/serviceStation_switch"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="false"
-                        android:padding="8dp"
-                        android:text="@string/service_station" />
-                </LinearLayout>
-
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <ImageView
-                        android:id="@+id/wc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:labelFor="@+id/toilet_switch"
-                        app:srcCompat="@drawable/ic_wc_black_24dp" />
-
-                    <Switch
-                        android:id="@+id/wc_switch"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="false"
-                        android:padding="8dp"
-                        android:text="@string/wc" />
-                </LinearLayout>
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="8dp">
-
-                    <ImageView
-                        android:id="@+id/restRoom"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:labelFor="@+id/rest_room_switch"
-                        app:srcCompat="@drawable/ic_rest_black_24dp" />
-
-                    <Switch
-                        android:id="@+id/restRoom_switch"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:clickable="false"
-                        android:padding="8dp"
-                        android:text="@string/rest_room" />
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-
+        <Button
+            android:id="@+id/close"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/close" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/close"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/close" />
-</LinearLayout>
+</ScrollView>
