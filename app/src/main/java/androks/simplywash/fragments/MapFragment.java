@@ -111,6 +111,12 @@ public class MapFragment extends Fragment implements
      * Binding view with ButterKnife
      **/
 
+    //Binding colors
+    @BindColor(R.color.green)
+    int green;
+    @BindColor(R.color.red)
+    int red;
+
     @BindView(R.id.progress_horizontal)
     ProgressBar mProgressBar;
     @BindView(R.id.sliding_layout)
@@ -128,10 +134,12 @@ public class MapFragment extends Fragment implements
     TextView mLocation;
     @BindView(R.id.phone)
     TextView mPhone;
-    @BindView(R.id.opening_hours)
-    TextView mOpeningHours;
+    @BindView(R.id.schedule)
+    TextView mSchedule;
     @BindView(R.id.default_price)
     TextView mDefaultPrice;
+    @BindView(R.id.is_washer_open)
+    TextView mIsWasherOpen;
 
     @BindView(R.id.duration)
     TextView mDuration;
@@ -656,8 +664,20 @@ public class MapFragment extends Fragment implements
         mCountOfRates.setText(String.format(Locale.getDefault(), "(%d)", mShowingWasher.getVotes()));
         mLocation.setText(mShowingWasher.getLocation());
         mPhone.setText(mShowingWasher.getPhone());
-        mOpeningHours.setText(mShowingWasher.getSchedule().getScheduleForToday());
         mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
+
+        if(mShowingWasher.isRoundTheClock())
+            mSchedule.setText("Round the clock");
+        else
+            mSchedule.setText(mShowingWasher.getSchedule().getScheduleForToday());
+
+        if (Utils.isWasherOpenAtTheTime(mShowingWasher)) {
+            mIsWasherOpen.setText("Open");
+            mIsWasherOpen.setTextColor(green);
+        } else {
+            mIsWasherOpen.setText("Closed");
+            mIsWasherOpen.setTextColor(red);
+        }
 
         mWC.setColorFilter(mResources
                 .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWc())));

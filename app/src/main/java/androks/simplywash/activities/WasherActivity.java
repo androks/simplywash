@@ -85,10 +85,10 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     TextView mLocation;
     @BindView(R.id.phone)
     TextView mPhone;
-    @BindView(R.id.opening_hours)
-    TextView mOpeningHours;
-    @BindView(R.id.boxes_status)
-    TextView mBoxesStatus;
+    @BindView(R.id.schedule)
+    TextView mSchedule;
+    @BindView(R.id.boxes)
+    TextView mBoxes;
     @BindView(R.id.favourites_count)
     TextView mCountOfFavourites;
     @BindView(R.id.description)
@@ -285,9 +285,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
         mLocation.setText(mWasher.getLocation());
         mPhone.setText(mWasher.getPhone());
-        mOpeningHours.setText(mWasher.getSchedule().getScheduleForToday());
-        mBoxesStatus.setText(String.valueOf(mWasher.getAvailableBoxes()));
+        mBoxes.setText(String.valueOf(mWasher.getBoxes()));
         mCountOfFavourites.setText(String.valueOf(mWasher.getFavorites()));
+
+        if(mWasher.isRoundTheClock())
+            mSchedule.setText("Round the clock");
+        else
+            mSchedule.setText(mWasher.getSchedule().getScheduleForToday());
 
         if (Utils.isWasherOpenAtTheTime(mWasher)) {
             mIsWasherOpen.setText("Open");
@@ -345,7 +349,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         startActivity(intent);
     }
 
-    @OnClick(R.id.phone_layout)
+    @OnClick(R.id.phone)
     public void callToWasher() {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.getPhone()));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {

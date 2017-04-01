@@ -57,29 +57,17 @@
             android:alpha="0.10"
             android:background="@android:color/black" />
 
-        <LinearLayout
-            android:id="@+id/phone_layout"
+        <TextView
+            android:id="@+id/phone"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_local_phone_black_24dp" />
-
-            <TextView
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:textColor="@android:color/primary_text_light"
-                tools:text="(415) 349-0942" />
-
-        </LinearLayout>
+            android:drawableLeft="@drawable/ic_local_phone_black_24dp"
+            android:drawablePadding="16dp"
+            android:drawableStart="@drawable/ic_local_phone_black_24dp"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            tools:text="(415) 349-0942" />
 
         <View
             android:layout_width="match_parent"
@@ -90,25 +78,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_access_time_black_24dp" />
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/opening_hours"
+                android:id="@+id/schedule"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_weight="1"
-                android:textColor="@android:color/primary_text_light"
-                tools:text="Wed, 10 AM - 9 PM" />
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_access_time_black_24dp"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_access_time_black_24dp"
+                android:gravity="start|center_vertical"
+                tools:text="12:00 - 23:00" />
 
             <TextView
+                android:padding="8dp"
                 android:id="@+id/is_washer_open"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -122,28 +107,17 @@
             android:alpha="0.10"
             android:background="@android:color/black" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/boxes"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_tag" />
-
-            <TextView
-                android:id="@+id/boxes_status"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_weight="1"
-                android:textColor="@android:color/primary_text_light"
-                tools:text="7 of 12 boxes free" />
-
-        </LinearLayout>
+            android:drawableLeft="@drawable/ic_boxes_black_24dp"
+            android:drawablePadding="16dp"
+            android:textAllCaps="false"
+            android:drawableStart="@drawable/ic_boxes_black_24dp"
+            android:gravity="start|center_vertical"
+            tools:text="12 boxes" />
 
         <View
             android:layout_width="match_parent"

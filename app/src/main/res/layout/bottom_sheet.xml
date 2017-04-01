@@ -156,18 +156,31 @@
             android:textColor="@android:color/black"
             tools:text="380507794221" />
 
-        <TextView
-            android:id="@+id/opening_hours"
-            style="@style/Widget.AppCompat.Button.Borderless"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_access_time_black_24dp"
-            android:drawablePadding="@dimen/textView_image_padding"
-            android:drawableStart="@drawable/ic_access_time_black_24dp"
-            android:gravity="center_vertical"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@android:color/black"
-            tools:text="12:00 - 24:00" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/schedule"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_access_time_black_24dp"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_access_time_black_24dp"
+                android:gravity="start|center_vertical"
+                tools:text="12:00 - 23:00" />
+
+            <TextView
+                android:padding="8dp"
+                android:id="@+id/is_washer_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Open" />
+
+        </LinearLayout>
 
         <LinearLayout
             style="@style/Widget.AppCompat.Button.Borderless"
