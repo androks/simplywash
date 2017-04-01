@@ -30,6 +30,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @BindView(R.id.image_slideshow)
     ViewPager mPhotosViewPager;
+    @BindView(R.id.images_indicator)
+    CirclePageIndicator mImagesIndicator;
 
     /**
      * Start binding washerInfo views
@@ -163,6 +166,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mPhotosViewPager.setAdapter(
                 new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences)
         );
+        mImagesIndicator.setViewPager(mPhotosViewPager);
     }
 
     @Override
