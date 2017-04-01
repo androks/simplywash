@@ -111,4 +111,5 @@
     <string name="yes">Yes</string>
     <string name="map">Map</string>
     <string name="share_app_request">Please share our application</string>
+    <string name="only_open">Only open</string>
 </resources>

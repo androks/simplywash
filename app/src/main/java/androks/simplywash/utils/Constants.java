@@ -15,6 +15,7 @@ public class Constants {
 
     public static final String FILTERS_PREFERENCES = "FILTERS_PREFERENCES";
     public static final String FILTER_MINIMUM_RATING = "FILTER_MINIMUM_RATING";
+    public static final String FILTER_ONLY_OPEN = "FILTER_ONLY_OPEN";
     public static final String FILTER_PRICE_CATEGORY = "FILTER_PRICE_CATEGORY";
     public static final String FILTER_ONLY_FAVOURITES = "FILTER_ONLY_FAVOURITES";
     public static final String FILTER_REST_ROOM = "FILTER_REST_ROOM";

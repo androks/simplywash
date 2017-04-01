@@ -141,6 +141,8 @@ public class Utils {
                 sharedPreferences.getBoolean(Constants.FILTER_SERVICE_STATION, false);
         boolean onlyFavourites =
                 sharedPreferences.getBoolean(Constants.FILTER_ONLY_FAVOURITES, false);
+        boolean onlyOpen =
+                sharedPreferences.getBoolean(Constants.FILTER_ONLY_OPEN, false);
 
         if(restRoom && !washer.isRestRoom())
             return false;
@@ -151,6 +153,8 @@ public class Utils {
         if(coffee && !washer.isCoffee())
             return false;
         if(cardPayment && !washer.isCardPayment())
+            return false;
+        if(onlyOpen && !isWasherOpenAtTheTime(washer))
             return false;
         if(serviceStation && !washer.isServiceStation())
             return false;

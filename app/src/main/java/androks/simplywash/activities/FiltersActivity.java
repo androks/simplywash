@@ -36,6 +36,7 @@ public class FiltersActivity extends AppCompatActivity {
     @BindView(R.id.wc_switch) Switch mWCSwitch;
     @BindView(R.id.serviceStation_switch) Switch mServiceStationSwitch;
     @BindView(R.id.cardPayment_switch) Switch mCardPaymentSwitch;
+    @BindView(R.id.open_now) Switch mOnlyOpenSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,8 @@ public class FiltersActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.FILTERS_PREFERENCES, MODE_PRIVATE);
         mOnlyFavourites.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_ONLY_FAVOURITES, false));
+        mOnlyOpenSwitch.setChecked(
+                sharedPreferences.getBoolean(Constants.FILTER_ONLY_OPEN, false));
         mRestRoomSwitch.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_REST_ROOM, false));
         mWifiSwitch.setChecked(
@@ -110,6 +113,7 @@ public class FiltersActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences(Constants.FILTERS_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putBoolean(Constants.FILTER_REST_ROOM, mRestRoomSwitch.isChecked());
+        edit.putBoolean(Constants.FILTER_ONLY_OPEN, mOnlyOpenSwitch.isChecked());
         edit.putBoolean(Constants.FILTER_WIFI, mWifiSwitch.isChecked());
         edit.putBoolean(Constants.FILTER_TOILET, mWCSwitch.isChecked());
         edit.putBoolean(Constants.FILTER_COFFEE, mCoffeeSwitch.isChecked());
@@ -124,6 +128,7 @@ public class FiltersActivity extends AppCompatActivity {
 
     private void resetFilters() {
         mOnlyFavourites.setChecked(false);
+        mOnlyOpenSwitch.setChecked(false);
         mRestRoomSwitch.setChecked(false);
         mWifiSwitch.setChecked(false);
         mWCSwitch.setChecked(false);
