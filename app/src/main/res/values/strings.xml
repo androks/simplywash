@@ -129,4 +129,16 @@
     <string name="no_washers_found">No washers found</string>
     <string name="disconected">Disconnected. Please re-connect.</string>
     <string name="network_lost" >Network lost. Please re-connect.</string>
+    <string name="standart_wash">(Standart sedan wash)</string>
+    <string name="standart_price_switch">Price (standart sedan wash)</string>
+    <string name="rating_from">Rating from</string>
+    <string name="people_rated_it">people(s) rated it</string>
+    <string name="phone">Phone</string>
+    <string name="city">City</string>
+    <string name="see_price_list">See price list</string>
+    <string name="show_on_map">Show on map</string>
+    <string name="schedule">Schedule</string>
+    <string name="weekdays">Weekdays</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 </resources>

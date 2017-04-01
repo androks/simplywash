@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Show on map"
+                    android:text="@string/show_on_map"
                     android:textColor="@color/accent_700" />
 
             </LinearLayout>
@@ -145,7 +145,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_weight="1"
-                android:text="See price list"
+                android:text="@string/see_price_list"
                 android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
 
             <ImageView
@@ -269,7 +269,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="people(s) rated it" />
+                    android:text="@string/people_rated_it" />
             </LinearLayout>
         </LinearLayout>
 
