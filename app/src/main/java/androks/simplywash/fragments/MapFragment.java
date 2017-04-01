@@ -527,13 +527,15 @@ public class MapFragment extends Fragment implements
                         break;
 
                     case Activity.RESULT_CANCELED:
-                        //setAllFlagsToFalse();
+                        setAllFlagsToFalse();
                         break;
                 }
                 break;
             case Constants.REQUEST_FILTER:
                 switch (resultCode) {
                     case Constants.FILTER_CHANGED_CODE:
+                        mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                        animateCameraToCurrentCityPosition();
                         filterWashers();
                         break;
                 }
