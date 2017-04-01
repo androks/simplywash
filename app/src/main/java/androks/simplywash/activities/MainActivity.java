@@ -154,7 +154,19 @@ public class MainActivity extends BaseActivity {
                 mToolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
-        );
+        ){
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
     }
 
     private void setupDrawerContent(NavigationView navigationView) {

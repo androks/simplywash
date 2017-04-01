@@ -324,6 +324,10 @@ public class MapFragment extends Fragment implements
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    public MapFragment newInstance(){
+        return new MapFragment();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
