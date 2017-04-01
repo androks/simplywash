@@ -180,8 +180,8 @@ public class MainActivity extends BaseActivity {
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out);
                 fragmentTransaction.replace(R.id.content_main, mCurrentFragment, CURRENT_TAG);
-                setToolbarTitle();
                 fragmentTransaction.commitAllowingStateLoss();
+                setToolbarTitle();
             }
         };
 
@@ -192,6 +192,7 @@ public class MainActivity extends BaseActivity {
 
         // refresh mToolbar menu
         invalidateOptionsMenu();
+
     }
 
     private void setToolbarTitle() {
@@ -201,8 +202,10 @@ public class MainActivity extends BaseActivity {
         switch (navItemIndex){
             case 0:
                 actionBar.setTitle(R.string.title_activity_washers_map);
+                break;
             case 1:
                 actionBar.setTitle(R.string.title_activity_share);
+                break;
         }
     }
 

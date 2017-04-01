@@ -35,11 +35,9 @@
             android:id="@+id/fab_find_the_nearest_washer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_above="@+id/fab_location_settings"
+            android:layout_alignLeft="@+id/fab_location_settings"
+            android:layout_alignStart="@+id/fab_location_settings"
             app:srcCompat="@drawable/ic_search_white_24dp" />
 
         <android.support.design.widget.FloatingActionButton
@@ -50,9 +48,9 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_margin="16dp"
-            app:srcCompat="@drawable/ic_my_location"
             android:tint="@color/colorPrimaryDark"
-            app:backgroundTint="@android:color/background_light" />
+            app:backgroundTint="@android:color/background_light"
+            app:srcCompat="@drawable/ic_my_location" />
     </RelativeLayout>
 
     <include
