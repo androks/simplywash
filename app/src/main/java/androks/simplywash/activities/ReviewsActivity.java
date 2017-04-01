@@ -190,6 +190,7 @@ public class ReviewsActivity extends BaseActivity implements
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
+                Utils.getWasherInCity(getCurrentCity(), mWasher.getId()).setValue(mWasher);
                 Toast.makeText(
                         ReviewsActivity.this,
                         "Thanks for review",

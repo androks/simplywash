@@ -119,6 +119,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     private boolean FLAG_IS_FAVOURITE;
 
+    private boolean ratingHasChanged = false;
+
     private List<StorageReference> mPhotoReferences = new ArrayList<>();
 
     @Override
@@ -163,6 +165,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        if(ratingHasChanged)
+            setResult(Constants.RATING_CHANGED_CODE);
+        super.onBackPressed();
+    }
+
     private void setUpViewPager() {
         mPhotosViewPager.setAdapter(
                 new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences)
@@ -176,6 +185,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         switch (requestCode){
             case Constants.REQUEST_RATING_CHANGED:
                 if(resultCode == Constants.RATING_CHANGED_CODE) {
+                    ratingHasChanged = true;
                     downloadWasherInfo();
                     downloadReviews();
                 }
@@ -419,6 +429,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
+                Utils.getWasherInCity(getCurrentCity(), mWasher.getId()).setValue(mWasher);
                 Toast.makeText(
                         WasherActivity.this,
                         FLAG_IS_FAVOURITE ? "Add to favourite" : "Removed from favourite",
@@ -436,6 +447,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @Override
     public void onReviewAdded(final Review review, final float oldRating) {
+        ratingHasChanged = true;
+
         showProgressDialog();
 
         updateExpandedReviews(review);
@@ -469,6 +482,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
+                Utils.getWasherInCity(getCurrentCity(), mWasher.getId()).setValue(mWasher);
                 Toast.makeText(
                         WasherActivity.this,
                         "Thanks for review",

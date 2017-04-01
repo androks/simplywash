@@ -29,8 +29,12 @@ public class Utils {
         return FirebaseDatabase.getInstance().getReference().child("washers");
     }
 
-    public static DatabaseReference getWasherInCity(String city){
+    public static DatabaseReference getWashersInCity(String city){
         return FirebaseDatabase.getInstance().getReference().child("washers_info").child(city).child("washers");
+    }
+
+    public static DatabaseReference getWasherInCity(String city, String id){
+        return FirebaseDatabase.getInstance().getReference().child("washers_info").child(city).child("washers").child(id);
     }
 
     public static DatabaseReference getPhotos(String id){

@@ -206,7 +206,7 @@ public class MapFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         mCurrentCity = ((BaseActivity) getActivity()).getCurrentCity();
-        mWashersReference = Utils.getWasherInCity(mCurrentCity);
+        mWashersReference = Utils.getWashersInCity(mCurrentCity);
         showProgress();
 
         mContext = getActivity();
@@ -235,6 +235,24 @@ public class MapFragment extends Fragment implements
         setAllFlagsToFalse();
 
         return rootView;
+    }
+
+
+    private void reloadWasher(String id){
+        Utils.getWasher(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Washer washer = dataSnapshot.getValue(Washer.class);
+                mWashersList.put(washer.getId(), washer);
+                showWasher(mMarkersList.get(washer.getId()));
+                mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void loadMap() {
@@ -363,7 +381,7 @@ public class MapFragment extends Fragment implements
     public void showWasherDetails() {
         Intent intent = new Intent(getActivity(), WasherActivity.class);
         intent.putExtra(Constants.WASHER_ID, mShowingWasher.getId());
-        startActivity(intent);
+        startActivityForResult(intent, Constants.REQUEST_RATING_CHANGED);
     }
 
     @OnClick(R.id.fab_location_settings)
@@ -499,6 +517,13 @@ public class MapFragment extends Fragment implements
                 switch (resultCode) {
                     case Constants.FILTER_CHANGED_CODE:
                         filterWashers();
+                        break;
+                }
+
+            case Constants.REQUEST_RATING_CHANGED:
+                switch (resultCode) {
+                    case Constants.RATING_CHANGED_CODE:
+                        reloadWasher(mShowingWasher.getId());
                         break;
                 }
         }
