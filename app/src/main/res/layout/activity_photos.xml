@@ -12,4 +12,10 @@
         android:gravity="center"
         android:keepScreenOn="true" />
 
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/images_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="16dp" />
 </FrameLayout>

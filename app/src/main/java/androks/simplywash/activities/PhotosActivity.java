@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import butterknife.ButterKnife;
  */
 public class PhotosActivity extends AppCompatActivity {
     @BindView(R.id.image_slideshow) ViewPager mPhotosViewPager;
+    @BindView(R.id.images_indicator) CirclePageIndicator mPhotosIndicator;
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -77,6 +79,7 @@ public class PhotosActivity extends AppCompatActivity {
         mPhotosViewPager.setAdapter(new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences));
         mPhotosViewPager.setPageTransformer(true, new DepthPageTransformer());
         mPhotosViewPager.setCurrentItem(startId);
+        mPhotosIndicator.setViewPager(mPhotosViewPager);
     }
 
     private void setUpToolbar() {
