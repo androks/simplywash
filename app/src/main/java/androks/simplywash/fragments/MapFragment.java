@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,6 +68,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
 import androks.simplywash.utils.Utils;
@@ -402,6 +404,14 @@ public class MapFragment extends Fragment implements
     public void showServiceDialog() {
         DialogFragment dialog = ServicesDialog.newInstance(mShowingWasher);
         dialog.show(mContext.getSupportFragmentManager(), "ServicesDialog");
+    }
+
+    @OnClick(R.id.schedule)
+    public void showScheduleDialog(){
+        if(!mShowingWasher.isRoundTheClock()){
+            AppCompatDialogFragment scheduleDialog = ScheduleDialog.newInstance(mShowingWasher.getSchedule());
+            scheduleDialog.show(mContext.getSupportFragmentManager(), "Schedule");
+        }
     }
 
     private void setUpMap() {

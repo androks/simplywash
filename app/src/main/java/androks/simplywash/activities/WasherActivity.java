@@ -35,6 +35,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
 import androks.simplywash.utils.DepthPageTransformer;
@@ -347,6 +348,14 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         Intent intent = new Intent(WasherActivity.this, PriceActivity.class);
         intent.putExtra(Constants.WASHER_ID, mWasherId);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.schedule)
+    public void showScheduleDialog(){
+        if(!mWasher.isRoundTheClock()){
+            AppCompatDialogFragment scheduleDialog = ScheduleDialog.newInstance(mWasher.getSchedule());
+            scheduleDialog.show(getSupportFragmentManager(), "Schedule");
+        }
     }
 
     @OnClick(R.id.phone)
