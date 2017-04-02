@@ -139,7 +139,11 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     private void setUpPhotoViewPager() {
         mPhotosViewPager.setAdapter(
-                new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences)
+                new PhotosPagerAdapter(
+                        getSupportFragmentManager(),
+                        mPhotoReferences,
+                        R.layout.item_coll_toolbar_image
+                )
         );
         mPhotosViewPager.setPageTransformer(true, new DepthPageTransformer());
         mImagesIndicator.setViewPager(mPhotosViewPager);
@@ -329,16 +333,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     @OnClick(R.id.phone)
     public void callToWasher() {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.getPhone()));
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
         startActivity(intent);
     }
 

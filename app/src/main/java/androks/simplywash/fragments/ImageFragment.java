@@ -33,12 +33,13 @@ public class ImageFragment extends Fragment {
 
     private StorageReference mPhotoReference;
     private int mId;
+    private int mResourseId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
-                R.layout.item_image, container, false);
+                mResourseId, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
         Glide.with(this)
                 .using(new FirebaseImageLoader())
@@ -78,6 +79,9 @@ public class ImageFragment extends Fragment {
         }
     }
 
+    public void setResourseId(int resourceId){
+        mResourseId = resourceId;
+    }
     public void setId(int id){
         this.mId = id;
     }

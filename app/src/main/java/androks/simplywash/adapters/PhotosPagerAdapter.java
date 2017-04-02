@@ -15,10 +15,12 @@ import androks.simplywash.fragments.ImageFragment;
 
 public class PhotosPagerAdapter extends FragmentStatePagerAdapter {
     private List<StorageReference> mReferences;
+    private int mResourseId;
 
-    public PhotosPagerAdapter(FragmentManager fm, List<StorageReference> references) {
+    public PhotosPagerAdapter(FragmentManager fm, List<StorageReference> references, int resourseId) {
         super(fm);
         mReferences = references;
+        mResourseId = resourseId;
     }
 
     @Override
@@ -26,6 +28,7 @@ public class PhotosPagerAdapter extends FragmentStatePagerAdapter {
         ImageFragment fragment = new ImageFragment();
         fragment.setImageReference(mReferences.get(position));
         fragment.setId(position);
+        fragment.setResourseId(mResourseId);
         return fragment;
     }
 

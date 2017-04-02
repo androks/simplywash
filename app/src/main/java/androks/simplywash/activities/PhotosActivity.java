@@ -76,7 +76,11 @@ public class PhotosActivity extends AppCompatActivity {
     }
 
     private void setUpViewPager() {
-        mPhotosViewPager.setAdapter(new PhotosPagerAdapter(getSupportFragmentManager(), mPhotoReferences));
+        mPhotosViewPager.setAdapter(new PhotosPagerAdapter(
+                getSupportFragmentManager(),
+                mPhotoReferences,
+                R.layout.item_image)
+        );
         mPhotosViewPager.setPageTransformer(true, new DepthPageTransformer());
         mPhotosViewPager.setCurrentItem(mStartId);
         mPhotosIndicator.setViewPager(mPhotosViewPager);
