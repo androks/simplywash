@@ -110,4 +110,16 @@
     <string name="yes">Да</string>
     <string name="prompt_email">Email</string>
     <string name="title_activity_main">MainActivity</string>
+    <string-array name="priceCategoriesStrings">
+        <item>До 50</item>
+        <item>До 60</item>
+        <item>До 80</item>
+        <item>До 100</item>
+        <item>Любая</item>
+    </string-array>
+    <string-array name="days">
+        <item>Сегодня</item>
+        <item>Завтра</item>
+        <item>Послезавтра</item>
+    </string-array>
 </resources>

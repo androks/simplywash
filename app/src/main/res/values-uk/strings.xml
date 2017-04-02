@@ -110,4 +110,16 @@
     <string name="wifi">WiFi</string>
     <string name="write_some_words_about_washer">Трішки про цю мийку</string>
     <string name="yes">Так</string>
+    <string-array name="priceCategoriesStrings">
+        <item>До 50</item>
+        <item>До 60</item>
+        <item>До 80</item>
+        <item>До 100</item>
+        <item>Будь-яка</item>
+    </string-array>
+    <string-array name="days">
+        <item>Сьогодні</item>
+        <item>Завтра</item>
+        <item>Післязавтра</item>
+    </string-array>
 </resources>
