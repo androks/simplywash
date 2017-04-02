@@ -1,13 +1,17 @@
 package androks.simplywash.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -22,6 +26,9 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
 import androks.simplywash.fragments.MapFragment;
@@ -30,6 +37,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
+
+    private static final int CHECK_PERMISSIONS_REQUEST = 125;
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar mToolbar;
@@ -61,6 +70,8 @@ public class MainActivity extends BaseActivity {
 
         mSharedPrefs = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
 
+        checkPermissions();
+
         checkIfUserLoggedIn();
 
         setUpToolbar();
@@ -78,6 +89,32 @@ public class MainActivity extends BaseActivity {
             CURRENT_TAG = TAG_MAP;
             loadHomeFragment();
         }
+    }
+
+    private void checkPermissions() {
+        List<String> permissionNeeded = new ArrayList<>();
+        final List<String> permissionsList = new ArrayList<>();
+        if (!addPermission(permissionsList, Manifest.permission.RECEIVE_SMS))
+            permissionNeeded.add("android.permission.INTERNET");
+        if (!addPermission(permissionsList, Manifest.permission.ACCESS_NETWORK_STATE))
+            permissionNeeded.add("android.permission.ACCESS_NETWORK_STATE");
+        if (!addPermission(permissionsList, Manifest.permission.ACCESS_FINE_LOCATION))
+            permissionNeeded.add("android.permission.ACCESS_FINE_LOCATION");
+
+        if (!permissionNeeded.isEmpty())
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    permissionNeeded.toArray(new String[permissionNeeded.size()]),
+                    CHECK_PERMISSIONS_REQUEST);
+    }
+
+    private boolean addPermission(List<String> permissionsList, String permission) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, permission))
+                return false;
+        }
+        return true;
     }
 
     private void loadNavHeader() {
@@ -197,9 +234,9 @@ public class MainActivity extends BaseActivity {
 
     private void setToolbarTitle() {
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar == null)
+        if (actionBar == null)
             return;
-        switch (navItemIndex){
+        switch (navItemIndex) {
             case 0:
                 actionBar.setTitle(R.string.title_activity_washers_map);
                 break;
@@ -223,16 +260,16 @@ public class MainActivity extends BaseActivity {
     private void getSharedPrefData() {
         String mCurrentPhone = mSharedPrefs.getString(Constants.PHONE_PREF, null);
         String mCurrentCity = mSharedPrefs.getString(Constants.CITY_PREF, null);
-        if(mCurrentPhone != null)
+        if (mCurrentPhone != null)
             mPhoneTextView.setText(mCurrentPhone);
-        if(mCurrentCity != null)
+        if (mCurrentCity != null)
             mCityTextView.setText(mCurrentCity);
     }
 
     private void setUpToolbar() {
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null)
+        if (actionBar != null)
             actionBar.setTitle(R.string.title_activity_main);
     }
 
@@ -250,7 +287,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void checkIfUserLoggedIn(){
+    private void checkIfUserLoggedIn() {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent toLogin = new Intent(this, LoginActivity.class);
             startActivity(toLogin);
@@ -266,7 +303,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             navItemIndex = savedInstanceState.getInt(Constants.CURRENT_FRAGMENT);
         }
         super.onRestoreInstanceState(savedInstanceState);
@@ -283,7 +320,7 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
-        }else if(navItemIndex == 0) {
+        } else if (navItemIndex == 0) {
             toggleSlidingUpPanel();
         } else
             super.onBackPressed();
@@ -319,7 +356,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(mCurrentFragment != null)
+        if (mCurrentFragment != null)
             mCurrentFragment.onActivityResult(requestCode, resultCode, data);
     }
 

@@ -9,7 +9,7 @@
         android:adjustViewBounds="true"
         android:minHeight="300dp"
         android:layout_gravity="center"
-        android:scaleType="centerCrop" />
+        android:scaleType="fitCenter" />
 
     <ProgressBar
         android:id="@+id/progress"

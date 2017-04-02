@@ -104,7 +104,7 @@ public class Utils {
         int hours = now.get(Calendar.HOUR_OF_DAY);
         String workingHours = washer.getSchedule().getScheduleForToday();
         String[] temp = workingHours.split("-");
-        if(temp.length <= 0)
+        if(temp.length < 2)
             return false;
         int workHoursFrom = getHourFromString(temp[0]);
         int workHoursTo = getHourFromString(temp[1]);

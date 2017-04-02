@@ -8,18 +8,13 @@
           location permissions for the 'MyLocation' functionality.
     -->
     <!-- Needed to check when the network connection changes -->
-    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:name=".App"
@@ -47,7 +42,8 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -55,9 +51,11 @@
 
         <activity
             android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".activities.WasherActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_washer_details"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme" />
@@ -68,15 +66,18 @@
 
         <activity
             android:name=".activities.ReviewsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_reviews"
             android:parentActivityName=".activities.WasherActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.PriceActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_price"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.FiltersActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_filters"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme" />
@@ -92,6 +93,7 @@
         </activity>
         <activity
             android:name=".activities.ChooseCityActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_choose_city_activity"
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.SettingsActivity"></activity>
