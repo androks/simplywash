@@ -406,8 +406,10 @@ public class MapFragment extends Fragment implements
 
     private void setUpMap() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        ((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
-
+        //((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
         findCurrentLocation();
     }
 
