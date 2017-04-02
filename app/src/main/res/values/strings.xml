@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WasherApp</string>
+    <string name="app_name">SimplyWash</string>
     <string name="title_activity_washers_map">Map</string>
     <string name="title_activity_washer_owner_login">Sign in</string>
 
@@ -22,8 +22,6 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">Sign in</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
@@ -48,8 +46,7 @@
     <string name="finish">Finish</string>
     <string name="or">or</string>
     <string name="sing_in_with_google">Sing In with Google</string>
-    <string name="car_maker">Car maker</string>
-    <string name="title_activity_reviews">ReviewsActivity</string>
+    <string name="title_activity_reviews">Reviews</string>
     <string name="rate_this_washer">Rate this washer</string>
     <string name="write_some_words_about_washer">Write some words about washer</string>
     <string name="name_optional">Name (optional)</string>
@@ -66,7 +63,7 @@
     <string name="tell_us_what_you_think">Tell us what you think</string>
     <string name="edit">Edit</string>
     <string name="title_activity_price">Price list</string>
-    <string name="title_activity_filters">FiltersActivity</string>
+    <string name="title_activity_filters">Filters</string>
     <string name="apply">Apply</string>
     <string name="only_favourites">Only favorites</string>
     <string name="services">Services</string>
@@ -86,7 +83,7 @@
         <item>100</item>
         <item>1000</item>
     </integer-array>
-    <string name="title_activity_order">OrderActivity</string>
+    <string name="title_activity_order">Order</string>
     <string name="when">When</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
@@ -101,9 +98,7 @@
         <item>After tomorrow</item>
     </string-array>
 
-    <string name="title_activity_photos">PhotosActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_photos">Photos</string>
     <string name="share">Share</string>
     <string name="log_out">Log out</string>
     <string name="title_choose_city_activity">Choose your city</string>
@@ -120,17 +115,17 @@
     <string name="round_the_clock">Round the clock</string>
     <string name="open">Open</string>
     <string name="closed">Closed</string>
-    <string name="request_remove_favorite">Do you really wanna remove this washer from favourites?</string>
-    <string name="request_add_favorite">Do you really wanna add this washer to favourites?</string>
+    <string name="request_remove_favorite">Do you really want to remove this washer from favourites?</string>
+    <string name="request_add_favorite">Do you really want to add this washer to favourites?</string>
     <string name="confirmation">Confirmation</string>
-    <string name="added_favorite">Added to ffavorites</string>
+    <string name="added_favorite">Added to favorites</string>
     <string name="removed_favorite">Removed from favourites</string>
     <string name="nearest_was_found">The nearest washer was find</string>
     <string name="no_washers_found">No washers found</string>
-    <string name="disconected">Disconnected. Please re-connect.</string>
+    <string name="disconnected">Disconnected. Please re-connect.</string>
     <string name="network_lost" >Network lost. Please re-connect.</string>
-    <string name="standart_wash">(Standart sedan wash)</string>
-    <string name="standart_price_switch">Price (standart sedan wash)</string>
+    <string name="standart_wash">(Standart wash)</string>
+    <string name="standart_price_switch">Price (standart wash)</string>
     <string name="rating_from">Rating from</string>
     <string name="people_rated_it">people(s) rated it</string>
     <string name="phone">Phone</string>

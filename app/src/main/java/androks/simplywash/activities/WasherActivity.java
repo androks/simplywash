@@ -101,10 +101,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         checkIfFavourite();
 
         downloadPhotoReferences();
-
-        downloadWasherInfo();
-
-        downloadReviews();
     }
 
     private void downloadPhotoReferences() {
@@ -125,6 +121,13 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        downloadWasherInfo();
+        downloadReviews();
+        super.onResume();
     }
 
     @Override

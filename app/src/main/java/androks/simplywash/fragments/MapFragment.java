@@ -197,8 +197,6 @@ public class MapFragment extends Fragment implements
 
         loadMap();
 
-        loadWashers();
-
         // Kick off the process of building the GoogleApiClient, LocationRequest, and
         // LocationSettingsRequest objects.
         buildGoogleApiClient();
@@ -410,7 +408,7 @@ public class MapFragment extends Fragment implements
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         ((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
-        mMyLocationFab.performClick();
+        findCurrentLocation();
     }
 
     private void showProgress() {
@@ -566,6 +564,7 @@ public class MapFragment extends Fragment implements
             }
             if (FLAG_FIND_NEAREST_WASHER) {
                 navigateToTheNearestWasher();
+                FLAG_FIND_NEAREST_WASHER = false;
             }
         }
     }
@@ -617,6 +616,7 @@ public class MapFragment extends Fragment implements
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         animateCameraToCurrentCityPosition();
+        loadWashers();
     }
 
     private void animateCameraToCurrentCityPosition() {
@@ -718,7 +718,7 @@ public class MapFragment extends Fragment implements
     @Override
     public void onConnectionSuspended(int i) {
         if (i == CAUSE_SERVICE_DISCONNECTED) {
-            Toast.makeText(mContext, R.string.disconected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.disconnected, Toast.LENGTH_SHORT).show();
         } else if (i == CAUSE_NETWORK_LOST) {
             Toast.makeText(mContext, R.string.network_lost, Toast.LENGTH_SHORT).show();
         }
