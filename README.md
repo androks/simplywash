@@ -1,6 +1,6 @@
 # simplywash
 Android app to search and order to near car washers
-![pic][logo]{.classname}
+![pic][logo]{S70402-153041.jpg}
 ![logo](S70402-153041.jpg)
 ![logo](S70402-153051.jpg)
 ![logo](S70402-153100.jpg)
