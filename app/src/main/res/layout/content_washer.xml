@@ -66,7 +66,7 @@
             android:drawablePadding="16dp"
             android:drawableStart="@drawable/ic_local_phone_black_24dp"
             android:gravity="start|center_vertical"
-            android:padding="16dp"
+            android:padding="18dp"
             tools:text="(415) 349-0942" />
 
         <View
@@ -76,16 +76,19 @@
             android:background="@android:color/black" />
 
         <LinearLayout
+            android:id="@+id/schedule_layout"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="18dp"
+            android:paddingStart="18dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/schedule"
-                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_access_time_black_24dp"
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_access_time_black_24dp"
@@ -93,10 +96,10 @@
                 tools:text="12:00 - 23:00" />
 
             <TextView
-                android:padding="8dp"
                 android:id="@+id/is_washer_open"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
                 tools:text="Open" />
 
         </LinearLayout>
@@ -107,17 +110,35 @@
             android:alpha="0.10"
             android:background="@android:color/black" />
 
-        <TextView
-            android:id="@+id/boxes"
+        <LinearLayout
+            android:id="@+id/boxes_layout"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_boxes_black_24dp"
-            android:drawablePadding="16dp"
-            android:textAllCaps="false"
-            android:drawableStart="@drawable/ic_boxes_black_24dp"
             android:gravity="start|center_vertical"
-            tools:text="12 boxes" />
+            android:padding="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/boxes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_boxes_black_24dp"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_boxes_black_24dp"
+                android:gravity="start|center_vertical"
+                android:textAllCaps="false"
+                tools:text="12" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start|center_vertical"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:text="@string/boxes"
+                android:textAllCaps="false" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -126,12 +147,12 @@
             android:background="@android:color/black" />
 
         <LinearLayout
-            android:id="@+id/prices"
+            android:id="@+id/price_layout"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="18dp">
 
             <ImageView
                 android:layout_width="24dp"

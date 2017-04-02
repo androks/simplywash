@@ -9,6 +9,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -70,6 +71,7 @@ import java.util.Map;
 import androks.simplywash.R;
 import androks.simplywash.activities.BaseActivity;
 import androks.simplywash.activities.FiltersActivity;
+import androks.simplywash.activities.PriceActivity;
 import androks.simplywash.activities.WasherActivity;
 import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.dialogs.ServicesDialog;
@@ -194,6 +196,8 @@ public class MapFragment extends Fragment implements
         setHasOptionsMenu(true);
 
         loadMap();
+
+        loadWashers();
 
         // Kick off the process of building the GoogleApiClient, LocationRequest, and
         // LocationSettingsRequest objects.
@@ -366,12 +370,40 @@ public class MapFragment extends Fragment implements
         dialog.show(mContext.getSupportFragmentManager(), "ServicesDialog");
     }
 
-    @OnClick(R.id.schedule)
+    @OnClick(R.id.price_layout)
+    public void seePrices() {
+        Intent intent = new Intent(mContext, PriceActivity.class);
+        intent.putExtra(Constants.WASHER_ID, mShowingWasher.getId());
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.schedule_layout)
     public void showScheduleDialog(){
         if(!mShowingWasher.isRoundTheClock()){
             AppCompatDialogFragment scheduleDialog = ScheduleDialog.newInstance(mShowingWasher.getSchedule());
             scheduleDialog.show(mContext.getSupportFragmentManager(), "Schedule");
         }
+    }
+
+    @OnClick(R.id.phone)
+    public void callToWasher() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+mShowingWasher.getPhone()));
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException e){
+            Toast.makeText(mContext.getApplicationContext(), R.string.failed_to_call,Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @OnClick(R.id.location)
+    public void showWasherOnGoogleMap() {
+        Uri gmmIntentUri = Uri.parse("geo:" + mShowingWasher.getLatitude() + ","
+                + mShowingWasher.getLongitude() + "?q=" + mShowingWasher.getLatitude() + ","
+                + mShowingWasher.getLongitude());
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(mContext.getPackageManager()) != null)
+            startActivity(mapIntent);
     }
 
     private void setUpMap() {
@@ -527,7 +559,7 @@ public class MapFragment extends Fragment implements
                 calculateDistanceAndTime(mShowingWasher.getLatLng());
             }
 
-            if (FLAG_FIND_MY_CURRENT_LOCATION) {
+            if (FLAG_FIND_MY_CURRENT_LOCATION && mMap != null) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 16));
                 mMyLocationFab.setColorFilter(colorAccent);
                 FLAG_FIND_MY_CURRENT_LOCATION = false;
@@ -584,7 +616,6 @@ public class MapFragment extends Fragment implements
         mMap.setBuildingsEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        loadWashers();
         animateCameraToCurrentCityPosition();
     }
 

@@ -1,15 +1,12 @@
 package androks.simplywash.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -35,16 +32,16 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-import androks.simplywash.dialogs.ScheduleDialog;
-import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
-import androks.simplywash.utils.DepthPageTransformer;
-import androks.simplywash.utils.Utils;
 import androks.simplywash.adapters.PhotosPagerAdapter;
 import androks.simplywash.dialogs.AddReviewDialog;
+import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.dialogs.ServicesDialog;
 import androks.simplywash.models.Review;
 import androks.simplywash.models.Washer;
+import androks.simplywash.utils.Constants;
+import androks.simplywash.utils.DepthPageTransformer;
+import androks.simplywash.utils.Utils;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -315,14 +312,14 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         startActivityForResult(intent, Constants.REQUEST_RATING_CHANGED);
     }
 
-    @OnClick(R.id.prices)
+    @OnClick(R.id.price_layout)
     public void seePrices() {
         Intent intent = new Intent(WasherActivity.this, PriceActivity.class);
         intent.putExtra(Constants.WASHER_ID, mWasherId);
         startActivity(intent);
     }
 
-    @OnClick(R.id.schedule)
+    @OnClick(R.id.schedule_layout)
     public void showScheduleDialog(){
         if(!mWasher.isRoundTheClock()){
             AppCompatDialogFragment scheduleDialog = ScheduleDialog.newInstance(mWasher.getSchedule());
@@ -332,8 +329,12 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.phone)
     public void callToWasher() {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mWasher.getPhone()));
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+mWasher.getPhone()));
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException e){
+            Toast.makeText(getApplicationContext(), R.string.failed_to_call,Toast.LENGTH_LONG).show();
+        }
     }
 
     @OnClick(R.id.location_layout)

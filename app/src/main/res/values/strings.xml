@@ -141,4 +141,6 @@
     <string name="weekdays">Weekdays</string>
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
+    <string name="boxes">box(es)</string>
+    <string name="failed_to_call">Failed to call</string>
 </resources>
