@@ -143,4 +143,5 @@
     <string name="pick_services">Pick services</string>
     <string name="pick_place">Pick place</string>
     <string name="pick_schedule">Pick schedule</string>
+    <string name="schedule_24_7">Schedule: 24/7</string>
 </resources>

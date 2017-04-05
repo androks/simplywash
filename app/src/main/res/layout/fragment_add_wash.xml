@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_vertical_margin">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/activity_vertical_margin"
         android:orientation="vertical">
 
         <android.support.design.widget.TextInputLayout
@@ -76,10 +76,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:paddingTop="8dp">
+            android:paddingTop="16dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -104,10 +104,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:paddingTop="8dp">
+            android:paddingTop="16dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -129,14 +129,15 @@
             android:background="@android:color/black" />
 
         <LinearLayout
+            android:id="@+id/place_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:paddingTop="8dp">
+            android:paddingTop="16dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -146,6 +147,7 @@
                 app:srcCompat="@drawable/ic_place_black_24dp" />
 
             <TextView
+                android:id="@+id/place"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/pick_place" />
@@ -158,14 +160,15 @@
             android:background="@android:color/black" />
 
         <LinearLayout
+            android:id="@+id/boxes_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:paddingTop="8dp">
+            android:paddingTop="16dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -175,6 +178,7 @@
                 app:srcCompat="@drawable/ic_boxes_black_24dp" />
 
             <TextView
+                android:id="@+id/boxes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/pick_num_of_boxes" />
@@ -187,14 +191,15 @@
             android:background="@android:color/black" />
 
         <LinearLayout
+            android:id="@+id/services_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:paddingTop="8dp">
+            android:paddingTop="16dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -204,6 +209,7 @@
                 app:srcCompat="@drawable/ic_features_black_24dp" />
 
             <TextView
+                android:id="@+id/services"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/pick_services" />
@@ -216,13 +222,15 @@
             android:alpha="0.2"/>
 
         <Switch
+            android:id="@+id/schedule_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:padding="8dp"
-            android:text="@string/round_the_clock" />
+            android:padding="16dp"
+            android:text="@string/schedule_24_7" />
 
         <LinearLayout
+            android:id="@+id/schedule_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -241,6 +249,7 @@
                 app:srcCompat="@drawable/ic_access_time_black_24dp" />
 
             <TextView
+                android:id="@+id/schedule"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/pick_schedule" />

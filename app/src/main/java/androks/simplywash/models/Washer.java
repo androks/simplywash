@@ -1,5 +1,6 @@
 package androks.simplywash.models;
 
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
@@ -37,6 +38,34 @@ public class Washer {
     private boolean cardPayment;
     private boolean serviceStation;
     private boolean roundTheClock;
+
+    public Washer(WasherType type, String id, String name, String phone, String description, int boxes, int defaultPrice, boolean restRoom, boolean wifi, boolean wc, boolean coffee, boolean shop, boolean cardPayment, boolean serviceStation, boolean roundTheClock, Place place) {
+        this.type = type;
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.description = description;
+        this.boxes = boxes;
+        this.defaultPrice = defaultPrice;
+        this.restRoom = restRoom;
+        this.wifi = wifi;
+        this.wc = wc;
+        this.coffee = coffee;
+        this.shop = shop;
+        this.cardPayment = cardPayment;
+        this.serviceStation = serviceStation;
+        this.roundTheClock = roundTheClock;
+        schedule = new Schedule();
+        state = WasherStatus.Offline;
+        userId = "";
+        placeId = place.getId();
+        latitude = place.getLatLng().latitude;
+        longitude = place.getLatLng().longitude;
+        rating = 0f;
+        availableBoxes = 0;
+        votes = 0;
+        favorites = 0;
+    }
 
     @Exclude
     public int decreaseCountOfFavourites(){

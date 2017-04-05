@@ -22,21 +22,45 @@ import butterknife.OnClick;
 
 public class ServicesDialog extends AppCompatDialogFragment {
 
-    @BindView(R.id.wifi) ImageView mWifi;
-    @BindView(R.id.coffee) ImageView mCoffee;
-    @BindView(R.id.restRoom) ImageView mRestRoom;
-    @BindView(R.id.grocery) ImageView mGrocery;
-    @BindView(R.id.wc) ImageView mWC;
-    @BindView(R.id.serviceStation) ImageView mServiceStation;
-    @BindView(R.id.cardPayment) ImageView mCardPayment;
+    public interface AddServicesDialogListener {
+        void onServicesAdded(boolean wifi, boolean coffee, boolean restRoom, boolean grocery,
+                             boolean wc, boolean serviceStation, boolean cardPayment);
+    }
 
-    @BindView(R.id.wifi_switch) Switch mWifiSwitch;
-    @BindView(R.id.coffee_switch) Switch mCoffeeSwitch;
-    @BindView(R.id.restRoom_switch) Switch mRestRoomSwitch;
-    @BindView(R.id.grocery_switch) Switch mGrocerySwitch;
-    @BindView(R.id.wc_switch) Switch mWCSwitch;
-    @BindView(R.id.serviceStation_switch) Switch mServiceStationSwitch;
-    @BindView(R.id.cardPayment_switch) Switch mCardPaymentSwitch;
+    public static final String TAG_EDITABLE = "TAG_EDITABLE";
+
+    @BindView(R.id.wifi)
+    ImageView mWifi;
+    @BindView(R.id.coffee)
+    ImageView mCoffee;
+    @BindView(R.id.restRoom)
+    ImageView mRestRoom;
+    @BindView(R.id.grocery)
+    ImageView mGrocery;
+    @BindView(R.id.wc)
+    ImageView mWC;
+    @BindView(R.id.serviceStation)
+    ImageView mServiceStation;
+    @BindView(R.id.cardPayment)
+    ImageView mCardPayment;
+
+    @BindView(R.id.wifi_switch)
+    Switch mWifiSwitch;
+    @BindView(R.id.coffee_switch)
+    Switch mCoffeeSwitch;
+    @BindView(R.id.restRoom_switch)
+    Switch mRestRoomSwitch;
+    @BindView(R.id.grocery_switch)
+    Switch mGrocerySwitch;
+    @BindView(R.id.wc_switch)
+    Switch mWCSwitch;
+    @BindView(R.id.serviceStation_switch)
+    Switch mServiceStationSwitch;
+    @BindView(R.id.cardPayment_switch)
+    Switch mCardPaymentSwitch;
+
+    @BindView(R.id.applyBtn)
+    View mApplyBtn;
 
     private Washer washer;
 
@@ -44,7 +68,7 @@ public class ServicesDialog extends AppCompatDialogFragment {
         // Empty constructor required for DialogFragment
     }
 
-    public static ServicesDialog newInstance(Washer washer){
+    public static ServicesDialog newInstance(Washer washer) {
         ServicesDialog dialog = new ServicesDialog();
         dialog.setWasher(washer);
         return dialog;
@@ -59,10 +83,23 @@ public class ServicesDialog extends AppCompatDialogFragment {
         Dialog dialog = getDialog();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
+        checkMode();
         setData();
         return view;
     }
 
+    private void checkMode() {
+        if (getTag().equals(ServicesDialog.TAG_EDITABLE)) {
+            mWC.setEnabled(true);
+            mWifi.setEnabled(true);
+            mCoffee.setEnabled(true);
+            mRestRoom.setEnabled(true);
+            mGrocery.setEnabled(true);
+            mServiceStation.setEnabled(true);
+            mCardPayment.setEnabled(true);
+            mApplyBtn.setVisibility(View.VISIBLE);
+        }
+    }
 
 
     private void setData() {
@@ -93,12 +130,28 @@ public class ServicesDialog extends AppCompatDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(getDialog().getWindow() != null)
+        if (getDialog().getWindow() != null)
             getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
+    @OnClick(R.id.applyBtn)
+    public void applyServices(){
+        try {
+            ((AddServicesDialogListener) getActivity()).onServicesAdded(
+                    mWifi.isSelected(),
+                    mCoffee.isSelected(),
+                    mRestRoom.isSelected(),
+                    mGrocery.isSelected(),
+                    mWC.isSelected(),
+                    mServiceStation.isSelected(),
+                    mCardPayment.isSelected()
+            );
+        } catch (ClassCastException ignored) {}
+        dismiss();
+    }
+
     @OnClick(R.id.close)
-    public void close(){
+    public void close() {
         this.dismiss();
     }
 
