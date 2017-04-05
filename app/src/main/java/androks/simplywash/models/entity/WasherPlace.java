@@ -15,8 +15,8 @@ public class WasherPlace {
     private double longitude;
 
 
-    WasherPlace(){}
-    WasherPlace(Place place){
+    public WasherPlace(){}
+    public WasherPlace(Place place){
         id = place.getId();
         address = place.getAddress().toString();
         latitude = place.getLatLng().latitude;

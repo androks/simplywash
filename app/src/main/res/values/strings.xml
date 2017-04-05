@@ -144,4 +144,5 @@
     <string name="pick_place">Pick place</string>
     <string name="pick_schedule">Pick schedule</string>
     <string name="schedule_24_7">Schedule: 24/7</string>
+    <string name="required_error">Required error</string>
 </resources>

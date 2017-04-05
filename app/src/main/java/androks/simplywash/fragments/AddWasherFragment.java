@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,8 +33,10 @@ import java.util.List;
 
 import androks.simplywash.R;
 import androks.simplywash.dialogs.FeaturesDialog;
-import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.enums.WasherType;
+import androks.simplywash.models.Washer;
+import androks.simplywash.models.entity.Features;
+import androks.simplywash.models.entity.WasherPlace;
 import androks.simplywash.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,25 +55,21 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     @BindView(R.id.name) TextView mName;
     @BindView(R.id.phone) TextView mPhone;
     @BindView(R.id.default_price) TextView mPrice;
-    @BindView(R.id.place) TextView mPlace;
-    @BindView(R.id.boxes) TextView mBoxes;
+    @BindView(R.id.place) TextView mPlaceTV;
+    @BindView(R.id.boxes) TextView mBoxesTV;
     @BindView(R.id.services) TextView mServices;
     @BindView(R.id.description) TextView mDescription;
     @BindView(R.id.city) Spinner mCity;
     @BindView(R.id.type) Spinner mType;
-    @BindView(R.id.schedule_switch) Switch mRoundTheClockSwitch;
+    @BindView(R.id.schedule_switch) Switch mScheduleSwitch;
     @BindView(R.id.schedule_layout) View mScheduleLayout;
     @BindView(R.id.schedule) TextView mSchedule;
-    @BindView(R.id.schedule_switch) Switch scheduleSwitch;
 
     private Unbinder unbinder;
 
     private List<String> mCityList;
 
-    private int boxes = 0;
-
-    private Place place;
-    private boolean mWifi, mCoffee, mRestRoom, mGrocery, mWc, mServiceStation, mCardPayment;
+    private Washer mWasher = new Washer();
 
     public AddWasherFragment() {
         // Required empty public constructor
@@ -84,6 +81,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
         View rootView = inflater.inflate(R.layout.fragment_add_wash, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         setHasOptionsMenu(true);
+        mWasher.setDefaultValues();
         loadCities();
         initializeWasherTypesSpinner();
         return rootView;
@@ -137,10 +135,41 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.apply:
-
+                if(!validateFields())
+                    return false;
+                writeWasherToDB();
                 return true;
         }
         return false;
+    }
+
+    private void writeWasherToDB() {
+        String id = Utils.getWasher().push().getKey();
+        mWasher.setId(id);
+        Utils.getWasher().child(id).setValue(mWasher);
+    }
+
+    private boolean validateFields() {
+        clearError();
+        if(mName.getText().toString().isEmpty()){
+            mName.setError(getActivity().getResources().getString(R.string.required_error));
+            return false;
+        }
+        if(mPhone.getText().toString().isEmpty()){
+            mPhone.setError(getActivity().getResources().getString(R.string.required_error));
+            return false;
+        }
+        if(mPrice.getText().toString().isEmpty()){
+            mPrice.setError(getActivity().getResources().getString(R.string.required_error));
+            return false;
+        }
+        return true;
+    }
+
+    private void clearError() {
+        mName.setError(null);
+        mPhone.setError(null);
+        mPrice.setError(null);
     }
 
     @OnClick(R.id.place_layout)
@@ -171,7 +200,8 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        boxes = picker.getValue();
+                        mWasher.setBoxes(picker.getValue());
+                        mBoxesTV.setText(mWasher.getBoxes() + R.string.boxes);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)
@@ -180,8 +210,8 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
 
     @OnClick(R.id.services_layout)
     public void pickServices(){
-        AppCompatDialogFragment scheduleDialog = ScheduleDialog.newInstance(null);
-        scheduleDialog.show(getActivity().getSupportFragmentManager(), FeaturesDialog.TAG_EDITABLE);
+        AppCompatDialogFragment featuresDialog = FeaturesDialog.newInstance(null);
+        featuresDialog.show(getActivity().getSupportFragmentManager(), FeaturesDialog.TAG_EDITABLE);
     }
 
     @OnClick(R.id.schedule_layout)
@@ -191,26 +221,22 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
 
     @OnCheckedChanged(R.id.schedule_switch)
     public void onScheduleCheckedChanged(){
-        mScheduleLayout.setVisibility(scheduleSwitch.isChecked()? View.GONE: View.VISIBLE);
+        mScheduleLayout.setVisibility(mScheduleSwitch.isChecked()? View.GONE: View.VISIBLE);
+        mWasher.setRoundTheClock(mScheduleSwitch.isChecked());
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == AppCompatActivity.RESULT_OK) {
-                place = PlacePicker.getPlace(data, getActivity());
+                mWasher.setPlace(new WasherPlace(PlacePicker.getPlace(data, getActivity())));
+                mPlaceTV.setText(mWasher.getPlace().getAddress());
             }
         }
     }
 
     @Override
-    public void onServicesAdded(boolean wifi, boolean coffee, boolean restRoom, boolean grocery,
-                                boolean wc, boolean serviceStation, boolean cardPayment) {
-        mWifi = wifi;
-        mCoffee = coffee;
-        mRestRoom = restRoom;
-        mGrocery = grocery;
-        mWc = wc;
-        mServiceStation = serviceStation;
-        mCardPayment = cardPayment;
+    public void onServicesAdded(Features features) {
+        mWasher.setFeatures(features);
+        mServices.setText(features.toString());
     }
 }

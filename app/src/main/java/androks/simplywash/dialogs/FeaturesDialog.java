@@ -11,6 +11,7 @@ import android.widget.Switch;
 
 import androks.simplywash.models.Washer;
 import androks.simplywash.R;
+import androks.simplywash.models.entity.Features;
 import androks.simplywash.utils.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,8 +24,7 @@ import butterknife.OnClick;
 public class FeaturesDialog extends AppCompatDialogFragment {
 
     public interface AddServicesDialogListener {
-        void onServicesAdded(boolean wifi, boolean coffee, boolean restRoom, boolean grocery,
-                             boolean wc, boolean serviceStation, boolean cardPayment);
+        void onServicesAdded(Features features);
     }
 
     public static final String TAG_EDITABLE = "TAG_EDITABLE";
@@ -141,15 +141,15 @@ public class FeaturesDialog extends AppCompatDialogFragment {
     @OnClick(R.id.applyBtn)
     public void applyServices() {
         try {
-            ((AddServicesDialogListener) getActivity()).onServicesAdded(
-                    mWifi.isSelected(),
-                    mCoffee.isSelected(),
+            ((AddServicesDialogListener) getActivity()).onServicesAdded(new Features(
                     mRestRoom.isSelected(),
-                    mGrocery.isSelected(),
+                    mWifi.isSelected(),
                     mWC.isSelected(),
-                    mServiceStation.isSelected(),
-                    mCardPayment.isSelected()
-            );
+                    mCoffee.isSelected(),
+                    mGrocery.isSelected(),
+                    mCardPayment.isSelected(),
+                    mServiceStation.isSelected()
+            ));
         } catch (ClassCastException ignored) {
         }
         dismiss();

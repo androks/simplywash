@@ -18,6 +18,7 @@ public class Washer {
     private WasherStatus state;
     private WasherType type;
     private WasherPlace place;
+    private String city;
     private String id;
     private String userId;
     private String name;
@@ -31,24 +32,27 @@ public class Washer {
     private int defaultPrice;
     private boolean roundTheClock;
 
-    public Washer(WasherType type, String id, String name, String phone, String description,
-                  int boxes, int defaultPrice, WasherPlace place, Features features) {
-        this.type = type;
-        this.id = id;
-        this.name = name;
-        this.phone = phone;
-        this.description = description;
-        this.boxes = boxes;
-        this.defaultPrice = defaultPrice;
-        this.features = features;
-        this.place = place;
+    public Washer() {}
+
+    @Exclude
+    public void setDefaultValues(){
+        features = new Features();
         schedule = new Schedule();
         state = WasherStatus.Offline;
+        type = WasherType.Normal;
+        place = new WasherPlace();
+        id = "";
         userId = "";
+        name = "";
+        phone = "";
+        description = "";
         rating = 0f;
+        boxes = 0;
         availableBoxes = 0;
         votes = 0;
         favorites = 0;
+        defaultPrice = 0;
+        roundTheClock = false;
     }
 
     public String getDescription() {
@@ -81,8 +85,6 @@ public class Washer {
 
         rating = (float) Math.floor(rating) + 0.5f;
     }
-
-    public Washer() {}
 
     @Exclude
     public LatLng getLatLng(){
@@ -231,5 +233,13 @@ public class Washer {
 
     public void setPlace(WasherPlace place) {
         this.place = place;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

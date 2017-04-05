@@ -56,8 +56,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.SphericalUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -73,8 +73,8 @@ import androks.simplywash.activities.BaseActivity;
 import androks.simplywash.activities.FiltersActivity;
 import androks.simplywash.activities.PriceActivity;
 import androks.simplywash.activities.WasherActivity;
-import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.dialogs.FeaturesDialog;
+import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.directionsApi.Data.Direction;
 import androks.simplywash.directionsApi.DirectionsManager;
 import androks.simplywash.models.CameraPosition;
@@ -156,7 +156,7 @@ public class MapFragment extends Fragment implements
 
 
     //Reference for downloading all washers
-    private DatabaseReference mWashersReference;
+    private Query mWashersReference;
 
     private FragmentActivity mContext;
     private static Resources mResources;
@@ -185,8 +185,9 @@ public class MapFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
+       // FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
         mCurrentCity = ((BaseActivity) getActivity()).getCurrentCity();
-        mWashersReference = Utils.getWashersInCity(mCurrentCity);
+        mWashersReference = Utils.getWasher().orderByChild("city").equalTo(mCurrentCity);
         showProgress();
 
         mContext = getActivity();
@@ -256,8 +257,7 @@ public class MapFragment extends Fragment implements
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
                     mWashersList.putAll(dataSnapshot.getValue(
-                            new GenericTypeIndicator<Map<String, Washer>>() {
-                            }
+                            new GenericTypeIndicator<Map<String, Washer>>() {}
                     ));
                     setMarkers();
                     checkUserFavouriteWashers();

@@ -8,48 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:280500118687:android:37821035c833f5b7",
-        "android_client_info": {
-          "package_name": "androks.washerapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "280500118687-in5den2fjtoeo2rt0bk967ib8vpskd3h.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAyrGi5JCz7Ld2WP7Nrmw4Rf8MaRit4yPw"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "280500118687-in5den2fjtoeo2rt0bk967ib8vpskd3h.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:280500118687:android:1a005d143ad2fd30",
         "android_client_info": {
           "package_name": "androks.simplywash"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "280500118687-devkuv1k92g5flcgcm3i094isdhv08qa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "androks.simplywash",
+            "certificate_hash": "0c2b1d81c612461ec7b0751b115b7a2bd1de0ccd"
+          }
+        },
         {
           "client_id": "280500118687-in5den2fjtoeo2rt0bk967ib8vpskd3h.apps.googleusercontent.com",
           "client_type": 3

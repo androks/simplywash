@@ -411,7 +411,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Utils.getWasherInCity(getCurrentCity(), mWasher.getId()).setValue(mWasher);
                 Toast.makeText(
                         WasherActivity.this,
                         mFlagIsFavorite ? R.string.added_favorite : R.string.removed_favorite,
@@ -468,7 +467,6 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Utils.getWasherInCity(getCurrentCity(), mWasher.getId()).setValue(mWasher);
                 Toast.makeText(
                         WasherActivity.this,
                         R.string.thanks_for_review,
