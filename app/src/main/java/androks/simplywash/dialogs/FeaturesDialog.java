@@ -20,7 +20,7 @@ import butterknife.OnClick;
  * Created by androks on 3/10/2017.
  */
 
-public class ServicesDialog extends AppCompatDialogFragment {
+public class FeaturesDialog extends AppCompatDialogFragment {
 
     public interface AddServicesDialogListener {
         void onServicesAdded(boolean wifi, boolean coffee, boolean restRoom, boolean grocery,
@@ -64,12 +64,12 @@ public class ServicesDialog extends AppCompatDialogFragment {
 
     private Washer washer;
 
-    public ServicesDialog() {
+    public FeaturesDialog() {
         // Empty constructor required for DialogFragment
     }
 
-    public static ServicesDialog newInstance(Washer washer) {
-        ServicesDialog dialog = new ServicesDialog();
+    public static FeaturesDialog newInstance(Washer washer) {
+        FeaturesDialog dialog = new FeaturesDialog();
         dialog.setWasher(washer);
         return dialog;
     }
@@ -84,47 +84,51 @@ public class ServicesDialog extends AppCompatDialogFragment {
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         checkMode();
-        setData();
         return view;
     }
 
+    private void applyEditMode() {
+        mWC.setEnabled(true);
+        mWifi.setEnabled(true);
+        mCoffee.setEnabled(true);
+        mRestRoom.setEnabled(true);
+        mGrocery.setEnabled(true);
+        mServiceStation.setEnabled(true);
+        mCardPayment.setEnabled(true);
+        mApplyBtn.setVisibility(View.VISIBLE);
+    }
+
     private void checkMode() {
-        if (getTag().equals(ServicesDialog.TAG_EDITABLE)) {
-            mWC.setEnabled(true);
-            mWifi.setEnabled(true);
-            mCoffee.setEnabled(true);
-            mRestRoom.setEnabled(true);
-            mGrocery.setEnabled(true);
-            mServiceStation.setEnabled(true);
-            mCardPayment.setEnabled(true);
-            mApplyBtn.setVisibility(View.VISIBLE);
-        }
+        if (getTag().equals(FeaturesDialog.TAG_EDITABLE))
+            applyEditMode();
+        else
+            setData();
     }
 
 
     private void setData() {
         mWC.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isWc())));
+                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isWc())));
         mWifi.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isWifi())));
+                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isWifi())));
         mCoffee.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isCoffee())));
+                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isCoffee())));
         mGrocery.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isShop())));
+                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isShop())));
         mRestRoom.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isRestRoom())));
+                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isRestRoom())));
         mCardPayment.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isCardPayment())));
+                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isCardPayment())));
         mServiceStation.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.isServiceStation())));
+                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isServiceStation())));
 
-        mWCSwitch.setChecked(washer.isWc());
-        mWifiSwitch.setChecked(washer.isWifi());
-        mCardPaymentSwitch.setChecked(washer.isCardPayment());
-        mCoffeeSwitch.setChecked(washer.isCoffee());
-        mGrocerySwitch.setChecked(washer.isShop());
-        mRestRoomSwitch.setChecked(washer.isRestRoom());
-        mServiceStationSwitch.setChecked(washer.isServiceStation());
+        mWCSwitch.setChecked(washer.getFeatures().isWc());
+        mWifiSwitch.setChecked(washer.getFeatures().isWifi());
+        mCardPaymentSwitch.setChecked(washer.getFeatures().isCardPayment());
+        mCoffeeSwitch.setChecked(washer.getFeatures().isCoffee());
+        mGrocerySwitch.setChecked(washer.getFeatures().isShop());
+        mRestRoomSwitch.setChecked(washer.getFeatures().isRestRoom());
+        mServiceStationSwitch.setChecked(washer.getFeatures().isServiceStation());
     }
 
     @Override
@@ -135,7 +139,7 @@ public class ServicesDialog extends AppCompatDialogFragment {
     }
 
     @OnClick(R.id.applyBtn)
-    public void applyServices(){
+    public void applyServices() {
         try {
             ((AddServicesDialogListener) getActivity()).onServicesAdded(
                     mWifi.isSelected(),
@@ -146,7 +150,8 @@ public class ServicesDialog extends AppCompatDialogFragment {
                     mServiceStation.isSelected(),
                     mCardPayment.isSelected()
             );
-        } catch (ClassCastException ignored) {}
+        } catch (ClassCastException ignored) {
+        }
         dismiss();
     }
 

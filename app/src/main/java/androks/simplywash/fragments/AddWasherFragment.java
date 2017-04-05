@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import androks.simplywash.R;
+import androks.simplywash.dialogs.FeaturesDialog;
+import androks.simplywash.dialogs.ScheduleDialog;
 import androks.simplywash.enums.WasherType;
 import androks.simplywash.utils.Utils;
 import butterknife.BindView;
@@ -44,7 +47,7 @@ import butterknife.Unbinder;
  * Created by androks on 4/5/2017.
  */
 
-public class AddWasherFragment extends Fragment {
+public class AddWasherFragment extends Fragment implements FeaturesDialog.AddServicesDialogListener {
 
     private static final int PLACE_PICKER_REQUEST = 54;
 
@@ -69,6 +72,7 @@ public class AddWasherFragment extends Fragment {
     private int boxes = 0;
 
     private Place place;
+    private boolean mWifi, mCoffee, mRestRoom, mGrocery, mWc, mServiceStation, mCardPayment;
 
     public AddWasherFragment() {
         // Required empty public constructor
@@ -176,7 +180,8 @@ public class AddWasherFragment extends Fragment {
 
     @OnClick(R.id.services_layout)
     public void pickServices(){
-
+        AppCompatDialogFragment scheduleDialog = ScheduleDialog.newInstance(null);
+        scheduleDialog.show(getActivity().getSupportFragmentManager(), FeaturesDialog.TAG_EDITABLE);
     }
 
     @OnClick(R.id.schedule_layout)
@@ -195,5 +200,17 @@ public class AddWasherFragment extends Fragment {
                 place = PlacePicker.getPlace(data, getActivity());
             }
         }
+    }
+
+    @Override
+    public void onServicesAdded(boolean wifi, boolean coffee, boolean restRoom, boolean grocery,
+                                boolean wc, boolean serviceStation, boolean cardPayment) {
+        mWifi = wifi;
+        mCoffee = coffee;
+        mRestRoom = restRoom;
+        mGrocery = grocery;
+        mWc = wc;
+        mServiceStation = serviceStation;
+        mCardPayment = cardPayment;
     }
 }

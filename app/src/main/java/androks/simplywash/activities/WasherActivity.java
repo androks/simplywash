@@ -35,8 +35,8 @@ import java.util.List;
 import androks.simplywash.R;
 import androks.simplywash.adapters.PhotosPagerAdapter;
 import androks.simplywash.dialogs.AddReviewDialog;
+import androks.simplywash.dialogs.FeaturesDialog;
 import androks.simplywash.dialogs.ScheduleDialog;
-import androks.simplywash.dialogs.ServicesDialog;
 import androks.simplywash.models.Review;
 import androks.simplywash.models.Washer;
 import androks.simplywash.utils.Constants;
@@ -275,19 +275,19 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         }
 
         mWC.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isWc())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.getFeatures().isWc())));
         mWifi.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isWifi())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.getFeatures().isWifi())));
         mCoffee.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isCoffee())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.getFeatures().isCoffee())));
         mGrocery.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isShop())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.getFeatures().isShop())));
         mRestRoom.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isRestRoom())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.getFeatures().isRestRoom())));
         mCardPayment.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isCardPayment())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.getFeatures().isCardPayment())));
         mServiceStation.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(mWasher.isServiceStation())));
+                .getColor(Utils.getServiceAvailableColor(mWasher.getFeatures().isServiceStation())));
 
         setRatings();
 
@@ -420,8 +420,8 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.services)
     public void showServicesDialog() {
-        DialogFragment dialog = ServicesDialog.newInstance(mWasher);
-        dialog.show(getSupportFragmentManager(), "ServicesDialog");
+        DialogFragment dialog = FeaturesDialog.newInstance(mWasher);
+        dialog.show(getSupportFragmentManager(), "FeaturesDialog");
     }
 
     @Override

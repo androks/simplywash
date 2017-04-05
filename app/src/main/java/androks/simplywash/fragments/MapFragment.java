@@ -74,7 +74,7 @@ import androks.simplywash.activities.FiltersActivity;
 import androks.simplywash.activities.PriceActivity;
 import androks.simplywash.activities.WasherActivity;
 import androks.simplywash.dialogs.ScheduleDialog;
-import androks.simplywash.dialogs.ServicesDialog;
+import androks.simplywash.dialogs.FeaturesDialog;
 import androks.simplywash.directionsApi.Data.Direction;
 import androks.simplywash.directionsApi.DirectionsManager;
 import androks.simplywash.models.CameraPosition;
@@ -365,8 +365,8 @@ public class MapFragment extends Fragment implements
 
     @OnClick(R.id.services)
     public void showServiceDialog() {
-        DialogFragment dialog = ServicesDialog.newInstance(mShowingWasher);
-        dialog.show(mContext.getSupportFragmentManager(), "ServicesDialog");
+        DialogFragment dialog = FeaturesDialog.newInstance(mShowingWasher);
+        dialog.show(mContext.getSupportFragmentManager(), "FeaturesDialog");
     }
 
     @OnClick(R.id.price_layout)
@@ -686,19 +686,19 @@ public class MapFragment extends Fragment implements
         }
 
         mWC.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWc())));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.getFeatures().isWc())));
         mWifi.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isWifi())));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.getFeatures().isWifi())));
         mCoffee.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isCoffee())));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.getFeatures().isCoffee())));
         mGrocery.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isShop())));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.getFeatures().isShop())));
         mRestRoom.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isRestRoom())));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.getFeatures().isRestRoom())));
         mCardPayment.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isCardPayment())));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.getFeatures().isCardPayment())));
         mServiceStation.setColorFilter(mResources
-                .getColor(Utils.getServiceAvailableColor(mShowingWasher.isServiceStation())));
+                .getColor(Utils.getServiceAvailableColor(mShowingWasher.getFeatures().isServiceStation())));
     }
 
     @Override

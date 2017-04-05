@@ -12,6 +12,7 @@ import androks.simplywash.enums.WasherType;
  */
 
 public class Washer {
+    private Features features;
     private Schedule schedule;
     private WasherStatus state;
     private WasherType type;
@@ -30,16 +31,10 @@ public class Washer {
     private int votes;
     private int favorites;
     private int defaultPrice;
-    private boolean restRoom;
-    private boolean wifi;
-    private boolean wc;
-    private boolean coffee;
-    private boolean shop;
-    private boolean cardPayment;
-    private boolean serviceStation;
     private boolean roundTheClock;
 
-    public Washer(WasherType type, String id, String name, String phone, String description, int boxes, int defaultPrice, boolean restRoom, boolean wifi, boolean wc, boolean coffee, boolean shop, boolean cardPayment, boolean serviceStation, boolean roundTheClock, Place place) {
+    public Washer(WasherType type, String id, String name, String phone, String description,
+                  int boxes, int defaultPrice, Place place, Features features) {
         this.type = type;
         this.id = id;
         this.name = name;
@@ -47,14 +42,7 @@ public class Washer {
         this.description = description;
         this.boxes = boxes;
         this.defaultPrice = defaultPrice;
-        this.restRoom = restRoom;
-        this.wifi = wifi;
-        this.wc = wc;
-        this.coffee = coffee;
-        this.shop = shop;
-        this.cardPayment = cardPayment;
-        this.serviceStation = serviceStation;
-        this.roundTheClock = roundTheClock;
+        this.features = features;
         schedule = new Schedule();
         state = WasherStatus.Offline;
         userId = "";
@@ -189,38 +177,6 @@ public class Washer {
         return defaultPrice;
     }
 
-    public boolean isRestRoom() {
-        return restRoom;
-    }
-
-    public boolean isWifi() {
-        return wifi;
-    }
-
-    public boolean isWc() {
-        return wc;
-    }
-
-    public boolean isCoffee() {
-        return coffee;
-    }
-
-    public boolean isShop() {
-        return shop;
-    }
-
-    public boolean isCardPayment() {
-        return cardPayment;
-    }
-
-    public boolean isServiceStation() {
-        return serviceStation;
-    }
-
-    public boolean isRoundTheClock() {
-        return roundTheClock;
-    }
-
     public void setId(String id) {
         this.id = id;
     }
@@ -281,36 +237,12 @@ public class Washer {
         this.defaultPrice = defaultPrice;
     }
 
-    public void setRestRoom(boolean restRoom) {
-        this.restRoom = restRoom;
+    public Features getFeatures() {
+        return features;
     }
 
-    public void setWifi(boolean wifi) {
-        this.wifi = wifi;
-    }
-
-    public void setWc(boolean wc) {
-        this.wc = wc;
-    }
-
-    public void setCoffee(boolean coffee) {
-        this.coffee = coffee;
-    }
-
-    public void setShop(boolean shop) {
-        this.shop = shop;
-    }
-
-    public void setCardPayment(boolean cardPayment) {
-        this.cardPayment = cardPayment;
-    }
-
-    public void setServiceStation(boolean serviceStation) {
-        this.serviceStation = serviceStation;
-    }
-
-    public void setRoundTheClock(boolean roundTheClock) {
-        this.roundTheClock = roundTheClock;
+    public void setFeatures(Features features) {
+        this.features = features;
     }
 
     public Schedule getSchedule() {
@@ -319,5 +251,13 @@ public class Washer {
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
+    }
+
+    public boolean isRoundTheClock() {
+        return roundTheClock;
+    }
+
+    public void setRoundTheClock(boolean roundTheClock) {
+        this.roundTheClock = roundTheClock;
     }
 }

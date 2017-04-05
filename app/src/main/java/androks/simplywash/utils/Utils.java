@@ -120,6 +120,12 @@ public class Utils {
         }
     }
 
+    public static String servicesToString(){
+        String temp = "";
+
+        return temp;
+    }
+
     public static boolean isWasherFits(Washer washer,
                                 Context context,
                                 List<String> favouriteWashers){
@@ -144,21 +150,21 @@ public class Utils {
         boolean onlyOpen =
                 sharedPreferences.getBoolean(Constants.FILTER_ONLY_OPEN, false);
 
-        if(restRoom && !washer.isRestRoom())
+        if(restRoom && !washer.getFeatures().isRestRoom())
             return false;
-        if(wifi && !washer.isWifi())
+        if(wifi && !washer.getFeatures().isWifi())
             return false;
-        if(wc && !washer.isWc())
+        if(wc && !washer.getFeatures().isWc())
             return false;
-        if(coffee && !washer.isCoffee())
+        if(coffee && !washer.getFeatures().isCoffee())
             return false;
-        if(cardPayment && !washer.isCardPayment())
+        if(cardPayment && !washer.getFeatures().isCardPayment())
             return false;
         if(onlyOpen && !isWasherOpenAtTheTime(washer))
             return false;
-        if(serviceStation && !washer.isServiceStation())
+        if(serviceStation && !washer.getFeatures().isServiceStation())
             return false;
-        if(grocery && !washer.isShop())
+        if(grocery && !washer.getFeatures().isShop())
             return false;
         if(rating != 0.0f && rating < washer.getRating())
             return false;
