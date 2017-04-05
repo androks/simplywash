@@ -166,7 +166,9 @@ public class SettingsActivity extends AppCompatActivity {
         edit.putString(Constants.CITY_PREF, null);
         edit.apply();
         Digits.logout();
-        startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+        Intent i = new Intent(SettingsActivity.this, LoginActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
         finish();
     }
 
