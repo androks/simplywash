@@ -8,6 +8,12 @@
             android:title="@string/map" />
 
         <item
+            android:id="@+id/add_washer"
+            android:title="@string/title_add_washer"
+            android:enabled="true"
+            android:icon="@drawable/ic_add_black_24dp" />
+
+        <item
             android:id="@+id/share"
             android:title="@string/share"
             android:enabled="true"

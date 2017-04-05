@@ -18,7 +18,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -29,10 +28,11 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import androks.simplywash.utils.Constants;
 import androks.simplywash.R;
+import androks.simplywash.fragments.AddWasherFragment;
 import androks.simplywash.fragments.MapFragment;
 import androks.simplywash.fragments.ShareFragment;
+import androks.simplywash.utils.Constants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -47,8 +47,9 @@ public class MainActivity extends BaseActivity {
     private TextView mCityTextView;
 
     // tags used to attach the fragments
-    private static final String TAG_MAP = "map";
-    private static final String TAG_SHARE = "share";
+    private static final String TAG_MAP = "TAG_MAP";
+    private static final String TAG_SHARE = "TAG_SHARE";
+    private static final String TAG_ADD_WASHER = "TAG_ADD_WASHER";
     public static String CURRENT_TAG = TAG_MAP;
 
     // index to identify current nav menu item
@@ -137,8 +138,12 @@ public class MainActivity extends BaseActivity {
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_MAP;
                         break;
-                    case R.id.share:
+                    case R.id.add_washer:
                         navItemIndex = 1;
+                        CURRENT_TAG = TAG_ADD_WASHER;
+                        break;
+                    case R.id.share:
+                        navItemIndex = 2;
                         CURRENT_TAG = TAG_SHARE;
                         break;
                     default:
@@ -240,8 +245,11 @@ public class MainActivity extends BaseActivity {
             case 0:
                 actionBar.setTitle(R.string.title_activity_washers_map);
                 break;
-            case 1:
+            case 2:
                 actionBar.setTitle(R.string.title_activity_share);
+                break;
+            case 1:
+                actionBar.setTitle(R.string.title_add_washer);
                 break;
         }
     }
@@ -251,6 +259,8 @@ public class MainActivity extends BaseActivity {
             case 0:
                 return new MapFragment();
             case 1:
+                return new AddWasherFragment();
+            case 2:
                 return new ShareFragment();
             default:
                 return new MapFragment();
@@ -360,10 +370,4 @@ public class MainActivity extends BaseActivity {
             mCurrentFragment.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.map_menu, menu);
-        return true;
-    }
 }

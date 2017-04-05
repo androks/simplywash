@@ -138,4 +138,9 @@
     <string name="sunday">Sunday</string>
     <string name="boxes">box(es)</string>
     <string name="failed_to_call">Failed to call</string>
+    <string name="title_add_washer">Suggest washer</string>
+    <string name="pick_num_of_boxes">Pick number of boxes</string>
+    <string name="pick_services">Pick services</string>
+    <string name="pick_place">Pick place</string>
+    <string name="pick_schedule">Pick schedule</string>
 </resources>
