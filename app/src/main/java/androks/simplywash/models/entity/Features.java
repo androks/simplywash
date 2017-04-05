@@ -1,4 +1,4 @@
-package androks.simplywash.models;
+package androks.simplywash.models.entity;
 
 /**
  * Created by androks on 4/5/2017.

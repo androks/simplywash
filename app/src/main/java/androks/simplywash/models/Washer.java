@@ -1,11 +1,12 @@
 package androks.simplywash.models;
 
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
 import androks.simplywash.enums.WasherStatus;
 import androks.simplywash.enums.WasherType;
+import androks.simplywash.models.entity.Features;
+import androks.simplywash.models.entity.WasherPlace;
 
 /**
  * Created by androks on 11/17/2016.
@@ -16,15 +17,12 @@ public class Washer {
     private Schedule schedule;
     private WasherStatus state;
     private WasherType type;
+    private WasherPlace place;
     private String id;
     private String userId;
     private String name;
     private String phone;
-    private String location;
     private String description;
-    private String placeId;
-    private double latitude;
-    private double longitude;
     private float rating;
     private int boxes;
     private int availableBoxes;
@@ -34,7 +32,7 @@ public class Washer {
     private boolean roundTheClock;
 
     public Washer(WasherType type, String id, String name, String phone, String description,
-                  int boxes, int defaultPrice, Place place, Features features) {
+                  int boxes, int defaultPrice, WasherPlace place, Features features) {
         this.type = type;
         this.id = id;
         this.name = name;
@@ -43,16 +41,18 @@ public class Washer {
         this.boxes = boxes;
         this.defaultPrice = defaultPrice;
         this.features = features;
+        this.place = place;
         schedule = new Schedule();
         state = WasherStatus.Offline;
         userId = "";
-        placeId = place.getId();
-        latitude = place.getLatLng().latitude;
-        longitude = place.getLatLng().longitude;
         rating = 0f;
         availableBoxes = 0;
         votes = 0;
         favorites = 0;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Exclude
@@ -86,7 +86,7 @@ public class Washer {
 
     @Exclude
     public LatLng getLatLng(){
-        return new LatLng(latitude, longitude);
+        return place.getLatLng();
     }
 
     @Exclude
@@ -133,26 +133,6 @@ public class Washer {
         return phone;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
     public float getRating() {
         return rating;
     }
@@ -193,24 +173,8 @@ public class Washer {
         this.phone = phone;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     public void setRating(float rating) {
@@ -259,5 +223,13 @@ public class Washer {
 
     public void setRoundTheClock(boolean roundTheClock) {
         this.roundTheClock = roundTheClock;
+    }
+
+    public WasherPlace getPlace() {
+        return place;
+    }
+
+    public void setPlace(WasherPlace place) {
+        this.place = place;
     }
 }

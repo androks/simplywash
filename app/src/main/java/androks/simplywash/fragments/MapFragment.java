@@ -396,9 +396,10 @@ public class MapFragment extends Fragment implements
 
     @OnClick(R.id.location)
     public void showWasherOnGoogleMap() {
-        Uri gmmIntentUri = Uri.parse("geo:" + mShowingWasher.getLatitude() + ","
-                + mShowingWasher.getLongitude() + "?q=" + mShowingWasher.getLatitude() + ","
-                + mShowingWasher.getLongitude());
+        Uri gmmIntentUri = Uri.parse("geo:" + mShowingWasher.getPlace().getLatitude() + ","
+                + mShowingWasher.getPlace().getLongitude() + "?q="
+                + mShowingWasher.getPlace().getLatitude() + ","
+                + mShowingWasher.getPlace().getLongitude());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(mContext.getPackageManager()) != null)
@@ -449,7 +450,7 @@ public class MapFragment extends Fragment implements
         for (Washer washer : mWashersList.values()) {
             MarkerOptions marker = new MarkerOptions()
                     .title(washer.getId())
-                    .position(new LatLng(washer.getLatitude(), washer.getLongitude()))
+                    .position(washer.getLatLng())
                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_place_default));
             mMarkersList.put(washer.getId(), mMap.addMarker(marker));
         }
@@ -668,7 +669,7 @@ public class MapFragment extends Fragment implements
         mRatingBar.setRating(mShowingWasher.getRating());
         mRatingText.setText(String.format(Locale.getDefault(), "%.1f", mShowingWasher.getRating()));
         mCountOfRates.setText(String.format(Locale.getDefault(), "(%d)", mShowingWasher.getVotes()));
-        mLocation.setText(mShowingWasher.getLocation());
+        mLocation.setText(mShowingWasher.getPlace().getAddress());
         mPhone.setText(mShowingWasher.getPhone());
         mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
 

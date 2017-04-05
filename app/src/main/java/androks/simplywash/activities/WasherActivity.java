@@ -256,7 +256,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     private void inflateView() {
         mCollapsingToolbarLayout.setTitle(mWasher.getName());
 
-        mLocation.setText(mWasher.getLocation());
+        mLocation.setText(mWasher.getPlace().getAddress());
         mPhone.setText(mWasher.getPhone());
         mBoxes.setText(String.valueOf(mWasher.getBoxes()));
         mCountOfFavourites.setText(String.valueOf(mWasher.getFavorites()));
@@ -342,7 +342,10 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.location_layout)
     public void showWasherOnGoogleMap() {
-        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getLatitude() + "," + mWasher.getLongitude() + "?q=" + mWasher.getLatitude() + "," + mWasher.getLongitude());
+        Uri gmmIntentUri = Uri.parse("geo:" + mWasher.getPlace().getLatitude() + ","
+                + mWasher.getPlace().getLongitude() + "?q="
+                + mWasher.getPlace().getLatitude() + ","
+                + mWasher.getPlace().getLongitude());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(getPackageManager()) != null)
