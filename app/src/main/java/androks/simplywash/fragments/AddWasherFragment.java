@@ -30,6 +30,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+import java.util.Locale;
 
 import androks.simplywash.R;
 import androks.simplywash.dialogs.FeaturesDialog;
@@ -135,12 +136,27 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.apply:
-                if(!validateFields())
-                    return false;
-                writeWasherToDB();
+                applyWasher();
                 return true;
         }
         return false;
+    }
+
+    private void applyWasher() {
+        if(!validateFields())
+            return;
+        initializeWasher();
+        writeWasherToDB();
+    }
+
+    private void initializeWasher() throws NumberFormatException{
+        mWasher.setCity(mCityList.get(mCity.getSelectedItemPosition()));
+        mWasher.setName(mName.getText().toString());
+        mWasher.setPhone(mPhone.getText().toString());
+        mWasher.setDefaultPrice(Integer.valueOf(mPrice.getText().toString()));
+        mWasher.setType(WasherType.values()[mType.getSelectedItemPosition()]);
+        mWasher.setRoundTheClock(true);
+        mWasher.setDescription(mDescription.getText().toString());
     }
 
     private void writeWasherToDB() {
@@ -201,16 +217,25 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mWasher.setBoxes(picker.getValue());
-                        mBoxesTV.setText(mWasher.getBoxes() + R.string.boxes);
+                        mBoxesTV.setText(String.format(
+                                Locale.getDefault(),
+                                "%s %s",
+                                mWasher.getBoxes(),
+                                getActivity().getResources().getString(R.string.boxes)));
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
                 .show();
     }
 
     @OnClick(R.id.services_layout)
     public void pickServices(){
-        AppCompatDialogFragment featuresDialog = FeaturesDialog.newInstance(null);
+        AppCompatDialogFragment featuresDialog = FeaturesDialog.newInstance(mWasher.getFeatures(), this);
         featuresDialog.show(getActivity().getSupportFragmentManager(), FeaturesDialog.TAG_EDITABLE);
     }
 
@@ -237,6 +262,6 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     @Override
     public void onServicesAdded(Features features) {
         mWasher.setFeatures(features);
-        mServices.setText(features.toString());
+        mServices.setText(Utils.featuresToString(features, getResources()));
     }
 }

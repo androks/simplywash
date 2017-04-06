@@ -1,7 +1,5 @@
 package androks.simplywash.models.entity;
 
-import androks.simplywash.R;
-
 /**
  * Created by androks on 4/5/2017.
  */
@@ -84,26 +82,5 @@ public class Features {
 
     public void setServiceStation(boolean serviceStation) {
         this.serviceStation = serviceStation;
-    }
-
-    @Override
-    public String toString() {
-        String temp = "";
-        if(wc)
-            temp += R.string.wc + ", ";
-        if(restRoom)
-            temp += R.string.rest_room + ", ";
-        if(wifi)
-            temp += R.string.wifi + ", ";
-        if(coffee)
-            temp += R.string.coffee + ", ";
-        if(shop)
-            temp += R.string.shop + ", ";
-        if(cardPayment)
-            temp += R.string.card_payment + ", ";
-        if(serviceStation)
-            temp += R.string.service_station;
-
-        return temp;
     }
 }

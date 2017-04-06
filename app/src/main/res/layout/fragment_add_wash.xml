@@ -8,8 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/activity_vertical_margin"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -75,11 +75,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="16dp"
+            android:paddingBottom="8dp"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:paddingTop="16dp">
+            android:paddingTop="8dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -103,11 +104,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="16dp"
+            android:paddingBottom="8dp"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:paddingTop="16dp">
+            android:paddingTop="8dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -218,8 +220,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/black"
-            android:alpha="0.2"/>
+            android:alpha="0.2"
+            android:background="@android:color/black" />
 
         <Switch
             android:id="@+id/schedule_switch"
@@ -235,11 +237,11 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:paddingBottom="8dp"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:paddingTop="8dp">
+            android:paddingTop="8dp"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -271,9 +273,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
+                android:gravity="start"
                 android:hint="@string/description"
                 android:inputType="textMultiLine"
-                android:gravity="start"
                 android:minLines="3"
                 android:scrollbars="vertical" />
         </android.support.design.widget.TextInputLayout>

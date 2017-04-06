@@ -2,6 +2,7 @@ package androks.simplywash.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -14,6 +15,7 @@ import java.util.List;
 import androks.simplywash.R;
 import androks.simplywash.directionsApi.Data.Direction;
 import androks.simplywash.models.Washer;
+import androks.simplywash.models.entity.Features;
 
 /**
  * Created by androks on 2/25/2017.
@@ -181,5 +183,25 @@ public class Utils {
         if(minute == 60)
             minute = 0;
         return minute;
+    }
+
+    public static String featuresToString(Features features, Resources resources){
+        String temp = "";
+        if(features.isWc())
+            temp += resources.getString(R.string.wc) + " ";
+        if(features.isRestRoom())
+            temp += resources.getString(R.string.rest_room) + " ";
+        if(features.isWifi())
+            temp += resources.getString(R.string.wifi) + " ";
+        if(features.isCoffee())
+            temp += resources.getString(R.string.coffee) + " ";
+        if(features.isShop())
+            temp += resources.getString(R.string.shop) + " ";
+        if(features.isCardPayment())
+            temp += resources.getString(R.string.card_payment) + " ";
+        if(features.isServiceStation())
+            temp += resources.getString(R.string.service_station) + " ";
+
+        return temp;
     }
 }

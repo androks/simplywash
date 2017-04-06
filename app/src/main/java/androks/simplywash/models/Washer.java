@@ -55,6 +55,16 @@ public class Washer {
         roundTheClock = false;
     }
 
+    @Exclude
+    public void setState(WasherStatus state) {
+        this.state = state;
+    }
+
+    @Exclude
+    public void setType(WasherType type) {
+        this.type = type;
+    }
+
     public String getDescription() {
         return description;
     }

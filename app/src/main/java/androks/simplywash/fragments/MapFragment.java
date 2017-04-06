@@ -96,7 +96,7 @@ public class MapFragment extends Fragment implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         ResultCallback<LocationSettingsResult>,
-        DirectionsManager.Listener {
+        DirectionsManager.Listener{
 
     /**
      * Define constant values
@@ -365,7 +365,7 @@ public class MapFragment extends Fragment implements
 
     @OnClick(R.id.services)
     public void showServiceDialog() {
-        DialogFragment dialog = FeaturesDialog.newInstance(mShowingWasher);
+        DialogFragment dialog = FeaturesDialog.newInstance(mShowingWasher.getFeatures());
         dialog.show(mContext.getSupportFragmentManager(), "FeaturesDialog");
     }
 
@@ -822,4 +822,5 @@ public class MapFragment extends Fragment implements
                 break;
         }
     }
+
 }

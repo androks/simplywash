@@ -422,7 +422,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
     @OnClick(R.id.services)
     public void showServicesDialog() {
-        DialogFragment dialog = FeaturesDialog.newInstance(mWasher);
+        DialogFragment dialog = FeaturesDialog.newInstance(mWasher.getFeatures());
         dialog.show(getSupportFragmentManager(), "FeaturesDialog");
     }
 

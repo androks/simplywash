@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Switch;
 
-import androks.simplywash.models.Washer;
 import androks.simplywash.R;
 import androks.simplywash.models.entity.Features;
 import androks.simplywash.utils.Utils;
@@ -62,15 +61,24 @@ public class FeaturesDialog extends AppCompatDialogFragment {
     @BindView(R.id.applyBtn)
     View mApplyBtn;
 
-    private Washer washer;
+    private Features features;
+
+    private AddServicesDialogListener mListener;
 
     public FeaturesDialog() {
         // Empty constructor required for DialogFragment
     }
 
-    public static FeaturesDialog newInstance(Washer washer) {
+    public static FeaturesDialog newInstance(Features features) {
         FeaturesDialog dialog = new FeaturesDialog();
-        dialog.setWasher(washer);
+        dialog.setFeatures(features);
+        return dialog;
+    }
+
+    public static FeaturesDialog newInstance(Features features, AddServicesDialogListener listener) {
+        FeaturesDialog dialog = new FeaturesDialog();
+        dialog.setListener(listener);
+        dialog.setFeatures(features);
         return dialog;
     }
 
@@ -88,47 +96,56 @@ public class FeaturesDialog extends AppCompatDialogFragment {
     }
 
     private void applyEditMode() {
-        mWC.setEnabled(true);
-        mWifi.setEnabled(true);
-        mCoffee.setEnabled(true);
-        mRestRoom.setEnabled(true);
-        mGrocery.setEnabled(true);
-        mServiceStation.setEnabled(true);
-        mCardPayment.setEnabled(true);
+        mWCSwitch.setClickable(true);
+        mWifiSwitch.setClickable(true);
+        mCoffeeSwitch.setClickable(true);
+        mRestRoomSwitch.setClickable(true);
+        mGrocerySwitch.setClickable(true);
+        mServiceStationSwitch.setClickable(true);
+        mCardPaymentSwitch.setClickable(true);
         mApplyBtn.setVisibility(View.VISIBLE);
     }
 
     private void checkMode() {
-        if (getTag().equals(FeaturesDialog.TAG_EDITABLE))
+        if (getTag().equals(FeaturesDialog.TAG_EDITABLE)) {
             applyEditMode();
+            setSwitches();
+        }
         else
             setData();
     }
 
 
     private void setData() {
-        mWC.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isWc())));
-        mWifi.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isWifi())));
-        mCoffee.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isCoffee())));
-        mGrocery.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isShop())));
-        mRestRoom.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isRestRoom())));
-        mCardPayment.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isCardPayment())));
-        mServiceStation.setColorFilter(getResources()
-                .getColor(Utils.getServiceAvailableColor(washer.getFeatures().isServiceStation())));
+        setPicturesColors();
+        setSwitches();
+    }
 
-        mWCSwitch.setChecked(washer.getFeatures().isWc());
-        mWifiSwitch.setChecked(washer.getFeatures().isWifi());
-        mCardPaymentSwitch.setChecked(washer.getFeatures().isCardPayment());
-        mCoffeeSwitch.setChecked(washer.getFeatures().isCoffee());
-        mGrocerySwitch.setChecked(washer.getFeatures().isShop());
-        mRestRoomSwitch.setChecked(washer.getFeatures().isRestRoom());
-        mServiceStationSwitch.setChecked(washer.getFeatures().isServiceStation());
+    private void setSwitches() {
+        mWCSwitch.setChecked(features.isWc());
+        mWifiSwitch.setChecked(features.isWifi());
+        mCardPaymentSwitch.setChecked(features.isCardPayment());
+        mCoffeeSwitch.setChecked(features.isCoffee());
+        mGrocerySwitch.setChecked(features.isShop());
+        mRestRoomSwitch.setChecked(features.isRestRoom());
+        mServiceStationSwitch.setChecked(features.isServiceStation());
+    }
+
+    private void setPicturesColors() {
+        mWC.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(features.isWc())));
+        mWifi.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(features.isWifi())));
+        mCoffee.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(features.isCoffee())));
+        mGrocery.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(features.isShop())));
+        mRestRoom.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(features.isRestRoom())));
+        mCardPayment.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(features.isCardPayment())));
+        mServiceStation.setColorFilter(getResources()
+                .getColor(Utils.getServiceAvailableColor(features.isServiceStation())));
     }
 
     @Override
@@ -140,18 +157,14 @@ public class FeaturesDialog extends AppCompatDialogFragment {
 
     @OnClick(R.id.applyBtn)
     public void applyServices() {
-        try {
-            ((AddServicesDialogListener) getActivity()).onServicesAdded(new Features(
-                    mRestRoom.isSelected(),
-                    mWifi.isSelected(),
-                    mWC.isSelected(),
-                    mCoffee.isSelected(),
-                    mGrocery.isSelected(),
-                    mCardPayment.isSelected(),
-                    mServiceStation.isSelected()
-            ));
-        } catch (ClassCastException ignored) {
-        }
+        mListener.onServicesAdded(new Features(
+                    mRestRoomSwitch.isChecked(),
+                    mWifiSwitch.isChecked(),
+                    mWCSwitch.isChecked(),
+                    mCoffeeSwitch.isChecked(),
+                    mGrocerySwitch.isChecked(),
+                    mCardPaymentSwitch.isChecked(),
+                    mServiceStationSwitch.isChecked()));
         dismiss();
     }
 
@@ -160,7 +173,11 @@ public class FeaturesDialog extends AppCompatDialogFragment {
         this.dismiss();
     }
 
-    public void setWasher(Washer washer) {
-        this.washer = washer;
+    public void setFeatures(Features features) {
+        this.features = features;
+    }
+
+    public void setListener(AddServicesDialogListener mListener) {
+        this.mListener = mListener;
     }
 }
