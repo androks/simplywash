@@ -27,7 +27,6 @@ public class Washer {
     private String id;
     private String userId;
     private String name;
-    private String phone;
     private String description;
     private float rating;
     private int boxes;
@@ -258,11 +257,8 @@ public class Washer {
         this.photos = photos;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    @Exclude
+    public void setPhone(String phone){
+        place.setPhone(phone);
     }
 }

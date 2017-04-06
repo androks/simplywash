@@ -252,7 +252,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mCollapsingToolbarLayout.setTitle(mWasher.getName());
 
         mLocation.setText(mWasher.getPlace().getAddress());
-        mPhone.setText(mWasher.getPhone());
+        mPhone.setText(mWasher.getPlace().getPhone());
         mBoxes.setText(String.valueOf(mWasher.getBoxes()));
         mCountOfFavourites.setText(String.valueOf(mWasher.getFavorites()));
 
@@ -328,7 +328,7 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
     @OnClick(R.id.phone)
     public void callToWasher() {
         try {
-            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mWasher.getPhone()));
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mWasher.getPlace().getPhone()));
             startActivity(intent);
         } catch (android.content.ActivityNotFoundException e) {
             Toast.makeText(getApplicationContext(), R.string.failed_to_call, Toast.LENGTH_LONG).show();

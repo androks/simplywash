@@ -387,7 +387,7 @@ public class MapFragment extends Fragment implements
     @OnClick(R.id.phone)
     public void callToWasher() {
         try {
-            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+mShowingWasher.getPhone()));
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+mShowingWasher.getPlace().getPhone()));
             startActivity(intent);
         } catch (android.content.ActivityNotFoundException e){
             Toast.makeText(mContext.getApplicationContext(), R.string.failed_to_call,Toast.LENGTH_LONG).show();
@@ -670,7 +670,7 @@ public class MapFragment extends Fragment implements
         mRatingText.setText(String.format(Locale.getDefault(), "%.1f", mShowingWasher.getRating()));
         mCountOfRates.setText(String.format(Locale.getDefault(), "(%d)", mShowingWasher.getVotes()));
         mLocation.setText(mShowingWasher.getPlace().getAddress());
-        mPhone.setText(mShowingWasher.getPhone());
+        mPhone.setText(mShowingWasher.getPlace().getPhone());
         mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
 
         if(mShowingWasher.isRoundTheClock())

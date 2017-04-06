@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -85,6 +87,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
         mWasher.setDefaultValues();
         loadCities();
         initializeWasherTypesSpinner();
+        pickPlace();
         return rootView;
     }
 
@@ -188,7 +191,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
         mPrice.setError(null);
     }
 
-    @OnClick(R.id.place_layout)
+    @OnClick(R.id.place)
     public void pickPlace(){
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
@@ -231,6 +234,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
                     }
                 })
                 .show();
+        PlacePhotoMetadata metadata ;
     }
 
     @OnClick(R.id.services_layout)
@@ -253,10 +257,22 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == AppCompatActivity.RESULT_OK) {
-                mWasher.setPlace(new WasherPlace(PlacePicker.getPlace(data, getActivity())));
-                mPlaceTV.setText(mWasher.getPlace().getAddress());
+                inflateWasherInfoByGooglePlace(data);
             }
         }
+    }
+
+    private void inflateWasherInfoByGooglePlace(Intent data) {
+        Place place = PlacePicker.getPlace(data, getActivity());
+        mWasher.setPlace(new WasherPlace(place));
+        mPlaceTV.setText(mWasher.getPlace().getAddress());
+        mName.setText(place.getName());
+        mPhone.setText(mWasher.getPlace().getPhone());
+        if(mCityList != null && !mCityList.isEmpty()
+                && mCityList.indexOf(Utils.getCityFromPlace(place, getActivity())) >= 0){
+            mCity.setSelection(mCityList.indexOf(Utils.getCityFromPlace(place, getActivity())));
+        }
+
     }
 
     @Override
