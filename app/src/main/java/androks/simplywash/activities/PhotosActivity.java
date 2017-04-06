@@ -9,16 +9,12 @@ import android.view.MenuItem;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 import com.viewpagerindicator.CirclePageIndicator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androks.simplywash.R;
 import androks.simplywash.adapters.PhotosPagerAdapter;
+import androks.simplywash.models.Washer;
 import androks.simplywash.utils.Constants;
 import androks.simplywash.utils.DepthPageTransformer;
 import androks.simplywash.utils.Utils;
@@ -39,8 +35,8 @@ public class PhotosActivity extends AppCompatActivity {
      */
 
     private String mWasherId;
+    private Washer mWasher;
     private int mStartId;
-    private List<StorageReference> mPhotoReferences = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,19 +48,14 @@ public class PhotosActivity extends AppCompatActivity {
         mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID);
         mStartId = getIntent().getExtras().getInt(Constants.PHOTO_INDEX);
 
-        downloadPhotoReferences();
+        downloadWasherInfo();
     }
 
-    private void downloadPhotoReferences() {
-        Utils.getPhotos(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void downloadWasherInfo() {
+        Utils.getWasher(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> urls = dataSnapshot.getValue(
-                        new GenericTypeIndicator<List<String>>() {}
-                );
-                for(String url: urls){
-                    mPhotoReferences.add(Utils.getPhotoStorageRef(mWasherId).child(url));
-                }
+                mWasher = dataSnapshot.getValue(Washer.class);
                 setUpViewPager();
             }
 
@@ -78,7 +69,7 @@ public class PhotosActivity extends AppCompatActivity {
     private void setUpViewPager() {
         mPhotosViewPager.setAdapter(new PhotosPagerAdapter(
                 getSupportFragmentManager(),
-                mPhotoReferences,
+                mWasher,
                 R.layout.item_image)
         );
         mPhotosViewPager.setPageTransformer(true, new DepthPageTransformer());

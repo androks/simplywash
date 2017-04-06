@@ -3,9 +3,13 @@ package androks.simplywash.models;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import androks.simplywash.enums.WasherStatus;
 import androks.simplywash.enums.WasherType;
 import androks.simplywash.models.entity.Features;
+import androks.simplywash.models.entity.WasherPhoto;
 import androks.simplywash.models.entity.WasherPlace;
 
 /**
@@ -13,6 +17,7 @@ import androks.simplywash.models.entity.WasherPlace;
  */
 
 public class Washer {
+    private List<WasherPhoto> photos;
     private Features features;
     private Schedule schedule;
     private WasherStatus state;
@@ -44,7 +49,6 @@ public class Washer {
         id = "";
         userId = "";
         name = "";
-        phone = "";
         description = "";
         rating = 0f;
         boxes = 0;
@@ -53,6 +57,7 @@ public class Washer {
         favorites = 0;
         defaultPrice = 0;
         roundTheClock = false;
+        photos = new ArrayList<>();
     }
 
     @Exclude
@@ -141,10 +146,6 @@ public class Washer {
         return name;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
     public float getRating() {
         return rating;
     }
@@ -179,10 +180,6 @@ public class Washer {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public void setDescription(String description) {
@@ -251,5 +248,21 @@ public class Washer {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public List<WasherPhoto> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<WasherPhoto> photos) {
+        this.photos = photos;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

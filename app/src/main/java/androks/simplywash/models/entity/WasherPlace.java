@@ -13,6 +13,9 @@ public class WasherPlace {
     private String address;
     private double latitude;
     private double longitude;
+    private int priceLevel;
+    private String phone;
+    private String url;
 
 
     public WasherPlace(){}
@@ -21,6 +24,9 @@ public class WasherPlace {
         address = place.getAddress().toString();
         latitude = place.getLatLng().latitude;
         longitude = place.getLatLng().longitude;
+        priceLevel = place.getPriceLevel();
+        phone = place.getPhoneNumber().toString();
+        url = place.getWebsiteUri().toString();
     }
 
     public String getId() {
@@ -53,6 +59,30 @@ public class WasherPlace {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public int getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(int priceLevel) {
+        this.priceLevel = priceLevel;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Exclude

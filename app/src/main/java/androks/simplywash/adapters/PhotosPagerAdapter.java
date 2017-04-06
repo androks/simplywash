@@ -3,37 +3,35 @@ package androks.simplywash.adapters;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.google.firebase.storage.StorageReference;
-
-import java.util.List;
-
-import androks.simplywash.fragments.ImageFragment;
+import androks.simplywash.fragments.PhotoFragment;
+import androks.simplywash.models.Washer;
 
 /**
  * Created by androks on 4/1/2017.
  */
 
 public class PhotosPagerAdapter extends FragmentStatePagerAdapter {
-    private List<StorageReference> mReferences;
-    private int mResourseId;
+    private Washer mWasher;
+    private int mResourceId;
 
-    public PhotosPagerAdapter(FragmentManager fm, List<StorageReference> references, int resourseId) {
+    public PhotosPagerAdapter(FragmentManager fm, Washer washer, int resourceId) {
         super(fm);
-        mReferences = references;
-        mResourseId = resourseId;
+        mWasher = washer;
+        mResourceId = resourceId;
     }
 
     @Override
-    public ImageFragment getItem(int position) {
-        ImageFragment fragment = new ImageFragment();
-        fragment.setImageReference(mReferences.get(position));
-        fragment.setId(position);
-        fragment.setResourseId(mResourseId);
-        return fragment;
+    public PhotoFragment getItem(int position) {
+        return PhotoFragment.newInstance(
+                mResourceId,
+                position,
+                mWasher.getId(),
+                mWasher.getPhotos().get(position)
+        );
     }
 
     @Override
     public int getCount() {
-        return mReferences.size();
+        return mWasher.getPhotos().size();
     }
 }

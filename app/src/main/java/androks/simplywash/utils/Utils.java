@@ -31,18 +31,6 @@ public class Utils {
         return FirebaseDatabase.getInstance().getReference().child("washers");
     }
 
-    public static DatabaseReference getWashersInCity(String city){
-        return FirebaseDatabase.getInstance().getReference().child("washers_info").child(city).child("washers");
-    }
-
-    public static DatabaseReference getWasherInCity(String city, String id){
-        return FirebaseDatabase.getInstance().getReference().child("washers_info").child(city).child("washers").child(id);
-    }
-
-    public static DatabaseReference getPhotos(String id){
-        return FirebaseDatabase.getInstance().getReference().child("photos").child(id);
-    }
-
     public static DatabaseReference getListOfCities(){
         return FirebaseDatabase.getInstance().getReference().child("cities");
     }
@@ -69,10 +57,6 @@ public class Utils {
 
     public static DatabaseReference getUserReview(String washerId, String userPhone){
         return  FirebaseDatabase.getInstance().getReference().child("reviews").child(washerId).child(userPhone);
-    }
-
-    public static DatabaseReference getExpandedReviews(String washerId){
-        return  FirebaseDatabase.getInstance().getReference().child("full-reviews").child(washerId);
     }
 
     public static DatabaseReference getUserInfo(String userId){

@@ -28,16 +28,24 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ReviewsActivity extends BaseActivity implements
-        AddReviewDialog.AddReviewDialogListener{
+        AddReviewDialog.AddReviewDialogListener {
 
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.rates_count) TextView mCountOfRates;
-    @BindView(R.id.rating_bar) RatingBar mRatingBar;
-    @BindView(R.id.rating_text) TextView mRatingText;
-    @BindView(R.id.recyclerLV) RecyclerView mRecyclerLV;
-    @BindView(R.id.content) View mContent;
-    @BindView(R.id.progressBar) View mProgressBar;
-    @BindView(R.id.empty_list) View mListEmptyList;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.rates_count)
+    TextView mCountOfRates;
+    @BindView(R.id.rating_bar)
+    RatingBar mRatingBar;
+    @BindView(R.id.rating_text)
+    TextView mRatingText;
+    @BindView(R.id.recyclerLV)
+    RecyclerView mRecyclerLV;
+    @BindView(R.id.content)
+    View mContent;
+    @BindView(R.id.progressBar)
+    View mProgressBar;
+    @BindView(R.id.empty_list)
+    View mListEmptyList;
 
     private String mWasherId;
     private Washer mWasher;
@@ -59,22 +67,22 @@ public class ReviewsActivity extends BaseActivity implements
 
         setUpRecyclerLV();
 
-        downloadCommonData();
+        downloadWasherInfo();
     }
 
     private void getDataFromIntent() {
         mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID, null);
-        if(mWasherId == null){
+        if (mWasherId == null) {
             onBackPressed();
             finish();
         }
     }
 
-    private void downloadCommonData() {
+    private void downloadWasherInfo() {
         Utils.getWasher(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChildren()) {
+                if (dataSnapshot.hasChildren()) {
                     mWasher = dataSnapshot.getValue(Washer.class);
                     setRatings();
                 }
@@ -101,7 +109,7 @@ public class ReviewsActivity extends BaseActivity implements
                 Review.class,
                 R.layout.item_review,
                 ViewHolder.class,
-                Utils.getExpandedReviews(mWasherId)
+                Utils.getReviewsFor(mWasherId)
         ) {
             @Override
             protected void populateViewHolder(ViewHolder viewHolder, Review model, int position) {
@@ -116,7 +124,7 @@ public class ReviewsActivity extends BaseActivity implements
 
     private void setUpToolbar() {
         setSupportActionBar(mToolbar);
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.title_activity_reviews);
         }
@@ -130,26 +138,26 @@ public class ReviewsActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-        if(mDataHasChanged)
+        if (mDataHasChanged)
             setResult(Constants.RATING_CHANGED_CODE);
         finish();
     }
 
-    private void showProgress(){
+    private void showProgress() {
         mContent.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         mListEmptyList.setVisibility(View.GONE);
     }
 
-    private void hideProgress(){
+    private void hideProgress() {
         mContent.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
-        if(mRecyclerAdapter.getItemCount() <= 0)
+        if (mRecyclerAdapter.getItemCount() <= 0)
             mListEmptyList.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.add_review_btn)
-    public void addReview(){
+    public void addReview() {
         AppCompatDialogFragment addReviewDialog = AddReviewDialog.newInstance(mWasherId);
         addReviewDialog.show(getSupportFragmentManager(), "Add review");
     }
@@ -158,9 +166,14 @@ public class ReviewsActivity extends BaseActivity implements
     public void onReviewAdded(final Review review, final float oldRating) {
         showProgress();
         mDataHasChanged = true;
-        updateExpandedReviews(review);
-        Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review);
+        updateReviews(review);
         onRatingChanged(review, oldRating);
+    }
+
+    private void updateReviews(Review review) {
+        if (review.name.isEmpty())
+            review.name = getResources().getString(R.string.anonym);
+        Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review);
     }
 
     private void onRatingChanged(final Review review, final float oldRating) {
@@ -172,7 +185,7 @@ public class ReviewsActivity extends BaseActivity implements
                     return Transaction.success(mutableData);
                 }
 
-                if(oldRating <= 0.1f)
+                if (oldRating <= 0.1f)
                     washer.setRating(((washer.getRating() * washer.getVotes()) + review.rating)
                             / washer.increaseCountOfFavourites());
                 else
@@ -191,7 +204,6 @@ public class ReviewsActivity extends BaseActivity implements
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Utils.getWasherInCity(getCurrentCity(), mWasher.getId()).setValue(mWasher);
                 Toast.makeText(
                         ReviewsActivity.this,
                         R.string.thanks_for_review,
@@ -202,15 +214,6 @@ public class ReviewsActivity extends BaseActivity implements
         });
     }
 
-    private void updateExpandedReviews(Review review) {
-        if (!review.text.isEmpty()) {
-            if (review.name.isEmpty())
-                review.name = getResources().getString(R.string.anonym);
-            Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).setValue(review);
-        } else
-            Utils.getExpandedReviews(mWasherId).child(getCurrentUser().getUid()).removeValue();
-    }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         ViewHolder(View v) {
@@ -218,9 +221,13 @@ public class ReviewsActivity extends BaseActivity implements
             ButterKnife.bind(this, v);
         }
 
-        @BindView(R.id.name) TextView name;
-        @BindView(R.id.text) TextView text;
-        @BindView(R.id.rate) RatingBar rate;
-        @BindView(R.id.dateSpinner) TextView date;
+        @BindView(R.id.name)
+        TextView name;
+        @BindView(R.id.text)
+        TextView text;
+        @BindView(R.id.rate)
+        RatingBar rate;
+        @BindView(R.id.dateSpinner)
+        TextView date;
     }
 }
