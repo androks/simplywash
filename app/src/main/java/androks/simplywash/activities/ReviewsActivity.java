@@ -187,7 +187,7 @@ public class ReviewsActivity extends BaseActivity implements
 
                 if (oldRating <= 0.1f)
                     washer.setRating(((washer.getRating() * washer.getVotes()) + review.rating)
-                            / washer.increaseCountOfFavourites());
+                            / washer.increaseCountOfVotes());
                 else
                     washer.setRating(
                             ((washer.getRating() * washer.getVotes() - oldRating) + review.rating)
