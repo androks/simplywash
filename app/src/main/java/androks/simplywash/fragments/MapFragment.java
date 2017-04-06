@@ -411,7 +411,10 @@ public class MapFragment extends Fragment implements
         //((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if(mapFragment != null) {
+            mapFragment.getMapAsync(this);
+            return;
+        }
         findCurrentLocation();
     }
 
@@ -669,7 +672,7 @@ public class MapFragment extends Fragment implements
         mRatingBar.setRating(mShowingWasher.getRating());
         mRatingText.setText(String.format(Locale.getDefault(), "%.1f", mShowingWasher.getRating()));
         mCountOfRates.setText(String.format(Locale.getDefault(), "(%d)", mShowingWasher.getVotes()));
-        mLocation.setText(mShowingWasher.getPlace().getAddress());
+        mLocation.setText(mShowingWasher.getPlace().getStreet());
         mPhone.setText(mShowingWasher.getPlace().getPhone());
         mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
 

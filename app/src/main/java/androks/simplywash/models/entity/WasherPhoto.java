@@ -15,6 +15,11 @@ public class WasherPhoto {
     public WasherPhoto() {
     }
 
+    public WasherPhoto(PhotoType type, String url) {
+        this.url = url;
+        this.type = type;
+    }
+
     public String getUrl() {
         return url;
     }

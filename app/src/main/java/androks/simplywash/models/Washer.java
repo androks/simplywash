@@ -261,4 +261,8 @@ public class Washer {
     public void setPhone(String phone){
         place.setPhone(phone);
     }
+    @Exclude
+    public void setStreet(String street){
+        place.setStreet(street);
+    }
 }

@@ -43,6 +43,14 @@ public class Utils {
         return FirebaseStorage.getInstance().getReference().child("washer_images").child(id);
     }
 
+    public static DatabaseReference getPhotoDatabaseReference(String id){
+        return Utils.getWasher(id).child("photos");
+    }
+
+    public static StorageReference getPhotoStorageRef(String id, String photoName) {
+        return FirebaseStorage.getInstance().getReference().child("washer_images").child(id).child(photoName);
+    }
+
     public static DatabaseReference getScheduleFor(String washerId) {
         return FirebaseDatabase.getInstance().getReference().child("schedule").child(washerId);
     }
