@@ -81,9 +81,9 @@ public class ChooseCityActivity extends BaseActivity {
         mProgressBar.setVisibility(View.GONE);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ViewHolder(View v) {
+        public ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }

@@ -72,7 +72,7 @@ public class CheckedPriceListRecyclerAdapter extends
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ViewHolder(View v) {
+        public ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }

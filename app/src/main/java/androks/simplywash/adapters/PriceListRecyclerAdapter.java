@@ -46,9 +46,9 @@ public class PriceListRecyclerAdapter extends RecyclerView.Adapter<PriceListRecy
         holder.price.setText(String.valueOf(price.getPrice()));
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ViewHolder(View v) {
+        public ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }
