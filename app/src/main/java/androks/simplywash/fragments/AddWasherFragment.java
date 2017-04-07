@@ -199,6 +199,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
                             new GenericTypeIndicator<Map<String, Washer>>() {}
                     ));
                 }
+                hideProgress();
             }
 
             @Override

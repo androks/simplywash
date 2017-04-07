@@ -151,4 +151,6 @@
     <string name="uploading_washer">Uploading washer </string>
     <string name="thanks_for_adding_washer">Thank you for help</string>
     <string name="uploading">Uploading</string>
+    <string name="no_info">No information yet</string>
+    <string name="no_washers_in_your_city">There are no washers in your city</string>
 </resources>

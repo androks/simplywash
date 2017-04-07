@@ -4,16 +4,16 @@ import com.google.firebase.database.Exclude;
 
 import java.util.Calendar;
 
-/**
- * Created by androks on 4/1/2017.
- */
-
 public class Schedule {
     private String weekdays;
     private String sunday;
     private String saturday;
 
-    Schedule(){}
+    Schedule(){
+        weekdays = "";
+        sunday = "";
+        saturday = "";
+    }
 
     @Exclude
     public String getScheduleForToday(){

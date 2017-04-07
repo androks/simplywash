@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +34,7 @@ public class PriceActivity extends AppCompatActivity {
     @BindView(R.id.progressBar) View mProgressBar;
     @BindView(R.id.recyclerLV) RecyclerView mRecyclerView;
     @BindView(R.id.carTypesSpinner) Spinner mCarTypesSpinner;
+    @BindView(R.id.no_items) TextView mNoItemsMessage;
 
     private String mWasherId;
     private Map<String, Map<String, Service>> mPriceList;
@@ -66,6 +68,8 @@ public class PriceActivity extends AppCompatActivity {
                     setUpSpinner();
                     setUpRecyclerView();
                     hideProgress();
+                }else{
+                    showNoPricesMessage();
                 }
             }
 
@@ -74,6 +78,12 @@ public class PriceActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void showNoPricesMessage() {
+        mCarTypesSpinner.setVisibility(View.GONE);
+        hideProgress();
+        mNoItemsMessage.setVisibility(View.VISIBLE);
     }
 
     private void initializeStartValues() {

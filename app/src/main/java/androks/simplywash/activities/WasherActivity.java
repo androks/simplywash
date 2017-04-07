@@ -27,6 +27,8 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.viewpagerindicator.CirclePageIndicator;
 
+import java.util.Locale;
+
 import androks.simplywash.R;
 import androks.simplywash.adapters.PhotosPagerAdapter;
 import androks.simplywash.dialogs.AddReviewDialog;
@@ -252,21 +254,39 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
         mCollapsingToolbarLayout.setTitle(mWasher.getName());
 
         mLocation.setText(mWasher.getPlace().getAddress());
-        mPhone.setText(mWasher.getPlace().getPhone());
-        mBoxes.setText(String.valueOf(mWasher.getBoxes()));
         mCountOfFavourites.setText(String.valueOf(mWasher.getFavorites()));
-
-        if (mWasher.isRoundTheClock())
-            mSchedule.setText(R.string.round_the_clock);
+        if(mWasher.getPlace().getPhone().isEmpty())
+            mPhone.setText(R.string.no_info);
         else
-            mSchedule.setText(mWasher.getSchedule().getScheduleForToday());
+            mPhone.setText(mWasher.getPlace().getPhone());
 
-        if (Utils.isWasherOpenAtTheTime(mWasher)) {
+        if(mWasher.getBoxes() > 0)
+            mBoxes.setText(String.format(
+                    Locale.getDefault(),
+                    "%d %s",
+                    mWasher.getBoxes(),
+                    getResources().getString(R.string.boxes))
+            );
+        else
+            mBoxes.setText(R.string.no_info);
+
+        if (mWasher.isRoundTheClock()) {
+            mSchedule.setText(R.string.round_the_clock);
             mIsWasherOpen.setText(R.string.open);
             mIsWasherOpen.setTextColor(green);
         } else {
-            mIsWasherOpen.setText(R.string.closed);
-            mIsWasherOpen.setTextColor(red);
+            if (!mWasher.getSchedule().getScheduleForToday().isEmpty()) {
+                mSchedule.setText(mWasher.getSchedule().getScheduleForToday());
+                if (Utils.isWasherOpenAtTheTime(mWasher)) {
+                    mIsWasherOpen.setText(R.string.open);
+                    mIsWasherOpen.setTextColor(green);
+                } else {
+                    mIsWasherOpen.setText(R.string.closed);
+                    mIsWasherOpen.setTextColor(red);
+                }
+            } else {
+                mSchedule.setText(R.string.no_info);
+            }
         }
 
         mWC.setColorFilter(getResources()
@@ -286,7 +306,11 @@ public class WasherActivity extends BaseActivity implements AddReviewDialog.AddR
 
         setRatings();
 
-        mDescription.setText(mWasher.getDescription());
+        if(mWasher.getDescription().isEmpty())
+            mDescription.setText( R.string.no_info);
+        else
+            mDescription.setText(mWasher.getDescription());
+
         hideProgressDialog();
     }
 

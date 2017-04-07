@@ -96,7 +96,7 @@ public class MapFragment extends Fragment implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         ResultCallback<LocationSettingsResult>,
-        DirectionsManager.Listener{
+        DirectionsManager.Listener {
 
     /**
      * Define constant values
@@ -115,30 +115,54 @@ public class MapFragment extends Fragment implements
      **/
 
     //Binding colors
-    @BindColor(R.color.green) int green;
-    @BindColor(R.color.red) int red;
-    @BindColor(R.color.colorAccent) int colorAccent;
-    @BindColor(android.R.color.black) int colorDark;
-    @BindView(R.id.progress_horizontal) ProgressBar mProgressBar;
-    @BindView(R.id.sliding_layout) SlidingUpPanelLayout mSlidingLayout;
-    @BindView(R.id.name) TextView mName;
-    @BindView(R.id.rating_bar) RatingBar mRatingBar;
-    @BindView(R.id.rating_text) TextView mRatingText;
-    @BindView(R.id.count_of_rates) TextView mCountOfRates;
-    @BindView(R.id.location) TextView mLocation;
-    @BindView(R.id.phone) TextView mPhone;
-    @BindView(R.id.schedule) TextView mSchedule;
-    @BindView(R.id.default_price) TextView mDefaultPrice;
-    @BindView(R.id.is_washer_open) TextView mIsWasherOpen;
-    @BindView(R.id.duration) TextView mDuration;
-    @BindView(R.id.wifi) ImageView mWifi;
-    @BindView(R.id.coffee) ImageView mCoffee;
-    @BindView(R.id.restRoom) ImageView mRestRoom;
-    @BindView(R.id.grocery) ImageView mGrocery;
-    @BindView(R.id.wc) ImageView mWC;
-    @BindView(R.id.serviceStation) ImageView mServiceStation;
-    @BindView(R.id.cardPayment) ImageView mCardPayment;
-    @BindView(R.id.fab_location_settings) FloatingActionButton mMyLocationFab;
+    @BindColor(R.color.green)
+    int green;
+    @BindColor(R.color.red)
+    int red;
+    @BindColor(R.color.colorAccent)
+    int colorAccent;
+    @BindColor(android.R.color.black)
+    int colorDark;
+    @BindView(R.id.progress_horizontal)
+    ProgressBar mProgressBar;
+    @BindView(R.id.sliding_layout)
+    SlidingUpPanelLayout mSlidingLayout;
+    @BindView(R.id.name)
+    TextView mName;
+    @BindView(R.id.rating_bar)
+    RatingBar mRatingBar;
+    @BindView(R.id.rating_text)
+    TextView mRatingText;
+    @BindView(R.id.count_of_rates)
+    TextView mCountOfRates;
+    @BindView(R.id.location)
+    TextView mLocation;
+    @BindView(R.id.phone)
+    TextView mPhone;
+    @BindView(R.id.schedule)
+    TextView mSchedule;
+    @BindView(R.id.default_price)
+    TextView mDefaultPrice;
+    @BindView(R.id.is_washer_open)
+    TextView mIsWasherOpen;
+    @BindView(R.id.duration)
+    TextView mDuration;
+    @BindView(R.id.wifi)
+    ImageView mWifi;
+    @BindView(R.id.coffee)
+    ImageView mCoffee;
+    @BindView(R.id.restRoom)
+    ImageView mRestRoom;
+    @BindView(R.id.grocery)
+    ImageView mGrocery;
+    @BindView(R.id.wc)
+    ImageView mWC;
+    @BindView(R.id.serviceStation)
+    ImageView mServiceStation;
+    @BindView(R.id.cardPayment)
+    ImageView mCardPayment;
+    @BindView(R.id.fab_location_settings)
+    FloatingActionButton mMyLocationFab;
 
     private Unbinder mUnbinder;
     /** End bindings  **/
@@ -185,7 +209,7 @@ public class MapFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
-       // FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
+        // FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
         mCurrentCity = ((BaseActivity) getActivity()).getCurrentCity();
         mWashersReference = Utils.getWasher().orderByChild("city").equalTo(mCurrentCity);
         showProgress();
@@ -219,7 +243,7 @@ public class MapFragment extends Fragment implements
     }
 
 
-    private void reloadWasher(String id){
+    private void reloadWasher(String id) {
         Utils.getWasher(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -257,16 +281,20 @@ public class MapFragment extends Fragment implements
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
                     mWashersList.putAll(dataSnapshot.getValue(
-                            new GenericTypeIndicator<Map<String, Washer>>() {}
+                            new GenericTypeIndicator<Map<String, Washer>>() {
+                            }
                     ));
                     setMarkers();
                     checkUserFavouriteWashers();
+                }else {
+                    Toast.makeText(mContext, R.string.no_washers_in_your_city, Toast.LENGTH_SHORT).show();
+                    hideProgress();
                 }
-
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
@@ -336,7 +364,7 @@ public class MapFragment extends Fragment implements
 
     @OnClick(R.id.fab_find_the_nearest_washer)
     public void navigateToTheNearestWasher() {
-        if(mWashersList == null || mWashersList.isEmpty()) {
+        if (mWashersList == null || mWashersList.isEmpty()) {
             Toast.makeText(mContext, R.string.no_washers_found, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -377,8 +405,8 @@ public class MapFragment extends Fragment implements
     }
 
     @OnClick(R.id.schedule_layout)
-    public void showScheduleDialog(){
-        if(!mShowingWasher.isRoundTheClock()){
+    public void showScheduleDialog() {
+        if (!mShowingWasher.isRoundTheClock()) {
             AppCompatDialogFragment scheduleDialog = ScheduleDialog.newInstance(mShowingWasher.getSchedule());
             scheduleDialog.show(mContext.getSupportFragmentManager(), "Schedule");
         }
@@ -387,10 +415,10 @@ public class MapFragment extends Fragment implements
     @OnClick(R.id.phone)
     public void callToWasher() {
         try {
-            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+mShowingWasher.getPlace().getPhone()));
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mShowingWasher.getPlace().getPhone()));
             startActivity(intent);
-        } catch (android.content.ActivityNotFoundException e){
-            Toast.makeText(mContext.getApplicationContext(), R.string.failed_to_call,Toast.LENGTH_LONG).show();
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(mContext.getApplicationContext(), R.string.failed_to_call, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -411,7 +439,7 @@ public class MapFragment extends Fragment implements
         //((SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
-        if(mapFragment != null) {
+        if (mapFragment != null) {
             mapFragment.getMapAsync(this);
             return;
         }
@@ -673,20 +701,33 @@ public class MapFragment extends Fragment implements
         mRatingText.setText(String.format(Locale.getDefault(), "%.1f", mShowingWasher.getRating()));
         mCountOfRates.setText(String.format(Locale.getDefault(), "(%d)", mShowingWasher.getVotes()));
         mLocation.setText(mShowingWasher.getPlace().getStreet());
-        mPhone.setText(mShowingWasher.getPlace().getPhone());
-        mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
-
-        if(mShowingWasher.isRoundTheClock())
-            mSchedule.setText(R.string.round_the_clock);
+        if(mShowingWasher.getPlace().getPhone().isEmpty())
+            mPhone.setText(R.string.no_info);
         else
-            mSchedule.setText(mShowingWasher.getSchedule().getScheduleForToday());
+            mPhone.setText(mShowingWasher.getPlace().getPhone());
 
-        if (Utils.isWasherOpenAtTheTime(mShowingWasher)) {
+        if(mShowingWasher.getDefaultPrice() <= 0)
+            mDefaultPrice.setText(R.string.no_info);
+        else
+            mDefaultPrice.setText(String.valueOf(mShowingWasher.getDefaultPrice()));
+
+        if (mShowingWasher.isRoundTheClock()) {
+            mSchedule.setText(R.string.round_the_clock);
             mIsWasherOpen.setText(R.string.open);
             mIsWasherOpen.setTextColor(green);
         } else {
-            mIsWasherOpen.setText(R.string.closed);
-            mIsWasherOpen.setTextColor(red);
+            if (!mShowingWasher.getSchedule().getScheduleForToday().isEmpty()) {
+                mSchedule.setText(mShowingWasher.getSchedule().getScheduleForToday());
+                if (Utils.isWasherOpenAtTheTime(mShowingWasher)) {
+                    mIsWasherOpen.setText(R.string.open);
+                    mIsWasherOpen.setTextColor(green);
+                } else {
+                    mIsWasherOpen.setText(R.string.closed);
+                    mIsWasherOpen.setTextColor(red);
+                }
+            } else {
+                mSchedule.setText(R.string.no_info);
+            }
         }
 
         mWC.setColorFilter(mResources

@@ -56,5 +56,13 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
 
+        <TextView
+            android:id="@+id/no_items"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:text="@string/list_has_no_items"/>
+
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
