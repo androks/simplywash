@@ -1,4 +1,4 @@
-package androks.simplywash.models;
+package androks.simplywash.models.entity;
 
 import com.google.firebase.database.Exclude;
 

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androks.simplywash.R;
-import androks.simplywash.models.Schedule;
+import androks.simplywash.models.entity.Schedule;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

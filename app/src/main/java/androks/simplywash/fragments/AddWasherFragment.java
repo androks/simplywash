@@ -466,6 +466,8 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     private void inflateWasherInfoByGooglePlace(Place place) {
         mWasher.setPlace(new WasherPlace(place));
         mWasher.setStreet(Utils.getStreetFromPlace(place, getActivity()));
+        mWasher.setRating(place.getRating());
+        mWasher.setVotes(1);
         mPlaceTV.setText(mWasher.getPlace().getAddress());
         mName.setText(place.getName());
         mPhone.setText(mWasher.getPlace().getPhone());

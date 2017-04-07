@@ -9,6 +9,7 @@ import java.util.List;
 import androks.simplywash.enums.WasherStatus;
 import androks.simplywash.enums.WasherType;
 import androks.simplywash.models.entity.Features;
+import androks.simplywash.models.entity.Schedule;
 import androks.simplywash.models.entity.WasherPhoto;
 import androks.simplywash.models.entity.WasherPlace;
 

@@ -108,17 +108,12 @@ public class Utils {
         String[] temp = workingHours.split("-");
         if (temp.length < 2)
             return false;
-        int workHoursFrom = getHourFromString(temp[0]);
-        int workHoursTo = getHourFromString(temp[1]);
-
-        return hours >= workHoursFrom && hours < workHoursTo;
-    }
-
-    private static int getHourFromString(String time) {
-        try {
-            return Integer.valueOf(time.split(":")[0]);
-        } catch (NumberFormatException e) {
-            return 0;
+        try{
+            int workHoursFrom = Integer.valueOf(temp[0]);
+            int workHoursTo = Integer.valueOf(temp[1]);
+            return hours >= workHoursFrom && hours < workHoursTo;
+        }catch (NumberFormatException e){
+            return false;
         }
     }
 
