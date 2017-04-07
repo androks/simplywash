@@ -9,7 +9,7 @@ public class Schedule {
     private String sunday;
     private String saturday;
 
-    Schedule(){
+    public Schedule(){
         weekdays = "";
         sunday = "";
         saturday = "";

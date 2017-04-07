@@ -216,11 +216,15 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     }
 
     private void showProgress(){
+        if(mContent == null || mProgress == null)
+            return;
         mContent.setVisibility(View.GONE);
         mProgress.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress(){
+        if(mContent == null || mProgress == null)
+            return;
         mContent.setVisibility(View.VISIBLE);
         mProgress.setVisibility(View.GONE);
     }
@@ -250,6 +254,8 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     }
 
     private void initializeCitiesSpinner() {
+        if(mCity == null)
+            return;
         mCity.setAdapter(new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_spinner_dropdown_item,
