@@ -122,4 +122,19 @@
         <item>Завтра</item>
         <item>Послезавтра</item>
     </string-array>
+    <string name="pick_num_of_boxes">Выберите количество боксов</string>
+    <string name="pick_place">Выберите место</string>
+    <string name="pick_schedule">Укажите график</string>
+    <string name="pick_services">Укажите доп. услуги</string>
+    <string name="place_isnt_washer">Это место не числиться как мойка</string>
+    <string name="no_info">Пока информации нету</string>
+    <string name="no_washers_in_your_city">В вашем городе пока нет моек</string>
+    <string name="required_error">Обязательно</string>
+    <string name="schedule_24_7">Расписание: 24/7</string>
+    <string name="thanks_for_adding_washer">Спасибо за помощь</string>
+    <string name="title_add_washer">Предложить мойку</string>
+    <string name="uploading">Загрузка</string>
+    <string name="uploading_photos">Загрузка фото</string>
+    <string name="uploading_washer">Загрузка мойки</string>
+    <string name="washer_already_registered">Эта мойка уже есть в базе</string>
 </resources>

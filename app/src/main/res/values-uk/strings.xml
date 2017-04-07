@@ -122,4 +122,19 @@
         <item>Завтра</item>
         <item>Післязавтра</item>
     </string-array>
+    <string name="place_isnt_washer">Це місце не помічене як мийка</string>
+    <string name="no_info">Інформація відсутня</string>
+    <string name="no_washers_in_your_city">В вашому місті мийок не знайдено</string>
+    <string name="pick_num_of_boxes">Введіть кількість боксів</string>
+    <string name="pick_place">Оберіть місцерозташування</string>
+    <string name="pick_schedule">Вкажіть графік роботи</string>
+    <string name="pick_services">Вкажіть дод. послуги</string>
+    <string name="required_error">Обовязково</string>
+    <string name="schedule_24_7">Розклад: 24/7</string>
+    <string name="thanks_for_adding_washer">Дякуємо за допомогу</string>
+    <string name="title_add_washer">Запропонувати мийку</string>
+    <string name="uploading">Завантаження</string>
+    <string name="uploading_photos">"Завантаження фото "</string>
+    <string name="uploading_washer">Завантаження мийки</string>
+    <string name="washer_already_registered">Ця мийка вже є у базі</string>
 </resources>

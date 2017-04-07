@@ -144,9 +144,9 @@
     <string name="pick_place">Pick place</string>
     <string name="pick_schedule">Pick schedule</string>
     <string name="schedule_24_7">Schedule: 24/7</string>
-    <string name="required_error">Required error</string>
+    <string name="required_error">Required</string>
     <string name="washer_already_registered">This washer is already in our database. \\n Please, select another place</string>
-    <string name="place_isnt_washer">This place is now a washer</string>
+    <string name="place_isnt_washer">This place is not a washer</string>
     <string name="uploading_photos">Uploading photo </string>
     <string name="uploading_washer">Uploading washer </string>
     <string name="thanks_for_adding_washer">Thank you for help</string>
