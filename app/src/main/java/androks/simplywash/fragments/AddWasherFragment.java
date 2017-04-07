@@ -31,7 +31,6 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
@@ -42,6 +41,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.UploadTask;
@@ -53,6 +53,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import androks.simplywash.R;
+import androks.simplywash.activities.MainActivity;
 import androks.simplywash.dialogs.FeaturesDialog;
 import androks.simplywash.enums.PhotoType;
 import androks.simplywash.enums.WasherType;
@@ -67,11 +68,9 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-/**
- * Created by androks on 4/5/2017.
- */
-
-public class AddWasherFragment extends Fragment implements FeaturesDialog.AddServicesDialogListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class AddWasherFragment extends Fragment implements FeaturesDialog.AddServicesDialogListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final int PLACE_PICKER_REQUEST = 54;
 
@@ -88,6 +87,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     @BindView(R.id.city) Spinner mCity;
     @BindView(R.id.type) Spinner mType;
     @BindView(R.id.schedule_switch) Switch mScheduleSwitch;
+
     private ProgressDialog mPhotosProgressDialog;
 
     private Unbinder unbinder;
@@ -95,7 +95,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     private Washer mWasher = new Washer();
     private List<String> mCityList;
     private List<String> mPlaceIds = new ArrayList<>();
-    private int mTotalphotosNum = 0;
+    private int mTotalPhotosNum = 0;
     private int mPhotoNum = 0;
     private int mPhotosUploaded = 0;
     private GoogleApiClient mGoogleApiClient;
@@ -103,7 +103,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
             = new ResultCallback<PlacePhotoResult>() {
         @Override
-        public void onResult(PlacePhotoResult placePhotoResult) {
+        public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
             if (!placePhotoResult.getStatus().isSuccess()) {
                 mPhotosProgressDialog.dismiss();
                 onWasherAddedSuccessfully(false);
@@ -130,11 +130,11 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mPhotosUploaded++;
-                Double progress =
-                        (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                mPhotosProgressDialog.setProgress(progress.intValue());
-                if(mTotalphotosNum == mPhotosUploaded){
-                    hidePhotoDialogProgress();
+                mPhotosProgressDialog.setMessage(
+                        getActivity().getResources().getString(R.string.uploading_photos)
+                                + " " + mPhotosUploaded + " / " + mTotalPhotosNum
+                );
+                if(mTotalPhotosNum == mPhotosUploaded){
                     onWasherAddedSuccessfully(true);
                 }
             }
@@ -170,8 +170,10 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     }
 
     private void onWasherAddedSuccessfully(boolean value){
-        if(value)
+        if(value) {
             writeWasherToDB();
+            mPhotosProgressDialog.setMessage(getActivity().getResources().getString(R.string.uploading_washer));
+        }
     }
 
     /**
@@ -179,10 +181,12 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
      * LocationServices API.
      */
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(getActivity())
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
                 .build();
     }
 
@@ -190,11 +194,11 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
         Utils.getWasher().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                initializePlaceIds(dataSnapshot.getValue(
-                        new GenericTypeIndicator<Map<String, Washer>>() {}
-                ));
-                hideProgress();
-                pickPlace();
+                if(dataSnapshot.hasChildren()) {
+                    initializePlaceIds(dataSnapshot.getValue(
+                            new GenericTypeIndicator<Map<String, Washer>>() {}
+                    ));
+                }
             }
 
             @Override
@@ -285,10 +289,9 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
 
     private void showPhotoDialogProgress() {
         mPhotosProgressDialog = new ProgressDialog(getActivity());
-        mPhotosProgressDialog.setMessage(getActivity().getResources().getString(R.string.uploading_photos));
-        mPhotosProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mPhotosProgressDialog.setMessage(getActivity().getResources().getString(R.string.uploading));
+        mPhotosProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mPhotosProgressDialog.setCancelable(false);
-        mPhotosProgressDialog.setMax(100);
         mPhotosProgressDialog.show();
     }
 
@@ -300,13 +303,13 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
         Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, mWasher.getPlace().getId())
                 .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
                     @Override
-                    public void onResult(PlacePhotoMetadataResult photos) {
+                    public void onResult(@NonNull PlacePhotoMetadataResult photos) {
                         if (!photos.getStatus().isSuccess()) {
                             return;
                         }
                         PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
-                        mTotalphotosNum = photoMetadataBuffer.getCount();
-                        mPhotoNum = mTotalphotosNum;
+                        mTotalPhotosNum = photoMetadataBuffer.getCount();
+                        mPhotoNum = mTotalPhotosNum;
                         if (photoMetadataBuffer.getCount() > 0) {
                             for(PlacePhotoMetadata placePhotoMetadata : photoMetadataBuffer){
                                 placePhotoMetadata.getPhoto(mGoogleApiClient)
@@ -347,7 +350,14 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     }
 
     private void writeWasherToDB() {
-        Utils.getWasher().child(mWasher.getId()).setValue(mWasher);
+        Utils.getWasher().child(mWasher.getId()).setValue(mWasher, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                hidePhotoDialogProgress();
+                Toast.makeText(getActivity(), R.string.thanks_for_adding_washer, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), MainActivity.class));
+            }
+        });
     }
 
     private boolean validateFields() {
@@ -429,7 +439,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == AppCompatActivity.RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, getActivity());
+                Place place = PlacePicker.getPlace(getActivity(), data);
                 if(!checkPlace(place)) {
                     mMainFields.setVisibility(View.GONE);
                     return;

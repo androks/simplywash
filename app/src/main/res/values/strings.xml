@@ -147,5 +147,8 @@
     <string name="required_error">Required error</string>
     <string name="washer_already_registered">This washer is already in our database. \\n Please, select another place</string>
     <string name="place_isnt_washer">This place is now a washer</string>
-    <string name="uploading_photos">Uploading photos...</string>
+    <string name="uploading_photos">Uploading photo </string>
+    <string name="uploading_washer">Uploading washer </string>
+    <string name="thanks_for_adding_washer">Thank you for help</string>
+    <string name="uploading">Uploading</string>
 </resources>

@@ -152,7 +152,7 @@ public class LoginActivity extends BaseActivity {
     private void checkIfUserLoggedIn() {
         SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
         String phone = sp.getString(Constants.PHONE_PREF, null);
-        String city = sp.getString(Constants.PHONE_PREF, null);
+        String city = sp.getString(Constants.CITY_PREF, null);
         if(FirebaseAuth.getInstance().getCurrentUser() != null && phone != null){
             if (city != null)
                 goToMainAct();

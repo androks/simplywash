@@ -51,6 +51,10 @@ public class Utils {
         return FirebaseStorage.getInstance().getReference().child("washer_images").child(id).child(photoName);
     }
 
+    public static DatabaseReference getSuggestedWasher(){
+        return FirebaseDatabase.getInstance().getReference().child("suggested_washers");
+    }
+
     public static DatabaseReference getScheduleFor(String washerId) {
         return FirebaseDatabase.getInstance().getReference().child("schedule").child(washerId);
     }
@@ -215,7 +219,7 @@ public class Utils {
 
     public static String getStreetFromPlace(Place place, Context context) {
         Geocoder geocoder = new Geocoder(context);
-        String address = "";
+        String address = place.getAddress().toString();
         try {
             List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
             address = addresses.get(0).getAddressLine(0);
