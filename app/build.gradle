@@ -21,14 +21,6 @@ repositories {
 }
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'simplyWashFreeKey'
-            keyPassword 'Bodich_1997velichko'
-            storeFile file('B:/Projects/Android_Studio/keystores/simplyWash.jks')
-            storePassword 'Bodich_1997velichko'
-        }
-    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
