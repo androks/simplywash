@@ -93,13 +93,18 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
     private Unbinder unbinder;
 
     private Washer mWasher = new Washer();
+    //Download list of available cities to add washer in it
     private List<String> mCityList;
+    //List to store place Id which are already in our database
     private List<String> mPlaceIds = new ArrayList<>();
+    //Variables to handle downloading photos
     private int mTotalPhotosNum = 0;
     private int mPhotoNum = 0;
     private int mPhotosUploaded = 0;
+
     private GoogleApiClient mGoogleApiClient;
 
+    //A result callBack which check if result is successful and if it is, upload photo to storage
     private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
             = new ResultCallback<PlacePhotoResult>() {
         @Override
@@ -130,10 +135,12 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mPhotosUploaded++;
+                //Update ProgressDialog
                 mPhotosProgressDialog.setMessage(
                         getActivity().getResources().getString(R.string.uploading_photos)
                                 + " " + mPhotosUploaded + " / " + mTotalPhotosNum
                 );
+                //If total num of photo to upload are uploaded successful - quit
                 if(mTotalPhotosNum == mPhotosUploaded){
                     onWasherAddedSuccessfully(true);
                 }
@@ -160,7 +167,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
 
         loadListOfWashers();
 
-        loadCities();
+        loadAvailableCities();
 
         initializeWasherTypesSpinner();
 
@@ -173,6 +180,8 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
         if(value) {
             writeWasherToDB();
             mPhotosProgressDialog.setMessage(getActivity().getResources().getString(R.string.uploading_washer));
+        }else{
+            Toast.makeText(getActivity(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -195,9 +204,12 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()) {
-                    initializePlaceIds(dataSnapshot.getValue(
+                    Map<String, Washer> washersList = dataSnapshot.getValue(
                             new GenericTypeIndicator<Map<String, Washer>>() {}
-                    ));
+                    );
+                    for(Washer washer: washersList.values()){
+                        mPlaceIds.add(washer.getPlace().getId());
+                    }
                 }
                 hideProgress();
             }
@@ -207,12 +219,6 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
 
             }
         });
-    }
-
-    private void initializePlaceIds(Map<String, Washer> washersList){
-        for(Washer washer: washersList.values()){
-            mPlaceIds.add(washer.getPlace().getId());
-        }
     }
 
     private void showProgress(){
@@ -236,7 +242,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
                 WasherType.values()));
     }
 
-    private void loadCities() {
+    private void loadAvailableCities() {
         Utils.getListOfCities().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -341,6 +347,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
             mGoogleApiClient.disconnect();
     }
 
+    //Fill in the washer object
     private void initializeWasher(){
         mWasher.setCity(mCityList.get(mCity.getSelectedItemPosition()));
         mWasher.setName(mName.getText().toString());
@@ -457,6 +464,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
         }
     }
 
+    //Check if selected place is an car wash, if not - try again
     private boolean checkPlace(Place place) {
         if(!place.getPlaceTypes().contains(Place.TYPE_CAR_WASH)) {
             Toast.makeText(getActivity(), R.string.place_isnt_washer, Toast.LENGTH_SHORT).show();
@@ -469,6 +477,7 @@ public class AddWasherFragment extends Fragment implements FeaturesDialog.AddSer
         return true;
     }
 
+    //Get data from google database and fill washer object with this data
     private void inflateWasherInfoByGooglePlace(Place place) {
         mWasher.setPlace(new WasherPlace(place));
         mWasher.setStreet(Utils.getStreetFromPlace(place, getActivity()));

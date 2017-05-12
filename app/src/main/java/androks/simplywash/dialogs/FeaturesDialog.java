@@ -106,11 +106,15 @@ public class FeaturesDialog extends AppCompatDialogFragment {
         mApplyBtn.setVisibility(View.VISIBLE);
     }
 
+    //This dialog can be used as just preview of available services
+    //or It can be used when we want to set up available services
     private void checkMode() {
+        //If tag equal to TAG_EDITABLE we apply editable mode
         if (getTag().equals(FeaturesDialog.TAG_EDITABLE)) {
             applyEditMode();
-            setSwitches();
+            setFields();
         }
+        //if not, just set data to switches and show
         else
             setData();
     }
@@ -118,10 +122,10 @@ public class FeaturesDialog extends AppCompatDialogFragment {
 
     private void setData() {
         setPicturesColors();
-        setSwitches();
+        setFields();
     }
 
-    private void setSwitches() {
+    private void setFields() {
         mWCSwitch.setChecked(features.isWc());
         mWifiSwitch.setChecked(features.isWifi());
         mCardPaymentSwitch.setChecked(features.isCardPayment());

@@ -79,6 +79,7 @@ public class FiltersActivity extends BaseActivity {
         }
     }
 
+    //Upload filters from SharedPref and set field values
     private void setFiltersFromPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.FILTERS_PREFERENCES, MODE_PRIVATE);
         mOnlyFavourites.setChecked(
@@ -105,6 +106,7 @@ public class FiltersActivity extends BaseActivity {
                 sharedPreferences.getInt(Constants.FILTER_PRICE_CATEGORY, priceCategoriesInt.length-1));
     }
 
+    //Get fields and write them to sharedPref
     private void saveFilterToSharedPref() {
         SharedPreferences sp = getSharedPreferences(Constants.FILTERS_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
@@ -122,6 +124,7 @@ public class FiltersActivity extends BaseActivity {
         edit.apply();
     }
 
+    //Reset all fields to default value
     private void resetFilters() {
         mOnlyFavourites.setChecked(false);
         mOnlyOpenSwitch.setChecked(false);

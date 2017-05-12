@@ -153,4 +153,6 @@
     <string name="uploading">Uploading</string>
     <string name="no_info">No information yet</string>
     <string name="no_washers_in_your_city">There are no washers in your city</string>
+    <string name="error_while_sign_up">Something went wrong while singing up</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>

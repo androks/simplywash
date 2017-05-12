@@ -78,7 +78,6 @@ public class LoginActivity extends BaseActivity {
         return true;
     }
 
-
     private void initializeAuthButton() {
         mAuthButton.setCallback(authCallback);
         mAuthButton.setAuthTheme(R.style.DigitsTheme);
@@ -113,27 +112,30 @@ public class LoginActivity extends BaseActivity {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        //If task is to successful try to sign up
                         if (!task.isSuccessful()) {
-                            signUp();
+                            signUpToFirebase();
                         }
                     }
                 });
     }
 
-    private void signUp() {
+    private void signUpToFirebase() {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful())
-                            writeUserToDatabase();
-                        else
+                            writeUserToFirebaseDatabase();
+                        else {
+                            Toast.makeText(LoginActivity.this, R.string.error_while_sign_up, Toast.LENGTH_SHORT).show();
                             finish();
+                        }
                     }
                 });
     }
 
-    private void writeUserToDatabase() {
+    private void writeUserToFirebaseDatabase() {
         if (getCurrentUser() != null) {
             String uid = getCurrentUser().getUid();
             FirebaseDatabase.getInstance().getReference().child("users").child(uid)
@@ -153,7 +155,7 @@ public class LoginActivity extends BaseActivity {
         SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
         String phone = sp.getString(Constants.PHONE_PREF, null);
         String city = sp.getString(Constants.CITY_PREF, null);
-        if(FirebaseAuth.getInstance().getCurrentUser() != null && phone != null){
+        if (FirebaseAuth.getInstance().getCurrentUser() != null && phone != null) {
             if (city != null)
                 goToMainAct();
             else

@@ -65,7 +65,7 @@ public class ReviewsActivity extends BaseActivity implements
 
         setUpToolbar();
 
-        setUpRecyclerLV();
+        setUpReviewsRecyclerLV();
 
         downloadWasherInfo();
     }
@@ -84,7 +84,7 @@ public class ReviewsActivity extends BaseActivity implements
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
                     mWasher = dataSnapshot.getValue(Washer.class);
-                    setRatings();
+                    updateRating();
                 }
             }
 
@@ -95,14 +95,14 @@ public class ReviewsActivity extends BaseActivity implements
         });
     }
 
-    private void setRatings() {
+    private void updateRating() {
         mRatingBar.setRating(mWasher.getRating());
         mRatingText.setText(String.valueOf(mWasher.getRating()));
         mCountOfRates.setText(String.valueOf(mWasher.getVotes()));
         hideProgress();
     }
 
-    private void setUpRecyclerLV() {
+    private void setUpReviewsRecyclerLV() {
         mRecyclerLV.setHasFixedSize(true);
         mRecyclerLV.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerAdapter = new FirebaseRecyclerAdapter<Review, ViewHolder>(
@@ -166,11 +166,11 @@ public class ReviewsActivity extends BaseActivity implements
     public void onReviewAdded(final Review review, final float oldRating) {
         showProgress();
         mDataHasChanged = true;
-        updateReviews(review);
+        updateReview(review);
         onRatingChanged(review, oldRating);
     }
 
-    private void updateReviews(Review review) {
+    private void updateReview(Review review) {
         if (review.name.isEmpty())
             review.name = getResources().getString(R.string.anonym);
         Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review);
@@ -208,13 +208,13 @@ public class ReviewsActivity extends BaseActivity implements
                         ReviewsActivity.this,
                         R.string.thanks_for_review,
                         Toast.LENGTH_SHORT).show();
-                setRatings();
+                updateRating();
                 hideProgressDialog();
             }
         });
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    private static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(View v) {
             super(v);

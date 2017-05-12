@@ -17,7 +17,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -211,8 +210,6 @@ public class MainActivity extends BaseActivity {
 
         // Sometimes, when fragment has huge data, screen seems hanging
         // when switching between navigation menus
-        // So using runnable, the fragment is loaded with cross fade effect
-        // This effect can be seen in GMail app
         Runnable mPendingRunnable = new Runnable() {
             @Override
             public void run() {

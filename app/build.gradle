@@ -25,7 +25,7 @@ android {
         config {
             keyAlias 'simplyWashFreeKey'
             keyPassword 'Bodich_1997velichko'
-            storeFile file('B:/Projects/Android_Studio/keystores/simplyWash.jks')
+            storeFile file('/home/androks/Documents/simplyWash.jks')
             storePassword 'Bodich_1997velichko'
         }
     }

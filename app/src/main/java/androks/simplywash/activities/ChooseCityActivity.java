@@ -27,6 +27,7 @@ public class ChooseCityActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //If city is already set, go to MainActivity
         if(getCurrentCity() != null){
             startActivity(new Intent(ChooseCityActivity.this, MainActivity.class));
             finish();
@@ -70,6 +71,7 @@ public class ChooseCityActivity extends BaseActivity {
         });
     }
 
+    //Select current user city and write the data to the SharedPreferences
     private void selectCity(String city) {
         SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
@@ -81,7 +83,7 @@ public class ChooseCityActivity extends BaseActivity {
         mProgressBar.setVisibility(View.GONE);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    private static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(View v) {
             super(v);

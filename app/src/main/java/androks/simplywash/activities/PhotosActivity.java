@@ -48,15 +48,15 @@ public class PhotosActivity extends AppCompatActivity {
         mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID);
         mStartId = getIntent().getExtras().getInt(Constants.PHOTO_INDEX);
 
-        downloadWasherInfo();
+        downloadWasher();
     }
 
-    private void downloadWasherInfo() {
+    private void downloadWasher() {
         Utils.getWasher(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mWasher = dataSnapshot.getValue(Washer.class);
-                setUpViewPager();
+                setUpPhotoViewPager();
             }
 
             @Override
@@ -66,7 +66,7 @@ public class PhotosActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpViewPager() {
+    private void setUpPhotoViewPager() {
         mPhotosViewPager.setAdapter(new PhotosPagerAdapter(
                 getSupportFragmentManager(),
                 mWasher,

@@ -54,6 +54,7 @@ public class CheckedPriceListRecyclerAdapter extends
         setItemSelected(holder, false);
         holder.name.setText(service.getName());
         holder.price.setText(String.valueOf(service.getPrice()));
+        //Select/Unselected service
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +65,7 @@ public class CheckedPriceListRecyclerAdapter extends
         });
     }
 
+    //change style if service was selected
     private void setItemSelected(CheckedPriceListRecyclerAdapter.ViewHolder holder, boolean value) {
         holder.name.setTextColor(value ? holder.colorAccent : holder.black);
         holder.price.setTextColor(value ? holder.colorAccent : holder.black);

@@ -36,9 +36,11 @@ public class PhotoFragment extends Fragment {
     private Unbinder mUnbinder;
 
     private WasherPhoto mPhoto;
-    private int mNumber;
-    private int mResourceId;
     private String mWasherId;
+    //Photo position
+    private int mNumber;
+    //The id of the layout recourse photo will be represented in
+    private int mResourceId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,6 +103,8 @@ public class PhotoFragment extends Fragment {
         mUnbinder.unbind();
     }
 
+    //If we are in WasherActivity and click on the photo => we start the PhotoActivity
+    // and view photos starting from certain photo
     @OnClick(R.id.image)
     public void viewAllImages() {
         if (mNumber >= 0

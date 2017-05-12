@@ -33,6 +33,7 @@ import butterknife.OnClick;
 
 public class AddReviewDialog extends AppCompatDialogFragment{
 
+    //Set oldRating to default value
     private float oldRating = 0.0f;
 
     public interface AddReviewDialogListener {
@@ -68,17 +69,17 @@ public class AddReviewDialog extends AppCompatDialogFragment{
                 bundle.getString(Constants.WASHER_ID),
                 ((BaseActivity)getActivity()).getCurrentUser().getUid()
         );
-        uploadReview();
+        downloadReview();
     }
 
-    private void uploadReview() {
+    private void downloadReview() {
         mReviewReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren())
                     mReview = dataSnapshot.getValue(Review.class);
 
-                inflateAndEnableViews();
+                updateUI();
             }
 
             @Override
@@ -88,7 +89,7 @@ public class AddReviewDialog extends AppCompatDialogFragment{
         });
     }
 
-    private void inflateAndEnableViews() {
+    private void updateUI() {
         if(mReview != null){
             oldRating = mReview.rating;
             if(mReview.rating >= oldRating)
@@ -142,7 +143,9 @@ public class AddReviewDialog extends AppCompatDialogFragment{
         if(text.isEmpty())
             name = "";
         // Return input text to activity
-        ((AddReviewDialogListener) getActivity()).onReviewAdded(new Review(name, text, rating), oldRating);
+        ((AddReviewDialogListener) getActivity()).onReviewAdded(
+                new Review(name, text, rating), oldRating
+        );
         this.dismiss();
     }
 
