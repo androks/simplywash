@@ -33,18 +33,18 @@ import butterknife.OnClick;
 
 public class AddReviewDialog extends AppCompatDialogFragment{
 
-    //Set oldRating to default value
-    private float oldRating = 0.0f;
-
     public interface AddReviewDialogListener {
         void onReviewAdded(Review review, float oldRating);
     }
 
-    @BindView(R.id.text) EditText mReviewText;
-    @BindView(R.id.rate) RatingBar mRatingBar;
-    @BindView(R.id.name) EditText mName;
-    @BindView(R.id.add) Button mBtnAdd;
-    @BindView(R.id.cancel) Button mBtnCancel;
+    @BindView(R.id.tv_text) EditText mReviewText;
+    @BindView(R.id.rating_bar) RatingBar mRatingBar;
+    @BindView(R.id.tv_name) EditText mName;
+    @BindView(R.id.btn_add) Button mBtnAdd;
+    @BindView(R.id.btn_cancel) Button mBtnCancel;
+
+    //Set oldRating to default value
+    private float oldRating = 0.0f;
 
     private DatabaseReference mReviewReference;
     private Review mReview;
@@ -130,12 +130,12 @@ public class AddReviewDialog extends AppCompatDialogFragment{
             getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    @OnClick(R.id.cancel)
+    @OnClick(R.id.btn_cancel)
     public void cancel(){
         this.dismiss();
     }
 
-    @OnClick(R.id.add)
+    @OnClick(R.id.btn_add)
     public void addReview(){
         String name = mName.getText().toString();
         String text = mReviewText.getText().toString();

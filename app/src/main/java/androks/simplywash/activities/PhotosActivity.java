@@ -26,17 +26,17 @@ import butterknife.ButterKnife;
  * status bar and navigation/system bar) with user interaction.
  */
 public class PhotosActivity extends AppCompatActivity {
-    @BindView(R.id.image_slideshow) ViewPager mPhotosViewPager;
-    @BindView(R.id.images_indicator) CirclePageIndicator mPhotosIndicator;
+    @BindView(R.id.vp_images) ViewPager vpImages;
+    @BindView(R.id.images_slideshow_indicator) CirclePageIndicator photosIndicator;
 
     /**
      * Some older devices needs a small delay between UI widget updates
      * and a change of the status and navigation bar.
      */
 
-    private String mWasherId;
-    private Washer mWasher;
-    private int mStartId;
+    private String washerId;
+    private Washer washer;
+    private int startId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +45,17 @@ public class PhotosActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setUpToolbar();
 
-        mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID);
-        mStartId = getIntent().getExtras().getInt(Constants.PHOTO_INDEX);
+        washerId = getIntent().getExtras().getString(Constants.WASHER_ID);
+        startId = getIntent().getExtras().getInt(Constants.PHOTO_INDEX);
 
         downloadWasher();
     }
 
     private void downloadWasher() {
-        Utils.getWasher(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
+        Utils.getWasher(washerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mWasher = dataSnapshot.getValue(Washer.class);
+                washer = dataSnapshot.getValue(Washer.class);
                 setUpPhotoViewPager();
             }
 
@@ -67,14 +67,14 @@ public class PhotosActivity extends AppCompatActivity {
     }
 
     private void setUpPhotoViewPager() {
-        mPhotosViewPager.setAdapter(new PhotosPagerAdapter(
+        vpImages.setAdapter(new PhotosPagerAdapter(
                 getSupportFragmentManager(),
-                mWasher,
+                washer,
                 R.layout.item_image)
         );
-        mPhotosViewPager.setPageTransformer(true, new DepthPageTransformer());
-        mPhotosViewPager.setCurrentItem(mStartId);
-        mPhotosIndicator.setViewPager(mPhotosViewPager);
+        vpImages.setPageTransformer(true, new DepthPageTransformer());
+        vpImages.setCurrentItem(startId);
+        photosIndicator.setViewPager(vpImages);
     }
 
     private void setUpToolbar() {

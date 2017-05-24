@@ -48,14 +48,12 @@ public class PriceListRecyclerAdapter extends RecyclerView.Adapter<PriceListRecy
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.tv_name) TextView name;
+        @BindView(R.id.tv_price) TextView price;
+
         public ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }
-
-        @BindView(R.id.name)
-        TextView name;
-        @BindView(R.id.price)
-        TextView price;
     }
 }

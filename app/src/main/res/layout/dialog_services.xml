@@ -40,14 +40,14 @@
                         android:paddingBottom="8dp">
 
                         <ImageView
-                            android:id="@+id/coffee"
+                            android:id="@+id/im_coffee"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:labelFor="@+id/coffee_switch"
+                            android:labelFor="@+id/switch_coffee"
                             app:srcCompat="@drawable/ic_service_coffee_black_24dp" />
 
                         <Switch
-                            android:id="@+id/coffee_switch"
+                            android:id="@+id/switch_coffee"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -64,14 +64,14 @@
                         android:paddingBottom="8dp">
 
                         <ImageView
-                            android:id="@+id/cardPayment"
+                            android:id="@+id/im_card_payment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:labelFor="@+id/cardPayment_switch"
+                            android:labelFor="@+id/switch_cardPayment"
                             app:srcCompat="@drawable/ic_credit_card_black_24dp" />
 
                         <Switch
-                            android:id="@+id/cardPayment_switch"
+                            android:id="@+id/switch_cardPayment"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -88,15 +88,15 @@
                         android:paddingBottom="8dp">
 
                         <ImageView
-                            android:id="@+id/wifi"
+                            android:id="@+id/iv_wifi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/wifi"
-                            android:labelFor="@+id/wifi_switch"
+                            android:labelFor="@+id/switch_wifi"
                             app:srcCompat="@drawable/ic_action_wifi" />
 
                         <Switch
-                            android:id="@+id/wifi_switch"
+                            android:id="@+id/switch_wifi"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -113,14 +113,14 @@
                         android:paddingBottom="8dp">
 
                         <ImageView
-                            android:id="@+id/grocery"
+                            android:id="@+id/im_grocery"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:labelFor="@+id/shop_switch"
                             app:srcCompat="@drawable/ic_local_grocery_store_black_24dp" />
 
                         <Switch
-                            android:id="@+id/grocery_switch"
+                            android:id="@+id/switch_grocery"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -137,14 +137,14 @@
                         android:paddingBottom="8dp">
 
                         <ImageView
-                            android:id="@+id/serviceStation"
+                            android:id="@+id/im_service_station"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:labelFor="@+id/service_station_switch"
                             app:srcCompat="@drawable/ic_repare_black_24dp" />
 
                         <Switch
-                            android:id="@+id/serviceStation_switch"
+                            android:id="@+id/switch_service_station"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -162,14 +162,14 @@
                         android:paddingBottom="8dp">
 
                         <ImageView
-                            android:id="@+id/wc"
+                            android:id="@+id/im_wc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:labelFor="@+id/toilet_switch"
                             app:srcCompat="@drawable/ic_wc_black_24dp" />
 
                         <Switch
-                            android:id="@+id/wc_switch"
+                            android:id="@+id/switch_wc"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -186,14 +186,14 @@
                         android:paddingBottom="8dp">
 
                         <ImageView
-                            android:id="@+id/restRoom"
+                            android:id="@+id/iv_restRoom"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:labelFor="@+id/rest_room_switch"
                             app:srcCompat="@drawable/ic_rest_black_24dp" />
 
                         <Switch
-                            android:id="@+id/restRoom_switch"
+                            android:id="@+id/switch_rest_room"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -213,14 +213,14 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/close"
+                android:id="@+id/btn_close"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/close" />
 
             <Button
-                android:id="@+id/applyBtn"
+                android:id="@+id/btn_apply"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

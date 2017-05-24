@@ -20,12 +20,9 @@ import butterknife.OnClick;
 
 public class ScheduleDialog extends AppCompatDialogFragment {
 
-    @BindView(R.id.weekdays)
-    TextView mWeekdays;
-    @BindView(R.id.saturday)
-    TextView mSaturday;
-    @BindView(R.id.sunday)
-    TextView mSunday;
+    @BindView(R.id.wv_weekdays) TextView tvWeekdays;
+    @BindView(R.id.tv_saturday) TextView tvSaturday;
+    @BindView(R.id.tv_sunday) TextView tvSunday;
 
     private Schedule schedule;
 
@@ -54,9 +51,9 @@ public class ScheduleDialog extends AppCompatDialogFragment {
 
 
     private void setData() {
-        mWeekdays.setText(schedule.getWeekdays());
-        mSaturday.setText(schedule.getSaturday());
-        mSunday.setText(schedule.getSunday());
+        tvWeekdays.setText(schedule.getWeekdays());
+        tvSaturday.setText(schedule.getSaturday());
+        tvSunday.setText(schedule.getSunday());
     }
 
     @Override
@@ -66,7 +63,7 @@ public class ScheduleDialog extends AppCompatDialogFragment {
             getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    @OnClick(R.id.close)
+    @OnClick(R.id.btn_close)
     public void close() {
         this.dismiss();
     }

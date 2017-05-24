@@ -26,7 +26,7 @@
 
 
             <android.support.v4.view.ViewPager
-                android:id="@+id/image_slideshow"
+                android:id="@+id/vp_images"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -53,7 +53,7 @@
                     app:srcCompat="@drawable/ic_favorite_white_24dp" />
 
                 <TextView
-                    android:id="@+id/favourites_count"
+                    android:id="@+id/tv_favourites"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
@@ -67,14 +67,14 @@
             </LinearLayout>
 
             <com.viewpagerindicator.CirclePageIndicator
-                android:id="@+id/images_indicator"
+                android:id="@+id/images_slideshow_indicator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:padding="10dp" />
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/animated_toolbar"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
@@ -84,7 +84,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/favourite_fab"
+        android:id="@+id/fab_favourite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

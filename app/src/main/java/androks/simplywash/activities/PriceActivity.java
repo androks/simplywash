@@ -30,18 +30,18 @@ import butterknife.ButterKnife;
 
 public class PriceActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.progressBar) View mProgressBar;
-    @BindView(R.id.recyclerLV) RecyclerView mRecyclerView;
-    @BindView(R.id.carTypesSpinner) Spinner mCarTypesSpinner;
-    @BindView(R.id.no_items) TextView mNoItemsMessage;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.progress_bar) View progressBar;
+    @BindView(R.id.rv_prices_list) RecyclerView rvPricesList;
+    @BindView(R.id.spn_car_types) Spinner spnCarTypes;
+    @BindView(R.id.tv_no_items) TextView tvNoItems;
 
-    private String mWasherId;
-    private Map<String, Map<String, Service>> mPriceList;
-    private List<Service> mShowingPrices = new ArrayList<>();
-    List<String> mCarTypes = new ArrayList<>();
+    private String washerId;
+    private Map<String, Map<String, Service>> priceList;
+    private List<Service> showingPrices = new ArrayList<>();
+    List<String> carTypes = new ArrayList<>();
 
-    private PriceListRecyclerAdapter mAdapter;
+    private PriceListRecyclerAdapter rvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +50,18 @@ public class PriceActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         showProgress();
 
-        mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID);
+        washerId = getIntent().getExtras().getString(Constants.WASHER_ID);
 
         setUpToolbar();
         downloadPriceList();
     }
 
     private void downloadPriceList() {
-        Utils.getPricesFor(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
+        Utils.getPricesFor(washerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
-                    mPriceList = dataSnapshot.getValue(
+                    priceList = dataSnapshot.getValue(
                             new GenericTypeIndicator<Map<String, Map<String, Service>>>() {}
                     );
                     initializeStartValues();
@@ -81,30 +81,30 @@ public class PriceActivity extends AppCompatActivity {
     }
 
     private void showNoPricesMessage() {
-        mCarTypesSpinner.setVisibility(View.GONE);
+        spnCarTypes.setVisibility(View.GONE);
         hideProgress();
-        mNoItemsMessage.setVisibility(View.VISIBLE);
+        tvNoItems.setVisibility(View.VISIBLE);
     }
 
     private void initializeStartValues() {
-        mCarTypes.addAll(mPriceList.keySet());
-        mShowingPrices.addAll(mPriceList.get(mCarTypes.get(0)).values());
+        carTypes.addAll(priceList.keySet());
+        showingPrices.addAll(priceList.get(carTypes.get(0)).values());
     }
 
     private void setUpSpinner() {
-        mCarTypesSpinner.setAdapter(new ArrayAdapter<>(
+        spnCarTypes.setAdapter(new ArrayAdapter<>(
                 this,
                 R.layout.spinner_dropdown_toolbar_item,
-                mCarTypes)
+                carTypes)
         );
-        mCarTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnCarTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mShowingPrices.clear();
-                String carType = (String) mCarTypesSpinner.getSelectedItem();
+                showingPrices.clear();
+                String carType = (String) spnCarTypes.getSelectedItem();
                 if(carType != null) {
-                    mShowingPrices.addAll(mPriceList.get(carType).values());
-                    mAdapter.notifyDataSetChanged();
+                    showingPrices.addAll(priceList.get(carType).values());
+                    rvAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -116,15 +116,15 @@ public class PriceActivity extends AppCompatActivity {
     }
 
     private void setUpRecyclerView() {
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new PriceListRecyclerAdapter(mShowingPrices);
-        mRecyclerView.setAdapter(mAdapter);
+        rvPricesList.setHasFixedSize(true);
+        rvPricesList.setLayoutManager(new LinearLayoutManager(this));
+        rvAdapter = new PriceListRecyclerAdapter(showingPrices);
+        rvPricesList.setAdapter(rvAdapter);
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -137,12 +137,12 @@ public class PriceActivity extends AppCompatActivity {
     }
 
     private void showProgress() {
-        mCarTypesSpinner.setEnabled(false);
-        mProgressBar.setVisibility(View.VISIBLE);
+        spnCarTypes.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void hideProgress() {
-        mCarTypesSpinner.setEnabled(true);
-        mProgressBar.setVisibility(View.GONE);
+        spnCarTypes.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
     }
 }

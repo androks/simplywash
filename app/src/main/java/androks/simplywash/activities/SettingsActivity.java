@@ -32,15 +32,15 @@ import butterknife.OnClick;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    @BindView(R.id.phone) TextView mPhone;
-    @BindView(R.id.city) Spinner mCitySpinner;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.tv_phone) TextView tvPhone;
+    @BindView(R.id.spn_city) Spinner spnCity;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
-    private List<String> mCityList;
+    private List<String> citiesList;
 
-    private String mCurrentPhone;
-    private String mCurrentCity;
-    private String mLastKnownCity;
+    private String currentPhone;
+    private String currentCity;
+    private String lastKnownCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,21 +57,21 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void getDataFromPref() {
         SharedPreferences sp = getSharedPreferences(Constants.AUTH_PREFERENCES, MODE_PRIVATE);
-        mCurrentPhone = sp.getString(Constants.PHONE_PREF, null);
-        mCurrentCity = sp.getString(Constants.CITY_PREF, null);
-        mLastKnownCity = mCurrentCity;
+        currentPhone = sp.getString(Constants.PHONE_PREF, null);
+        currentCity = sp.getString(Constants.CITY_PREF, null);
+        lastKnownCity = currentCity;
         setPhone();
     }
 
     private void setPhone() {
-        mPhone.setText(mCurrentPhone);
+        tvPhone.setText(currentPhone);
     }
 
     private void loadListOfCities() {
         Utils.getListOfCities().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mCityList = dataSnapshot.getValue(
+                citiesList = dataSnapshot.getValue(
                         new GenericTypeIndicator<List<String>>() {}
                 );
                 initializeCitiesSpinner();
@@ -86,14 +86,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initializeCitiesSpinner() {
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCityList);
-        mCitySpinner.setAdapter(adapter);
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, citiesList);
+        spnCity.setAdapter(adapter);
 
-        mCitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!mCurrentCity.equals(mCityList.get(position)))
-                    setCurrentCityTo(mCityList.get(position));
+                if(!currentCity.equals(citiesList.get(position)))
+                    setCurrentCityTo(citiesList.get(position));
             }
 
             @Override
@@ -102,8 +102,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        if(mCurrentCity != null && mCityList.contains(mCurrentCity))
-            mCitySpinner.setSelection(adapter.getPosition(mCurrentCity));
+        if(currentCity != null && citiesList.contains(currentCity))
+            spnCity.setSelection(adapter.getPosition(currentCity));
     }
 
     @Override
@@ -117,14 +117,14 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private boolean checkIfSettingsDataTheSame() {
-        if(!mCurrentCity.equals(mLastKnownCity))
+        if(!currentCity.equals(lastKnownCity))
             return false;
         return true;
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -177,6 +177,6 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor edit = sp.edit();
         edit.putString(Constants.CITY_PREF, city);
         edit.apply();
-        mCurrentCity = city;
+        currentCity = city;
     }
 }

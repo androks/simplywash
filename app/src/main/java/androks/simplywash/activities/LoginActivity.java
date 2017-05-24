@@ -33,8 +33,7 @@ public class LoginActivity extends BaseActivity {
 
     private static final int CHECK_PERMISSIONS_REQUEST = 125;
 
-    @BindView(R.id.auth_button)
-    DigitsAuthButton mAuthButton;
+    @BindView(R.id.btn_auth) DigitsAuthButton authButton;
 
     private AuthCallback authCallback;
 
@@ -79,8 +78,8 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initializeAuthButton() {
-        mAuthButton.setCallback(authCallback);
-        mAuthButton.setAuthTheme(R.style.DigitsTheme);
+        authButton.setCallback(authCallback);
+        authButton.setAuthTheme(R.style.DigitsTheme);
     }
 
     private void implementAuthCallback() {

@@ -74,25 +74,17 @@ public class CheckedPriceListRecyclerAdapter extends
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.tv_name) TextView name;
+        @BindView(R.id.tv_price) TextView price;
+        @BindView(R.id.item) View item;
+        @BindColor(R.color.colorAccent) int colorAccent;
+        @BindColor(android.R.color.black) int black;
+        @BindColor(android.R.color.white) int white;
+        @BindColor(R.color.black_trans80) int gray;
+
         public ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }
-
-        @BindView(R.id.name)
-        TextView name;
-        @BindView(R.id.price)
-        TextView price;
-        @BindView(R.id.item)
-        View item;
-
-        @BindColor(R.color.colorAccent)
-        int colorAccent;
-        @BindColor(android.R.color.black)
-        int black;
-        @BindColor(android.R.color.white)
-        int white;
-        @BindColor(R.color.black_trans80)
-        int gray;
     }
 }

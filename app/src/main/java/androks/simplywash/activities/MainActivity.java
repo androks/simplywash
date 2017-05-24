@@ -38,17 +38,18 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivity {
 
     private static final int CHECK_PERMISSIONS_REQUEST = 125;
-
-    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.nav_view) NavigationView mNVDrawer;
-    private TextView mPhoneTextView;
-    private TextView mCityTextView;
-
     // tags used to attach the fragments
     private static final String TAG_MAP = "TAG_MAP";
     private static final String TAG_SHARE = "TAG_SHARE";
     private static final String TAG_ADD_WASHER = "TAG_ADD_WASHER";
+
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.nav_view) NavigationView mNVDrawer;
+
+    private TextView mPhoneTextView;
+    private TextView mCityTextView;
+
     public static String CURRENT_TAG = TAG_MAP;
 
     // index to identify current nav menu item
@@ -132,7 +133,7 @@ public class MainActivity extends BaseActivity {
 
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
-                    //Replacing the main mContent with ContentFragment Which is our Inbox View;
+                    //Replacing the main llContent with ContentFragment Which is our Inbox View;
                     case R.id.nav_map:
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_MAP;
@@ -213,12 +214,12 @@ public class MainActivity extends BaseActivity {
         Runnable mPendingRunnable = new Runnable() {
             @Override
             public void run() {
-                // update the main mContent by replacing fragments
+                // update the main llContent by replacing fragments
                 mCurrentFragment = getHomeFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.content_main, mCurrentFragment, CURRENT_TAG);
+                fragmentTransaction.replace(R.id.fl_content_main, mCurrentFragment, CURRENT_TAG);
                 fragmentTransaction.commitAllowingStateLoss();
                 setToolbarTitle();
             }
@@ -229,7 +230,7 @@ public class MainActivity extends BaseActivity {
         //Closing drawer on item click
         mDrawer.closeDrawers();
 
-        // refresh mToolbar menu
+        // refresh toolbar menu
         invalidateOptionsMenu();
 
     }
@@ -284,8 +285,8 @@ public class MainActivity extends BaseActivity {
         View mNavHeader = mNVDrawer.getHeaderView(0);
         if (mNavHeader == null)
             return;
-        mPhoneTextView = (TextView) mNavHeader.findViewById(R.id.current_phone);
-        mCityTextView = (TextView) mNavHeader.findViewById(R.id.current_city);
+        mPhoneTextView = (TextView) mNavHeader.findViewById(R.id.tv_current_phone);
+        mCityTextView = (TextView) mNavHeader.findViewById(R.id.tv_current_city);
         mNavHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

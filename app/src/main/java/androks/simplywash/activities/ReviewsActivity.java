@@ -30,29 +30,21 @@ import butterknife.OnClick;
 public class ReviewsActivity extends BaseActivity implements
         AddReviewDialog.AddReviewDialogListener {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.rates_count)
-    TextView mCountOfRates;
-    @BindView(R.id.rating_bar)
-    RatingBar mRatingBar;
-    @BindView(R.id.rating_text)
-    TextView mRatingText;
-    @BindView(R.id.recyclerLV)
-    RecyclerView mRecyclerLV;
-    @BindView(R.id.content)
-    View mContent;
-    @BindView(R.id.progressBar)
-    View mProgressBar;
-    @BindView(R.id.empty_list)
-    View mListEmptyList;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.tv_rates_count) TextView tvRatesCount;
+    @BindView(R.id.rating_bar) RatingBar ratingBar;
+    @BindView(R.id.tv_rating) TextView tvRating;
+    @BindView(R.id.rv_prices_list) RecyclerView rvPriceList;
+    @BindView(R.id.ll_content) View llContent;
+    @BindView(R.id.progress_bar) View progressBar;
+    @BindView(R.id.tv_empty_list) View tvEmptyList;
 
-    private String mWasherId;
-    private Washer mWasher;
+    private String washerId;
+    private Washer washer;
 
-    FirebaseRecyclerAdapter mRecyclerAdapter;
+    FirebaseRecyclerAdapter rvAdapter;
 
-    private boolean mDataHasChanged = false;
+    private boolean dataHasChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,19 +63,19 @@ public class ReviewsActivity extends BaseActivity implements
     }
 
     private void getDataFromIntent() {
-        mWasherId = getIntent().getExtras().getString(Constants.WASHER_ID, null);
-        if (mWasherId == null) {
+        washerId = getIntent().getExtras().getString(Constants.WASHER_ID, null);
+        if (washerId == null) {
             onBackPressed();
             finish();
         }
     }
 
     private void downloadWasherInfo() {
-        Utils.getWasher(mWasherId).addListenerForSingleValueEvent(new ValueEventListener() {
+        Utils.getWasher(washerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
-                    mWasher = dataSnapshot.getValue(Washer.class);
+                    washer = dataSnapshot.getValue(Washer.class);
                     updateRating();
                 }
             }
@@ -96,20 +88,20 @@ public class ReviewsActivity extends BaseActivity implements
     }
 
     private void updateRating() {
-        mRatingBar.setRating(mWasher.getRating());
-        mRatingText.setText(String.valueOf(mWasher.getRating()));
-        mCountOfRates.setText(String.valueOf(mWasher.getVotes()));
+        ratingBar.setRating(washer.getRating());
+        tvRating.setText(String.valueOf(washer.getRating()));
+        tvRatesCount.setText(String.valueOf(washer.getVotes()));
         hideProgress();
     }
 
     private void setUpReviewsRecyclerLV() {
-        mRecyclerLV.setHasFixedSize(true);
-        mRecyclerLV.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerAdapter = new FirebaseRecyclerAdapter<Review, ViewHolder>(
+        rvPriceList.setHasFixedSize(true);
+        rvPriceList.setLayoutManager(new LinearLayoutManager(this));
+        rvAdapter = new FirebaseRecyclerAdapter<Review, ViewHolder>(
                 Review.class,
                 R.layout.item_review,
                 ViewHolder.class,
-                Utils.getReviewsFor(mWasherId)
+                Utils.getReviewsFor(washerId)
         ) {
             @Override
             protected void populateViewHolder(ViewHolder viewHolder, Review model, int position) {
@@ -119,16 +111,16 @@ public class ReviewsActivity extends BaseActivity implements
                 viewHolder.rate.setRating(model.rating);
             }
         };
-        mRecyclerLV.setAdapter(mRecyclerAdapter);
+        rvPriceList.setAdapter(rvAdapter);
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.title_activity_reviews);
         }
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -138,34 +130,34 @@ public class ReviewsActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-        if (mDataHasChanged)
+        if (dataHasChanged)
             setResult(Constants.RATING_CHANGED_CODE);
         finish();
     }
 
     private void showProgress() {
-        mContent.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
-        mListEmptyList.setVisibility(View.GONE);
+        llContent.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        tvEmptyList.setVisibility(View.GONE);
     }
 
     private void hideProgress() {
-        mContent.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
-        if (mRecyclerAdapter.getItemCount() <= 0)
-            mListEmptyList.setVisibility(View.VISIBLE);
+        llContent.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        if (rvAdapter.getItemCount() <= 0)
+            tvEmptyList.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R.id.add_review_btn)
+    @OnClick(R.id.btn_add_review)
     public void addReview() {
-        AppCompatDialogFragment addReviewDialog = AddReviewDialog.newInstance(mWasherId);
+        AppCompatDialogFragment addReviewDialog = AddReviewDialog.newInstance(washerId);
         addReviewDialog.show(getSupportFragmentManager(), "Add review");
     }
 
     @Override
     public void onReviewAdded(final Review review, final float oldRating) {
         showProgress();
-        mDataHasChanged = true;
+        dataHasChanged = true;
         updateReview(review);
         onRatingChanged(review, oldRating);
     }
@@ -173,11 +165,11 @@ public class ReviewsActivity extends BaseActivity implements
     private void updateReview(Review review) {
         if (review.name.isEmpty())
             review.name = getResources().getString(R.string.anonym);
-        Utils.getReviewsFor(mWasherId).child(getCurrentUser().getUid()).setValue(review);
+        Utils.getReviewsFor(washerId).child(getCurrentUser().getUid()).setValue(review);
     }
 
     private void onRatingChanged(final Review review, final float oldRating) {
-        Utils.getWasher(mWasherId).runTransaction(new Transaction.Handler() {
+        Utils.getWasher(washerId).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Washer washer = mutableData.getValue(Washer.class);
@@ -194,7 +186,7 @@ public class ReviewsActivity extends BaseActivity implements
                                     / washer.getVotes()
                     );
 
-                mWasher = washer;
+                ReviewsActivity.this.washer = washer;
                 // Set value and report transaction success
                 mutableData.setValue(washer);
                 return Transaction.success(mutableData);
@@ -221,11 +213,11 @@ public class ReviewsActivity extends BaseActivity implements
             ButterKnife.bind(this, v);
         }
 
-        @BindView(R.id.name)
+        @BindView(R.id.tv_name)
         TextView name;
-        @BindView(R.id.text)
+        @BindView(R.id.tv_text)
         TextView text;
-        @BindView(R.id.rate)
+        @BindView(R.id.rating_bar)
         RatingBar rate;
         @BindView(R.id.dateSpinner)
         TextView date;

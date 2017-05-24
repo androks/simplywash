@@ -28,42 +28,27 @@ public class FeaturesDialog extends AppCompatDialogFragment {
 
     public static final String TAG_EDITABLE = "TAG_EDITABLE";
 
-    @BindView(R.id.wifi)
-    ImageView mWifi;
-    @BindView(R.id.coffee)
-    ImageView mCoffee;
-    @BindView(R.id.restRoom)
-    ImageView mRestRoom;
-    @BindView(R.id.grocery)
-    ImageView mGrocery;
-    @BindView(R.id.wc)
-    ImageView mWC;
-    @BindView(R.id.serviceStation)
-    ImageView mServiceStation;
-    @BindView(R.id.cardPayment)
-    ImageView mCardPayment;
+    @BindView(R.id.iv_wifi) ImageView ivWifi;
+    @BindView(R.id.im_coffee) ImageView ivCoffee;
+    @BindView(R.id.iv_restRoom) ImageView ivRestRoom;
+    @BindView(R.id.im_grocery) ImageView ivGrocery;
+    @BindView(R.id.im_wc) ImageView ivWC;
+    @BindView(R.id.im_service_station) ImageView ivServiceStation;
+    @BindView(R.id.im_card_payment) ImageView ivCardPayment;
 
-    @BindView(R.id.wifi_switch)
-    Switch mWifiSwitch;
-    @BindView(R.id.coffee_switch)
-    Switch mCoffeeSwitch;
-    @BindView(R.id.restRoom_switch)
-    Switch mRestRoomSwitch;
-    @BindView(R.id.grocery_switch)
-    Switch mGrocerySwitch;
-    @BindView(R.id.wc_switch)
-    Switch mWCSwitch;
-    @BindView(R.id.serviceStation_switch)
-    Switch mServiceStationSwitch;
-    @BindView(R.id.cardPayment_switch)
-    Switch mCardPaymentSwitch;
+    @BindView(R.id.switch_wifi) Switch switchWifi;
+    @BindView(R.id.switch_coffee) Switch switchCoffee;
+    @BindView(R.id.switch_rest_room) Switch switchRestRoom;
+    @BindView(R.id.switch_grocery) Switch switchGrocery;
+    @BindView(R.id.switch_wc) Switch switchWC;
+    @BindView(R.id.switch_service_station) Switch switchServiceStation;
+    @BindView(R.id.switch_cardPayment) Switch switchCardPayment;
 
-    @BindView(R.id.applyBtn)
-    View mApplyBtn;
+    @BindView(R.id.btn_apply) View btnApply;
 
     private Features features;
 
-    private AddServicesDialogListener mListener;
+    private AddServicesDialogListener listener;
 
     public FeaturesDialog() {
         // Empty constructor required for DialogFragment
@@ -96,14 +81,14 @@ public class FeaturesDialog extends AppCompatDialogFragment {
     }
 
     private void applyEditMode() {
-        mWCSwitch.setClickable(true);
-        mWifiSwitch.setClickable(true);
-        mCoffeeSwitch.setClickable(true);
-        mRestRoomSwitch.setClickable(true);
-        mGrocerySwitch.setClickable(true);
-        mServiceStationSwitch.setClickable(true);
-        mCardPaymentSwitch.setClickable(true);
-        mApplyBtn.setVisibility(View.VISIBLE);
+        switchWC.setClickable(true);
+        switchWifi.setClickable(true);
+        switchCoffee.setClickable(true);
+        switchRestRoom.setClickable(true);
+        switchGrocery.setClickable(true);
+        switchServiceStation.setClickable(true);
+        switchCardPayment.setClickable(true);
+        btnApply.setVisibility(View.VISIBLE);
     }
 
     //This dialog can be used as just preview of available services
@@ -126,29 +111,29 @@ public class FeaturesDialog extends AppCompatDialogFragment {
     }
 
     private void setFields() {
-        mWCSwitch.setChecked(features.isWc());
-        mWifiSwitch.setChecked(features.isWifi());
-        mCardPaymentSwitch.setChecked(features.isCardPayment());
-        mCoffeeSwitch.setChecked(features.isCoffee());
-        mGrocerySwitch.setChecked(features.isShop());
-        mRestRoomSwitch.setChecked(features.isRestRoom());
-        mServiceStationSwitch.setChecked(features.isServiceStation());
+        switchWC.setChecked(features.isWc());
+        switchWifi.setChecked(features.isWifi());
+        switchCardPayment.setChecked(features.isCardPayment());
+        switchCoffee.setChecked(features.isCoffee());
+        switchGrocery.setChecked(features.isShop());
+        switchRestRoom.setChecked(features.isRestRoom());
+        switchServiceStation.setChecked(features.isServiceStation());
     }
 
     private void setPicturesColors() {
-        mWC.setColorFilter(getResources()
+        ivWC.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(features.isWc())));
-        mWifi.setColorFilter(getResources()
+        ivWifi.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(features.isWifi())));
-        mCoffee.setColorFilter(getResources()
+        ivCoffee.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(features.isCoffee())));
-        mGrocery.setColorFilter(getResources()
+        ivGrocery.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(features.isShop())));
-        mRestRoom.setColorFilter(getResources()
+        ivRestRoom.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(features.isRestRoom())));
-        mCardPayment.setColorFilter(getResources()
+        ivCardPayment.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(features.isCardPayment())));
-        mServiceStation.setColorFilter(getResources()
+        ivServiceStation.setColorFilter(getResources()
                 .getColor(Utils.getServiceAvailableColor(features.isServiceStation())));
     }
 
@@ -159,20 +144,20 @@ public class FeaturesDialog extends AppCompatDialogFragment {
             getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    @OnClick(R.id.applyBtn)
+    @OnClick(R.id.btn_apply)
     public void applyServices() {
-        mListener.onServicesAdded(new Features(
-                    mRestRoomSwitch.isChecked(),
-                    mWifiSwitch.isChecked(),
-                    mWCSwitch.isChecked(),
-                    mCoffeeSwitch.isChecked(),
-                    mGrocerySwitch.isChecked(),
-                    mCardPaymentSwitch.isChecked(),
-                    mServiceStationSwitch.isChecked()));
+        listener.onServicesAdded(new Features(
+                    switchRestRoom.isChecked(),
+                    switchWifi.isChecked(),
+                    switchWC.isChecked(),
+                    switchCoffee.isChecked(),
+                    switchGrocery.isChecked(),
+                    switchCardPayment.isChecked(),
+                    switchServiceStation.isChecked()));
         dismiss();
     }
 
-    @OnClick(R.id.close)
+    @OnClick(R.id.btn_close)
     public void close() {
         this.dismiss();
     }
@@ -182,6 +167,6 @@ public class FeaturesDialog extends AppCompatDialogFragment {
     }
 
     public void setListener(AddServicesDialogListener mListener) {
-        this.mListener = mListener;
+        this.listener = mListener;
     }
 }

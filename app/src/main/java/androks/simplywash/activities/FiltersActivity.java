@@ -22,17 +22,17 @@ public class FiltersActivity extends BaseActivity {
 
     @BindArray(R.array.priceCategoriesInt) int[] priceCategoriesInt;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.onlyFavouritesSwitch) Switch mOnlyFavourites;
-    @BindView(R.id.priceCategorySpinner) Spinner mPriceCategory;
-    @BindView(R.id.rate) RatingBar mRatingBar;
-    @BindView(R.id.wifi_switch) Switch mWifiSwitch;
-    @BindView(R.id.coffee_switch) Switch mCoffeeSwitch;
-    @BindView(R.id.restRoom_switch) Switch mRestRoomSwitch;
-    @BindView(R.id.grocery_switch) Switch mGrocerySwitch;
-    @BindView(R.id.wc_switch) Switch mWCSwitch;
-    @BindView(R.id.serviceStation_switch) Switch mServiceStationSwitch;
-    @BindView(R.id.cardPayment_switch) Switch mCardPaymentSwitch;
-    @BindView(R.id.open_now) Switch mOnlyOpenSwitch;
+    @BindView(R.id.switch_favorites) Switch switchFavorites;
+    @BindView(R.id.spn_price_category) Spinner spnPriceCategory;
+    @BindView(R.id.rating_bar) RatingBar ratingBar;
+    @BindView(R.id.switch_wifi) Switch switchWifi;
+    @BindView(R.id.switch_coffee) Switch switchCoffee;
+    @BindView(R.id.switch_rest_room) Switch switchRestRoom;
+    @BindView(R.id.switch_grocery) Switch switchGrocery;
+    @BindView(R.id.switch_wc) Switch switchWC;
+    @BindView(R.id.switch_service_station) Switch switchServiceStation;
+    @BindView(R.id.switch_cardPayment) Switch switchCardPayment;
+    @BindView(R.id.switch_open_now) Switch switchOnlyOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,27 +82,27 @@ public class FiltersActivity extends BaseActivity {
     //Upload filters from SharedPref and set field values
     private void setFiltersFromPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.FILTERS_PREFERENCES, MODE_PRIVATE);
-        mOnlyFavourites.setChecked(
+        switchFavorites.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_ONLY_FAVOURITES, false));
-        mOnlyOpenSwitch.setChecked(
+        switchOnlyOpen.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_ONLY_OPEN, false));
-        mRestRoomSwitch.setChecked(
+        switchRestRoom.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_REST_ROOM, false));
-        mWifiSwitch.setChecked(
+        switchWifi.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_WIFI, false));
-        mWCSwitch.setChecked(
+        switchWC.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_TOILET, false));
-        mCoffeeSwitch.setChecked(
+        switchCoffee.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_COFFEE, false));
-        mGrocerySwitch.setChecked(
+        switchGrocery.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_SHOP, false));
-        mCardPaymentSwitch.setChecked(
+        switchCardPayment.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_CARD_PAYMENT, false));
-        mServiceStationSwitch.setChecked(
+        switchServiceStation.setChecked(
                 sharedPreferences.getBoolean(Constants.FILTER_SERVICE_STATION, false));
-        mRatingBar.setRating(
+        ratingBar.setRating(
                 sharedPreferences.getFloat(Constants.FILTER_MINIMUM_RATING, 0.0f));
-        mPriceCategory.setSelection(
+        spnPriceCategory.setSelection(
                 sharedPreferences.getInt(Constants.FILTER_PRICE_CATEGORY, priceCategoriesInt.length-1));
     }
 
@@ -110,36 +110,36 @@ public class FiltersActivity extends BaseActivity {
     private void saveFilterToSharedPref() {
         SharedPreferences sp = getSharedPreferences(Constants.FILTERS_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
-        edit.putBoolean(Constants.FILTER_REST_ROOM, mRestRoomSwitch.isChecked());
-        edit.putBoolean(Constants.FILTER_ONLY_OPEN, mOnlyOpenSwitch.isChecked());
-        edit.putBoolean(Constants.FILTER_WIFI, mWifiSwitch.isChecked());
-        edit.putBoolean(Constants.FILTER_TOILET, mWCSwitch.isChecked());
-        edit.putBoolean(Constants.FILTER_COFFEE, mCoffeeSwitch.isChecked());
-        edit.putBoolean(Constants.FILTER_SHOP, mGrocerySwitch.isChecked());
-        edit.putBoolean(Constants.FILTER_CARD_PAYMENT, mCardPaymentSwitch.isChecked());
-        edit.putBoolean(Constants.FILTER_SERVICE_STATION, mServiceStationSwitch.isChecked());
-        edit.putBoolean(Constants.FILTER_ONLY_FAVOURITES, mOnlyFavourites.isChecked());
-        edit.putFloat(Constants.FILTER_MINIMUM_RATING, mRatingBar.getRating());
-        edit.putInt(Constants.FILTER_PRICE_CATEGORY, mPriceCategory.getSelectedItemPosition());
+        edit.putBoolean(Constants.FILTER_REST_ROOM, switchRestRoom.isChecked());
+        edit.putBoolean(Constants.FILTER_ONLY_OPEN, switchOnlyOpen.isChecked());
+        edit.putBoolean(Constants.FILTER_WIFI, switchWifi.isChecked());
+        edit.putBoolean(Constants.FILTER_TOILET, switchWC.isChecked());
+        edit.putBoolean(Constants.FILTER_COFFEE, switchCoffee.isChecked());
+        edit.putBoolean(Constants.FILTER_SHOP, switchGrocery.isChecked());
+        edit.putBoolean(Constants.FILTER_CARD_PAYMENT, switchCardPayment.isChecked());
+        edit.putBoolean(Constants.FILTER_SERVICE_STATION, switchServiceStation.isChecked());
+        edit.putBoolean(Constants.FILTER_ONLY_FAVOURITES, switchFavorites.isChecked());
+        edit.putFloat(Constants.FILTER_MINIMUM_RATING, ratingBar.getRating());
+        edit.putInt(Constants.FILTER_PRICE_CATEGORY, spnPriceCategory.getSelectedItemPosition());
         edit.apply();
     }
 
     //Reset all fields to default value
     private void resetFilters() {
-        mOnlyFavourites.setChecked(false);
-        mOnlyOpenSwitch.setChecked(false);
-        mRestRoomSwitch.setChecked(false);
-        mWifiSwitch.setChecked(false);
-        mWCSwitch.setChecked(false);
-        mCoffeeSwitch.setChecked(false);
-        mGrocerySwitch.setChecked(false);
-        mCardPaymentSwitch.setChecked(false);
-        mServiceStationSwitch.setChecked(false);
-        mRatingBar.setRating(0.0f);
-        mPriceCategory.setSelection(priceCategoriesInt.length-1);
+        switchFavorites.setChecked(false);
+        switchOnlyOpen.setChecked(false);
+        switchRestRoom.setChecked(false);
+        switchWifi.setChecked(false);
+        switchWC.setChecked(false);
+        switchCoffee.setChecked(false);
+        switchGrocery.setChecked(false);
+        switchCardPayment.setChecked(false);
+        switchServiceStation.setChecked(false);
+        ratingBar.setRating(0.0f);
+        spnPriceCategory.setSelection(priceCategoriesInt.length-1);
     }
 
-    @OnClick(R.id.applyBtn)
+    @OnClick(R.id.btn_apply)
     public void applyFilters(){
         saveFilterToSharedPref();
         setResult(Constants.FILTER_CHANGED_CODE);

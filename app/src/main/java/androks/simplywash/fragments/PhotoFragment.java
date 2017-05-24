@@ -28,9 +28,9 @@ import butterknife.Unbinder;
 
 public class PhotoFragment extends Fragment {
 
-    @BindView(R.id.image)
+    @BindView(R.id.iv_image)
     ImageView mImage;
-    @BindView(R.id.progress)
+    @BindView(R.id.progress_bar)
     View mProgressBar;
 
     private Unbinder mUnbinder;
@@ -105,7 +105,7 @@ public class PhotoFragment extends Fragment {
 
     //If we are in WasherActivity and click on the photo => we start the PhotoActivity
     // and view photos starting from certain photo
-    @OnClick(R.id.image)
+    @OnClick(R.id.iv_image)
     public void viewAllImages() {
         if (mNumber >= 0
                 && !(getActivity() instanceof PhotosActivity)

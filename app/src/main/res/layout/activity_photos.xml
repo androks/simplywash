@@ -6,14 +6,14 @@
     tools:context="androks.simplywash.activities.PhotosActivity">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/image_slideshow"
+        android:id="@+id/vp_images"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true" />
 
     <com.viewpagerindicator.CirclePageIndicator
-        android:id="@+id/images_indicator"
+        android:id="@+id/images_slideshow_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

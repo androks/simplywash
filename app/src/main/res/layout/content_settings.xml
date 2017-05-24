@@ -29,7 +29,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/phone"
+                android:id="@+id/tv_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -57,7 +57,7 @@
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/city"
+                android:id="@+id/spn_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

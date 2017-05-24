@@ -32,7 +32,7 @@
                 android:background="@android:color/white" />
 
             <Spinner
-                android:id="@+id/carTypesSpinner"
+                android:id="@+id/spn_car_types"
                 style="@style/Base.Widget.AppCompat.DropDownItem.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -46,18 +46,18 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerLV"
+            android:id="@+id/rv_prices_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
 
         <TextView
-            android:id="@+id/no_items"
+            android:id="@+id/tv_no_items"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

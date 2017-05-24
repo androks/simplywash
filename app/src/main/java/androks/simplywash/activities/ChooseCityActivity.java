@@ -20,36 +20,41 @@ import butterknife.ButterKnife;
 
 public class ChooseCityActivity extends BaseActivity {
 
-    @BindView(R.id.citiesRecyclerView) RecyclerView mCitiesRecyclerView;
-    @BindView(R.id.progress) View mProgressBar;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.rv_cities) RecyclerView rvCities;
+    @BindView(R.id.progress_bar) View progressBar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //If city is already set, go to MainActivity
-        if(getCurrentCity() != null){
+        setContentView(R.layout.activity_choose_city);
+        ButterKnife.bind(this);
+        checkCityIsAlreadyChoosen();
+
+        setUpToolbar();
+        setupCityRecyclerView();
+    }
+
+    //If city is already set, go to MainActivity
+    private void checkCityIsAlreadyChoosen(){
+        if (getCurrentCity() != null) {
             startActivity(new Intent(ChooseCityActivity.this, MainActivity.class));
             finish();
         }
-        setContentView(R.layout.activity_choose_city);
-        ButterKnife.bind(this);
-        setUpToolbar();
-        setUpRecyclerView();
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setTitle(R.string.title_choose_city_activity);
         }
     }
 
-    private void setUpRecyclerView() {
-        mCitiesRecyclerView.setHasFixedSize(true);
-        mCitiesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mCitiesRecyclerView.setAdapter(new FirebaseRecyclerAdapter<String, ViewHolder>(
+    private void setupCityRecyclerView() {
+        rvCities.setHasFixedSize(true);
+        rvCities.setLayoutManager(new LinearLayoutManager(this));
+        rvCities.setAdapter(new FirebaseRecyclerAdapter<String, ViewHolder>(
                 String.class,
                 R.layout.simple_list_item,
                 ViewHolder.class,
@@ -79,17 +84,17 @@ public class ChooseCityActivity extends BaseActivity {
         edit.apply();
     }
 
-    private void hideProgress(){
-        mProgressBar.setVisibility(View.GONE);
+    private void hideProgress() {
+        progressBar.setVisibility(View.GONE);
     }
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.tv_text) TextView name;
 
         public ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }
-
-        @BindView(R.id.text) TextView name;
     }
 }
